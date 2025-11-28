@@ -49,17 +49,48 @@ export class TTAdapter extends utils.Adapter {
 
         try {
             if (this.getHafasService()) {
-                //return abfahrt
-                this.log.info('Rufe hService.getLocations auf');
-                const ort = await this.hService.getLocations('zepernick', { results: 2 });
-                this.log.info(`Gefundene Orte: ${JSON.stringify(ort, null, 1)}`);
-                this.log.info(
-                    `Rufe depRequest.getDepartures auf für ${this.config.stationId}: ${this.config.stationName}`,
-                );
+                // Prüfe ob Stationen konfiguriert sind
+                if (!this.config.departures || this.config.departures.length === 0) {
+                    this.log.warn(
+                        'Keine Stationen in der Konfiguration gefunden. Bitte in der Admin-UI konfigurieren.',
+                    );
+                    return;
+                }
+
+                // Hole alle aktivierten Stationen
+                const enabledStations = this.config.departures.filter(station => station.enabled);
+
+                if (enabledStations.length === 0) {
+                    this.log.warn('Keine aktivierten Stationen gefunden. Bitte mindestens eine Station aktivieren.');
+                    return;
+                }
+
+                // Logge gefundene Stationen
+                this.log.info(`${enabledStations.length} aktive Station(en) gefunden:`);
+                for (const station of enabledStations) {
+                    this.log.info(`  - ${station.customName || station.name} (ID: ${station.id})`);
+                }
+
+                // Starte Abfrage für jede aktivierte Station
                 this.pollIntervall = this.setInterval(async () => {
-                    await this.depRequest.getDepartures(this.config.stationId);
+                    for (const station of enabledStations) {
+                        if (!station.id) {
+                            this.log.warn(`Station "${station.name}" hat keine gültige ID, überspringe...`);
+                            continue;
+                        }
+                        this.log.info(`Rufe Abfahrten ab für: ${station.customName || station.name} (${station.id})`);
+                        await this.depRequest.getDepartures(station.id);
+                    }
                     this.log.info('Abfahrten aktualisiert');
                 }, 60_000);
+
+                // Erste Abfrage sofort ausführen
+                for (const station of enabledStations) {
+                    if (station.id) {
+                        this.log.info(`Erste Abfrage für: ${station.customName || station.name} (${station.id})`);
+                        await this.depRequest.getDepartures(station.id);
+                    }
+                }
             }
         } catch (err) {
             this.log.error(`HAFAS Anfrage fehlgeschlagen: ${(err as Error).message}`);

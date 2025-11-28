@@ -73,16 +73,38 @@ class TTAdapter extends utils.Adapter {
     await this.library.initStates(states);
     try {
       if (this.getHafasService()) {
-        this.log.info("Rufe hService.getLocations auf");
-        const ort = await this.hService.getLocations("zepernick", { results: 2 });
-        this.log.info(`Gefundene Orte: ${JSON.stringify(ort, null, 1)}`);
-        this.log.info(
-          `Rufe depRequest.getDepartures auf f\xFCr ${this.config.stationId}: ${this.config.stationName}`
-        );
+        if (!this.config.departures || this.config.departures.length === 0) {
+          this.log.warn(
+            "Keine Stationen in der Konfiguration gefunden. Bitte in der Admin-UI konfigurieren."
+          );
+          return;
+        }
+        const enabledStations = this.config.departures.filter((station) => station.enabled);
+        if (enabledStations.length === 0) {
+          this.log.warn("Keine aktivierten Stationen gefunden. Bitte mindestens eine Station aktivieren.");
+          return;
+        }
+        this.log.info(`${enabledStations.length} aktive Station(en) gefunden:`);
+        for (const station of enabledStations) {
+          this.log.info(`  - ${station.customName || station.name} (ID: ${station.id})`);
+        }
         this.pollIntervall = this.setInterval(async () => {
-          await this.depRequest.getDepartures(this.config.stationId);
+          for (const station of enabledStations) {
+            if (!station.id) {
+              this.log.warn(`Station "${station.name}" hat keine g\xFCltige ID, \xFCberspringe...`);
+              continue;
+            }
+            this.log.info(`Rufe Abfahrten ab f\xFCr: ${station.customName || station.name} (${station.id})`);
+            await this.depRequest.getDepartures(station.id);
+          }
           this.log.info("Abfahrten aktualisiert");
         }, 6e4);
+        for (const station of enabledStations) {
+          if (station.id) {
+            this.log.info(`Erste Abfrage f\xFCr: ${station.customName || station.name} (${station.id})`);
+            await this.depRequest.getDepartures(station.id);
+          }
+        }
       }
     } catch (err) {
       this.log.error(`HAFAS Anfrage fehlgeschlagen: ${err.message}`);
