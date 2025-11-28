@@ -71,18 +71,19 @@ class HafasConfig extends ConfigGeneric<ConfigGenericProps, HafasConfigState> {
         };
 
         return (
-            <Box sx={{ p: 2 }}>
+            <Box sx={{ p: { xs: 1, sm: 2 }, maxWidth: 1200, mx: 'auto' }}>
                 <Typography
                     variant="h5"
-                    sx={{ mb: 3 }}
+                    sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
                 >
                     {I18n.t('hafasConfig_title')}
                 </Typography>
 
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 3 }}>
                     <FormControl
-                        sx={{ flex: '1 1 300px', minWidth: 200 }}
+                        sx={{ flex: { sm: '1 1 0' }, minWidth: { xs: '100%', sm: 200 } }}
                         disabled={disabled}
+                        fullWidth
                     >
                         <InputLabel id="hafas-profile-label">{I18n.t('hafasConfig_profile_label')}</InputLabel>
                         <Select
@@ -99,8 +100,9 @@ class HafasConfig extends ConfigGeneric<ConfigGenericProps, HafasConfigState> {
                     </FormControl>
 
                     <FormControl
-                        sx={{ flex: '1 1 300px', minWidth: 200 }}
+                        sx={{ flex: { sm: '1 1 0' }, minWidth: { xs: '100%', sm: 200 } }}
                         disabled={disabled}
+                        fullWidth
                     >
                         <TextField
                             id="client-name-input"
@@ -109,13 +111,20 @@ class HafasConfig extends ConfigGeneric<ConfigGenericProps, HafasConfigState> {
                             onChange={handleClientNameChange}
                             helperText={I18n.t('hafasConfig_clientName_helper')}
                             disabled={disabled}
+                            fullWidth
                         />
                     </FormControl>
                 </Box>
 
-                <Box sx={{ mt: 3, display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: 2,
+                        alignItems: { sm: 'flex-start' },
+                    }}
+                >
                     <TextField
-                        fullWidth
                         label={I18n.t('hafasConfig_station_label')}
                         value={stationName || stationId || ''}
                         InputProps={{
@@ -127,12 +136,19 @@ class HafasConfig extends ConfigGeneric<ConfigGenericProps, HafasConfigState> {
                                 : I18n.t('hafasConfig_station_helper_empty')
                         }
                         disabled={disabled}
+                        fullWidth
+                        sx={{ flex: { sm: 1 } }}
                     />
                     <Button
                         variant="contained"
                         onClick={handleOpenStationSearch}
                         disabled={disabled}
-                        sx={{ mt: 0.5, minWidth: 120 }}
+                        sx={{
+                            mt: { xs: 0, sm: 0.5 },
+                            minWidth: { xs: '100%', sm: 120 },
+                            height: { xs: 48, sm: 56 },
+                        }}
+                        fullWidth={false}
                     >
                         {I18n.t('hafasConfig_station_search_button')}
                     </Button>

@@ -84,17 +84,25 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
         const selectedStation = stations.find(s => s.id === selectedStationId) || null;
 
         return (
-            <Box sx={{ height: '100%', p: 2 }}>
+            <Box sx={{ height: '100%', p: { xs: 1, sm: 2 } }}>
                 <Grid
                     container
-                    spacing={2}
-                    sx={{ height: '100%' }}
+                    spacing={{ xs: 1, sm: 2 }}
+                    sx={{ 
+                        height: '100%',
+                        flexDirection: { xs: 'column', md: 'row' }
+                    }}
                 >
                     {/* Linke Spalte - Stationsübersicht */}
                     <Grid
                         item
                         xs={12}
                         md={5}
+                        sx={{ 
+                            height: { xs: 'auto', md: '100%' },
+                            minHeight: { xs: 300, md: 'auto' },
+                            maxHeight: { xs: 400, md: 'none' }
+                        }}
                     >
                         <StationList
                             stations={stations}
@@ -110,6 +118,10 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
                         item
                         xs={12}
                         md={7}
+                        sx={{ 
+                            height: { xs: 'auto', md: '100%' },
+                            minHeight: { xs: 200, md: 'auto' }
+                        }}
                     >
                         <StationConfig station={selectedStation} />
                     </Grid>
@@ -121,6 +133,14 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
                     onClose={this.handleCloseSearch}
                     maxWidth="md"
                     fullWidth
+                    fullScreen={false}
+                    sx={{
+                        '& .MuiDialog-paper': {
+                            m: { xs: 1, sm: 2 },
+                            maxHeight: { xs: 'calc(100% - 16px)', sm: 'calc(100% - 64px)' },
+                            width: { xs: 'calc(100% - 16px)', sm: 'auto' }
+                        }
+                    }}
                 >
                     <StationSearch
                         {...this.props}
