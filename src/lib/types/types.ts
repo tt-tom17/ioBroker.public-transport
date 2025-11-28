@@ -177,10 +177,12 @@ export type DepartureState = {
     delay: number | null;
     direction: string;
     platform: string | null;
+    plannedPlatform: string | null;
     line: {
         name: string;
         fahrtNr: string;
         productName: string;
+        mode: string;
         operator: string;
     };
     remarks: {

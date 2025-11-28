@@ -78,7 +78,7 @@ class TTAdapter extends utils.Adapter {
         this.log.info(`Gefundene Orte: ${JSON.stringify(ort, null, 1)}`);
         this.log.info("Rufe depRequest.getDepartures auf");
         this.pollIntervall = this.setInterval(async () => {
-          await this.depRequest.getDepartures(String(ort[1].id));
+          await this.depRequest.getDepartures(String(ort[0].id));
           this.log.info("Abfahrten aktualisiert");
         }, 6e4);
       }

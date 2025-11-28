@@ -40,9 +40,16 @@ class DepartureRequest extends import_library.BaseClass {
       const options = { ...import_types.defaultDepartureOpt };
       this.response = await hService.getDepartures(stationId, options);
       this.adapter.log.info(JSON.stringify(this.response.departures, null, 1));
+      await this.library.writedp(`${this.adapter.namespace}.${stationId}`, void 0);
       const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(this.response.departures);
       await this.library.cleanUpTree([`${this.adapter.namespace}`], null, 1);
-      await this.library.writeFromJson("departures", "departures", import_definition.genericStateObjects, departureStates, true);
+      await this.library.writeFromJson(
+        `${this.adapter.namespace}.${stationId}`,
+        "",
+        import_definition.genericStateObjects,
+        departureStates,
+        true
+      );
     } catch (error) {
       this.log.error(`Fehler bei der Abfrage der Abfahrten: ${error.message}`);
       throw error;

@@ -53,10 +53,12 @@ function mapDepartureToDepartureState(departure) {
     delay: departure.delay,
     direction: departure.direction,
     platform: departure.platform,
+    plannedPlatform: departure.plannedPlatform,
     line: {
       name: departure.line.name,
       fahrtNr: departure.line.fahrtNr,
       productName: departure.line.productName,
+      mode: departure.line.mode,
       operator: departure.line.operator.name
     },
     remarks: groupRemarksByType(departure.remarks)
