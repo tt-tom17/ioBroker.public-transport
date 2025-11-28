@@ -8,7 +8,6 @@ interface Station {
     name: string;
     customName?: string;
     enabled?: boolean;
-    updateInterval?: number;
 }
 
 interface StationListProps {
@@ -29,14 +28,14 @@ const StationList: React.FC<StationListProps> = ({
     return (
         <Paper sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6">{I18n.t('Stations Overview')}</Typography>
+                <Typography variant="h6">{I18n.t('stations_overview')}</Typography>
                 <Button
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={onAddStation}
                     size="small"
                 >
-                    {I18n.t('Add Station')}
+                    {I18n.t('add_station')}
                 </Button>
             </Box>
 
@@ -51,9 +50,7 @@ const StationList: React.FC<StationListProps> = ({
                             color: 'text.secondary',
                         }}
                     >
-                        <Typography variant="body2">
-                            {I18n.t('No stations configured. Click "Add Station" to get started.')}
-                        </Typography>
+                        <Typography variant="body2">{I18n.t('no_stations_hint')}</Typography>
                     </Box>
                 ) : (
                     <List>
@@ -99,9 +96,7 @@ const StationList: React.FC<StationListProps> = ({
                                                 variant="caption"
                                                 display="block"
                                             >
-                                                {station.enabled === false ? I18n.t('Disabled') : I18n.t('Active')}
-                                                {' • '}
-                                                {I18n.t('Update')}: {station.updateInterval || 60}s
+                                                {station.enabled === false ? I18n.t('disabled') : I18n.t('active')}
                                             </Typography>
                                         </>
                                     }

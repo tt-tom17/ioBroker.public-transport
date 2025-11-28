@@ -1,13 +1,15 @@
 import { I18n } from '@iobroker/adapter-react-v5';
-import { Box, FormControlLabel, Paper, Switch, TextField, Typography } from '@mui/material';
+import { Box, Divider, FormControlLabel, Paper, Switch, TextField, Typography } from '@mui/material';
 import React from 'react';
+import ProductSelector, { defaultProducts, type Products } from './ProductSelector';
 
 interface Station {
     id: string;
     name: string;
     customName?: string;
     enabled?: boolean;
-    updateInterval?: number;
+    numDepartures?: number;
+    products?: Products;
 }
 
 interface StationConfigProps {
@@ -28,12 +30,18 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate }) => {
         }
     };
 
-    const handleIntervalChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const handlenumDeparturesChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         if (station && onUpdate) {
             const value = parseInt(event.target.value, 10);
             if (!isNaN(value) && value > 0) {
-                onUpdate(station.id, { updateInterval: value });
+                onUpdate(station.id, { numDepartures: value });
             }
+        }
+    };
+
+    const handleProductsChange = (products: Products): void => {
+        if (station && onUpdate) {
+            onUpdate(station.id, { products });
         }
     };
 
@@ -43,7 +51,7 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate }) => {
                 variant="h6"
                 sx={{ mb: 2 }}
             >
-                {I18n.t('Station Configuration')}
+                {I18n.t('station_configuration')}
             </Typography>
 
             {station ? (
@@ -53,13 +61,13 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate }) => {
                         color="text.secondary"
                         sx={{ mb: 3 }}
                     >
-                        {I18n.t('Configuration for station')}: {station.name}
+                        {I18n.t('configuration_for_station')}: {station.name}
                     </Typography>
 
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         {/* Station ID (read-only) */}
                         <TextField
-                            label={I18n.t('Station ID')}
+                            label={I18n.t('station_id')}
                             value={station.id}
                             disabled
                             fullWidth
@@ -68,7 +76,7 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate }) => {
 
                         {/* Original Name (read-only) */}
                         <TextField
-                            label={I18n.t('Original Name')}
+                            label={I18n.t('station_name')}
                             value={station.name}
                             disabled
                             fullWidth
@@ -77,12 +85,12 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate }) => {
 
                         {/* Custom Name */}
                         <TextField
-                            label={I18n.t('Custom Name')}
+                            label={I18n.t('custom_name')}
                             value={station.customName || station.name}
                             onChange={handleCustomNameChange}
                             fullWidth
                             size="small"
-                            helperText={I18n.t('Enter a custom name for this station')}
+                            helperText={I18n.t('custom_name_hint')}
                         />
 
                         {/* Enabled Switch */}
@@ -93,19 +101,28 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate }) => {
                                     onChange={handleEnabledChange}
                                 />
                             }
-                            label={I18n.t('Enable station updates')}
+                            label={I18n.t('enabled')}
                         />
 
-                        {/* Update Interval */}
+                        {/* Count Departures */}
                         <TextField
-                            label={I18n.t('Update Interval (seconds)')}
+                            label={I18n.t('departure_count')}
                             type="number"
-                            value={station.updateInterval || 60}
-                            onChange={handleIntervalChange}
+                            value={station.numDepartures || 3}
+                            onChange={handlenumDeparturesChange}
                             fullWidth
                             size="small"
-                            inputProps={{ min: 10, max: 3600 }}
-                            helperText={I18n.t('How often to fetch departures (10-3600 seconds)')}
+                            inputProps={{ min: 1, max: 50 }}
+                            helperText={I18n.t('departure_count_hint')}
+                        />
+
+                        <Divider sx={{ my: 1 }} />
+
+                        {/* Product Selector */}
+                        <ProductSelector
+                            products={station.products || defaultProducts}
+                            onChange={handleProductsChange}
+                            disabled={station.enabled === false}
                         />
                     </Box>
                 </Box>
@@ -119,7 +136,7 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate }) => {
                         color: 'text.secondary',
                     }}
                 >
-                    <Typography variant="body2">{I18n.t('Select a station from the list to configure it')}</Typography>
+                    <Typography variant="body2">{I18n.t('select_station_to_configure')}</Typography>
                 </Box>
             )}
         </Paper>

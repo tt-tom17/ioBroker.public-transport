@@ -1,6 +1,7 @@
 import { ConfigGeneric, type ConfigGenericProps, type ConfigGenericState } from '@iobroker/json-config';
 import { Box, Dialog, Grid } from '@mui/material';
 import React from 'react';
+import { defaultProducts, type Products } from './ProductSelector';
 import StationConfig from './StationConfig';
 import StationList from './StationList';
 import StationSearch from './StationSearch';
@@ -10,7 +11,8 @@ interface Station {
     name: string;
     customName?: string;
     enabled?: boolean;
-    updateInterval?: number;
+    numDepartures?: number;
+    products?: Products;
 }
 
 interface DepartureManagerState extends ConfigGenericState {
@@ -62,7 +64,8 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
             name: stationName,
             customName: stationName,
             enabled: true,
-            updateInterval: 60, // Standard: 60 Sekunden
+            numDepartures: 10,
+            products: { ...defaultProducts },
         };
 
         // Prüfe ob Station bereits existiert

@@ -16,12 +16,23 @@ declare global {
 			id: string;
 			name: string;
 			customName?: string;
-			enabled?: boolean;
-			updateInterval?: number;
+			enabled: boolean;
+			numDepartures?: number;
+			offsetTime?: number;
+			products?: Products;
+		}
+
+		interface Products {
+    		suburban?: boolean;   // S-Bahn
+    		subway?: boolean;     // U-Bahn
+    		tram?: boolean;       // Straßenbahn
+    		bus?: boolean;        // Bus
+    		ferry?: boolean;      // Fähre
+    		express?: boolean;    // ICE/IC/EC (Fernverkehr)
+    		regional?: boolean;   // RE/RB (Regionalverkehr)
 		}
 	}
 }
 
 // this is required so the above AdapterConfig is found by TypeScript / type checking
 export { };
-
