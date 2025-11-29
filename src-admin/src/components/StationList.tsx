@@ -1,6 +1,17 @@
 import { I18n } from '@iobroker/adapter-react-v5';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { Box, Button, IconButton, List, ListItemButton, ListItemText, Paper, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    IconButton,
+    List,
+    ListItemButton,
+    ListItemText,
+    Paper,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material';
 import React from 'react';
 
 interface Station {
@@ -25,15 +36,27 @@ const StationList: React.FC<StationListProps> = ({
     onDeleteStation,
     onStationClick,
 }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     return (
-        <Paper sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Paper sx={{ p: 2, height: '100%', minHeight: 400, minWidth: 280, display: 'flex', flexDirection: 'column' }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    justifyContent: 'space-between',
+                    alignItems: isMobile ? 'stretch' : 'center',
+                    gap: 1,
+                    mb: 2,
+                }}
+            >
                 <Typography variant="h6">{I18n.t('stations_overview')}</Typography>
                 <Button
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={onAddStation}
                     size="small"
+                    fullWidth={isMobile}
                 >
                     {I18n.t('add_station')}
                 </Button>
