@@ -99,8 +99,9 @@ class TTAdapter extends utils.Adapter {
             const duration = station.duration ? station.duration : 10;
             const results = station.numDepartures ? station.numDepartures : 10;
             const options = { results, when, duration };
+            const products = station.products ? station.products : void 0;
             this.log.info(`Rufe Abfahrten ab f\xFCr: ${station.customName || station.name} (${station.id})`);
-            await this.depRequest.getDepartures(station.id, options);
+            await this.depRequest.getDepartures(station.id, options, products);
           }
           this.log.info("Abfahrten aktualisiert");
         }, 6e4);

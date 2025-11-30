@@ -83,8 +83,9 @@ export class TTAdapter extends utils.Adapter {
                         const duration = station.duration ? station.duration : 10;
                         const results = station.numDepartures ? station.numDepartures : 10;
                         const options = { results: results, when: when, duration: duration };
+                        const products = station.products ? station.products : undefined;
                         this.log.info(`Rufe Abfahrten ab für: ${station.customName || station.name} (${station.id})`);
-                        await this.depRequest.getDepartures(station.id, options);
+                        await this.depRequest.getDepartures(station.id, options, products);
                     }
                     this.log.info('Abfahrten aktualisiert');
                 }, 60_000);
