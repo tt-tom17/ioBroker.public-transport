@@ -29,7 +29,7 @@
     "ferry": "Fähre",
     "departure_count": "Anzahl Abfahrten",
     "departure_count_hint": "Anzahl der abzurufenden Abfahrten (1-50)",
-    "select_station_to_configure": "Wählen Sie eine Station zur Konfiguration",
+    "select_station_to_configure": "Wählen Sie eine Station zur Konfiguration aus",
     "station_configuration": "Stationskonfiguration",
     "configuration_for_station": "Konfiguration für Station",
     "station_id": "Stations-ID",

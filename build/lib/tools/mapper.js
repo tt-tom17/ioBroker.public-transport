@@ -47,21 +47,22 @@ function groupRemarksByType(remarks) {
   };
 }
 function mapDepartureToDepartureState(departure) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r;
   return {
-    when: departure.when,
-    plannedWhen: departure.plannedWhen,
-    delay: departure.delay,
-    direction: departure.direction,
-    platform: departure.platform,
-    plannedPlatform: departure.plannedPlatform,
+    when: (_a = departure.when) != null ? _a : null,
+    plannedWhen: (_b = departure.plannedWhen) != null ? _b : null,
+    delay: (_c = departure.delay) != null ? _c : null,
+    direction: (_d = departure.direction) != null ? _d : null,
+    platform: (_e = departure.platform) != null ? _e : null,
+    plannedPlatform: (_f = departure.plannedPlatform) != null ? _f : null,
     line: {
-      name: departure.line.name,
-      fahrtNr: departure.line.fahrtNr,
-      productName: departure.line.productName,
-      mode: departure.line.mode,
-      operator: departure.line.operator.name
+      name: (_h = (_g = departure.line) == null ? void 0 : _g.name) != null ? _h : null,
+      fahrtNr: (_j = (_i = departure.line) == null ? void 0 : _i.fahrtNr) != null ? _j : null,
+      productName: (_l = (_k = departure.line) == null ? void 0 : _k.productName) != null ? _l : null,
+      mode: (_n = (_m = departure.line) == null ? void 0 : _m.mode) != null ? _n : null,
+      operator: (_q = (_p = (_o = departure.line) == null ? void 0 : _o.operator) == null ? void 0 : _p.name) != null ? _q : null
     },
-    remarks: groupRemarksByType(departure.remarks)
+    remarks: groupRemarksByType((_r = departure.remarks) != null ? _r : [])
   };
 }
 function mapDeparturesToDepartureStates(departures) {

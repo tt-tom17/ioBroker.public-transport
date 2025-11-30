@@ -127,18 +127,19 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
                     spacing={{ xs: 1, sm: 2 }}
                     sx={{
                         height: '100%',
-                        flexDirection: { xs: 'column', md: 'row' },
+                        flexWrap: { xs: 'wrap', md: 'nowrap' },
                     }}
                 >
                     {/* Linke Spalte - Stationsübersicht */}
                     <Grid
                         item
                         xs={12}
-                        md={5}
+                        md={6}
                         sx={{
-                            height: { xs: 'auto', md: '100%' },
+                            display: 'flex',
+                            flexDirection: 'column',
                             minHeight: { xs: 300, md: 'auto' },
-                            maxHeight: { xs: 400, md: 'none' },
+                            flexShrink: 0,
                         }}
                     >
                         <StationList
@@ -154,10 +155,12 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
                     <Grid
                         item
                         xs={12}
-                        md={7}
+                        md={6}
                         sx={{
-                            height: { xs: 'auto', md: '100%' },
+                            display: 'flex',
+                            flexDirection: 'column',
                             minHeight: { xs: 200, md: 'auto' },
+                            flexGrow: 1,
                         }}
                     >
                         <StationConfig
