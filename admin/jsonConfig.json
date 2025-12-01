@@ -4,20 +4,20 @@
     "items": {
         "_configTabs": {
             "type": "panel",
-            "label": "Configuration Tabs",
+            "label": "client_config",
             "items": {
-                "hafasConfig": {
+                "clientConfig": {
                     "type": "custom",
                     "i18n": true,
                     "url": "custom/customComponents.js",
-                    "name": "AdminComponentEasyAccessSet/Components/HafasConfig",
+                    "name": "AdminComponentEasyAccessSet/Components/ClientConfig",
                     "bundlerType": "module"
                 }
             }
         },
         "_departureManager": {
             "type": "panel",
-            "label": "Departure Manager",
+            "label": "departure_manager",
             "items": {
                 "departures": {
                     "type": "custom",

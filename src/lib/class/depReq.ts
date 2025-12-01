@@ -30,7 +30,7 @@ export class DepartureRequest extends BaseClass {
             // Vollständiges JSON für Debugging
             this.adapter.log.debug(JSON.stringify(this.response.departures, null, 1));
             // Stations Ordner erstellen
-            await this.library.writedp(`${this.adapter.namespace}.${stationId}`, undefined, defaultFolder);
+            await this.library.writedp(`${this.adapter.namespace}.Departures.${stationId}`, undefined, defaultFolder);
             // Filtere nach Produkten, falls angegeben
             if (products) {
                 this.response.departures = this.filterByProducts(this.response.departures, products);
@@ -41,7 +41,7 @@ export class DepartureRequest extends BaseClass {
             await this.library.cleanUpTree([`${this.adapter.namespace}.${stationId}`], null, 1);
             // JSON in die States schreiben
             await this.library.writeFromJson(
-                `${this.adapter.namespace}.${stationId}.`,
+                `${this.adapter.namespace}.Departures.${stationId}.`,
                 'departures',
                 genericStateObjects,
                 departureStates,

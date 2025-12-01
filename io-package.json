@@ -86,8 +86,8 @@
 	"native": {
 		"hafasProfile": "",
 		"clientName": "",
-		"stationId": "",
-		"stationName": ""
+		"pollInterval": 5,
+		"logUnknownTokens": false
 	},
 	"objects": [],
 	"instanceObjects": []

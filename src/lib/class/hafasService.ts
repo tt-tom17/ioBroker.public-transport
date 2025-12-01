@@ -5,23 +5,56 @@
  * für `locations` und `departures` an.
  */
 import { createClient as hafasClient } from 'hafas-client';
-import { profile as dbProfile } from 'hafas-client/p/db/index.js';
 import { profile as vbbProfile } from 'hafas-client/p/vbb/index.js';
 
 export class HafasService {
-    private client: ReturnType<typeof hafasClient>;
+    private client: ReturnType<typeof hafasClient> | null = null;
+    private clientName: string;
+    private profileName: string;
 
     /**
      * Erzeugt eine neue Instanz des HafasService.
-     * Standardmäßig wird das VBB-Profil verwendet. Optional kann ein alternatives
-     * Profil als zweiten Parameter übergeben werden (für Tests oder andere Netze).
+     * Der Client wird erst durch Aufruf von `init()` erstellt.
      *
-     * @param clientName optionaler Name, der an den Client übergeben wird
-     * @param profile optionales HAFAS-Profil; falls nicht angegeben, wird vbbProfile genutzt
+     * @param clientName Name, der an den Client übergeben wird
+     * @param profileName Name des HAFAS-Profils ('vbb', 'db', etc.)
      */
-    constructor(clientName: string, profile?: string) {
-        const usedProfile = this.resolveProfile(profile);
-        this.client = hafasClient(usedProfile, clientName);
+    constructor(clientName: string, profileName: string) {
+        this.clientName = clientName;
+        this.profileName = profileName;
+    }
+
+    /**
+     * Initialisiert den HAFAS-Client.
+     * Muss vor der Nutzung der anderen Methoden aufgerufen werden.
+     *
+     * @returns true bei Erfolg, false bei Fehler
+     */
+    public init(): boolean {
+        try {
+            const profile = this.resolveProfile(this.profileName);
+            this.client = hafasClient(profile, this.clientName);
+            return true;
+        } catch (error) {
+            throw new Error(`HAFAS-Client konnte nicht initialisiert werden: ${(error as Error).message}`);
+        }
+    }
+
+    /**
+     * Prüft ob der Client initialisiert wurde.
+     */
+    public isInitialized(): boolean {
+        return this.client !== null;
+    }
+
+    /**
+     * Gibt den initialisierten Client zurück oder wirft einen Fehler.
+     */
+    private getClient(): ReturnType<typeof hafasClient> {
+        if (!this.client) {
+            throw new Error('HafasService wurde noch nicht initialisiert. Bitte zuerst init() aufrufen.');
+        }
+        return this.client;
     }
 
     /**
@@ -40,15 +73,8 @@ export class HafasService {
             case 'vbb': {
                 return vbbProfile;
             }
-            case 'db': {
-                return dbProfile;
-            }
             default: {
-                throw new Error(
-                    `Unbekanntes Profile: ${String(
-                        profile,
-                    )}. Nutze entweder ein Profil-Objekt oder einen Namen aus ProfileName.`,
-                );
+                throw new Error(`Unbekanntes Profile: ${String(profile)}. Verfügbare Profile: 'vbb'.`);
             }
         }
     }
@@ -61,7 +87,7 @@ export class HafasService {
      * @returns Promise mit Suchergebnissen (typisiert als any)
      */
     async getLocations(query: string, options?: any): Promise<any> {
-        return this.client.locations(query, options);
+        return this.getClient().locations(query, options);
     }
 
     /**
@@ -72,7 +98,7 @@ export class HafasService {
      * @returns Promise mit Abfahrtsinformationen (typisiert als any)
      */
     async getDepartures(stationId: string, options?: any): Promise<any> {
-        return this.client.departures(stationId, options);
+        return this.getClient().departures(stationId, options);
     }
 
     /**
@@ -84,6 +110,6 @@ export class HafasService {
      * @returns Promise mit Routeninformationen (typisiert als any)
      */
     async getRoute(fromId: string, toId: string, options?: any): Promise<any> {
-        return this.client.journeys(fromId, toId, options);
+        return this.getClient().journeys(fromId, toId, options);
     }
 }

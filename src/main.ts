@@ -6,8 +6,8 @@ import { Library } from './lib/tools/library';
 export class TTAdapter extends utils.Adapter {
     library: Library;
     unload: boolean = false;
-    hService: HafasService;
-    depRequest: DepartureRequest;
+    hService!: HafasService;
+    depRequest!: DepartureRequest;
     //vClient: ReturnType<typeof dbVendorClient>;
     private pollIntervall: ioBroker.Interval | undefined;
 
@@ -23,12 +23,6 @@ export class TTAdapter extends utils.Adapter {
         // this.on('objectChange', this.onObjectChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
-
-        // Initialisiere HafasService mit Konfiguration aus Admin-UI
-        const profileName = this.config.hafasProfile;
-        const clientName = this.config.clientName || 'iobroker-tt-adapter';
-        this.hService = new HafasService(clientName, profileName);
-        this.depRequest = new DepartureRequest(this);
     }
 
     public getHafasService(): HafasService {
@@ -46,6 +40,24 @@ export class TTAdapter extends utils.Adapter {
         await this.library.init();
         const states = await this.getStatesAsync('*');
         await this.library.initStates(states);
+
+        const pollInterval = (this.config.pollInterval || 5) * 60 * 1000;
+
+        // Initialisiere HafasService mit Konfiguration aus Admin-UI
+        const profileName = this.config.hafasProfile || 'vbb';
+        const clientName = this.config.clientName || 'iobroker-tt-adapter';
+        this.hService = new HafasService(clientName, profileName);
+
+        // HAFAS-Client initialisieren
+        try {
+            this.hService.init();
+            this.log.info(`HAFAS-Client initialisiert mit Profil: ${profileName}`);
+        } catch (error) {
+            this.log.error(`HAFAS-Client konnte nicht initialisiert werden: ${(error as Error).message}`);
+            return;
+        }
+
+        this.depRequest = new DepartureRequest(this);
 
         try {
             if (this.getHafasService()) {
@@ -101,8 +113,8 @@ export class TTAdapter extends utils.Adapter {
                         }
                     }
                     this.log.info(`Abfrage abgeschlossen: ${successCount} erfolgreich, ${errorCount} fehlgeschlagen`);
-                    this.log.info(`Warte auf die nächste Abfrage in ${this.config.pollInterval} ms...`);
-                }, 120_000);
+                    this.log.info(`Warte auf die nächste Abfrage in ${this.config.pollInterval} Minuten...`);
+                }, pollInterval);
 
                 // Erste Abfrage sofort ausführen
                 let successCount = 0;
@@ -125,6 +137,7 @@ export class TTAdapter extends utils.Adapter {
                     }
                 }
                 this.log.info(`Erste Abfrage abgeschlossen: ${successCount} erfolgreich, ${errorCount} fehlgeschlagen`);
+                this.log.info(`Warte auf die nächste Abfrage in ${this.config.pollInterval} Minuten...`);
             }
         } catch (err) {
             this.log.error(`HAFAS Anfrage fehlgeschlagen: ${(err as Error).message}`);
@@ -224,7 +237,7 @@ export class TTAdapter extends utils.Adapter {
                         this.sendTo(obj.from, obj.command, stations, obj.callback);
                     }
                 } catch (error) {
-                    this.log.error(`HAFAS location search failed: ${(error as Error).message}`);
+                    this.log.error(`Location search failed: ${(error as Error).message}`);
                     if (obj.callback) {
                         this.sendTo(obj.from, obj.command, { error: (error as Error).message }, obj.callback);
                     }

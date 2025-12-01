@@ -22,21 +22,51 @@ __export(hafasService_exports, {
 });
 module.exports = __toCommonJS(hafasService_exports);
 var import_hafas_client = require("hafas-client");
-var import_db = require("hafas-client/p/db/index.js");
 var import_vbb = require("hafas-client/p/vbb/index.js");
 class HafasService {
-  client;
+  client = null;
+  clientName;
+  profileName;
   /**
    * Erzeugt eine neue Instanz des HafasService.
-   * Standardmäßig wird das VBB-Profil verwendet. Optional kann ein alternatives
-   * Profil als zweiten Parameter übergeben werden (für Tests oder andere Netze).
+   * Der Client wird erst durch Aufruf von `init()` erstellt.
    *
-   * @param clientName optionaler Name, der an den Client übergeben wird
-   * @param profile optionales HAFAS-Profil; falls nicht angegeben, wird vbbProfile genutzt
+   * @param clientName Name, der an den Client übergeben wird
+   * @param profileName Name des HAFAS-Profils ('vbb', 'db', etc.)
    */
-  constructor(clientName, profile) {
-    const usedProfile = this.resolveProfile(profile);
-    this.client = (0, import_hafas_client.createClient)(usedProfile, clientName);
+  constructor(clientName, profileName) {
+    this.clientName = clientName;
+    this.profileName = profileName;
+  }
+  /**
+   * Initialisiert den HAFAS-Client.
+   * Muss vor der Nutzung der anderen Methoden aufgerufen werden.
+   *
+   * @returns true bei Erfolg, false bei Fehler
+   */
+  init() {
+    try {
+      const profile = this.resolveProfile(this.profileName);
+      this.client = (0, import_hafas_client.createClient)(profile, this.clientName);
+      return true;
+    } catch (error) {
+      throw new Error(`HAFAS-Client konnte nicht initialisiert werden: ${error.message}`);
+    }
+  }
+  /**
+   * Prüft ob der Client initialisiert wurde.
+   */
+  isInitialized() {
+    return this.client !== null;
+  }
+  /**
+   * Gibt den initialisierten Client zurück oder wirft einen Fehler.
+   */
+  getClient() {
+    if (!this.client) {
+      throw new Error("HafasService wurde noch nicht initialisiert. Bitte zuerst init() aufrufen.");
+    }
+    return this.client;
   }
   /**
    * Resolve a profile given either a ProfileName or a profile object.
@@ -53,15 +83,8 @@ class HafasService {
       case "vbb": {
         return import_vbb.profile;
       }
-      case "db": {
-        return import_db.profile;
-      }
       default: {
-        throw new Error(
-          `Unbekanntes Profile: ${String(
-            profile
-          )}. Nutze entweder ein Profil-Objekt oder einen Namen aus ProfileName.`
-        );
+        throw new Error(`Unbekanntes Profile: ${String(profile)}. Verf\xFCgbare Profile: 'vbb'.`);
       }
     }
   }
@@ -73,7 +96,7 @@ class HafasService {
    * @returns Promise mit Suchergebnissen (typisiert als any)
    */
   async getLocations(query, options) {
-    return this.client.locations(query, options);
+    return this.getClient().locations(query, options);
   }
   /**
    * Liefert Abfahrten für eine gegebene Stations-ID.
@@ -83,7 +106,7 @@ class HafasService {
    * @returns Promise mit Abfahrtsinformationen (typisiert als any)
    */
   async getDepartures(stationId, options) {
-    return this.client.departures(stationId, options);
+    return this.getClient().departures(stationId, options);
   }
   /**
    * Liefert Routeninformationen zwischen zwei Stationen.
@@ -94,7 +117,7 @@ class HafasService {
    * @returns Promise mit Routeninformationen (typisiert als any)
    */
   async getRoute(fromId, toId, options) {
-    return this.client.journeys(fromId, toId, options);
+    return this.getClient().journeys(fromId, toId, options);
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

@@ -53,10 +53,6 @@ class TTAdapter extends utils.Adapter {
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
-    const profileName = this.config.hafasProfile;
-    const clientName = this.config.clientName || "iobroker-tt-adapter";
-    this.hService = new import_hafasService.HafasService(clientName, profileName);
-    this.depRequest = new import_depReq.DepartureRequest(this);
   }
   getHafasService() {
     if (!this.hService) {
@@ -71,6 +67,18 @@ class TTAdapter extends utils.Adapter {
     await this.library.init();
     const states = await this.getStatesAsync("*");
     await this.library.initStates(states);
+    const pollInterval = (this.config.pollInterval || 5) * 60 * 1e3;
+    const profileName = this.config.hafasProfile || "vbb";
+    const clientName = this.config.clientName || "iobroker-tt-adapter";
+    this.hService = new import_hafasService.HafasService(clientName, profileName);
+    try {
+      this.hService.init();
+      this.log.info(`HAFAS-Client initialisiert mit Profil: ${profileName}`);
+    } catch (error) {
+      this.log.error(`HAFAS-Client konnte nicht initialisiert werden: ${error.message}`);
+      return;
+    }
+    this.depRequest = new import_depReq.DepartureRequest(this);
     try {
       if (this.getHafasService()) {
         if (!this.config.departures || this.config.departures.length === 0) {
@@ -117,8 +125,8 @@ class TTAdapter extends utils.Adapter {
             }
           }
           this.log.info(`Abfrage abgeschlossen: ${successCount2} erfolgreich, ${errorCount2} fehlgeschlagen`);
-          this.log.info(`Warte auf die n\xE4chste Abfrage in ${this.config.pollInterval} ms...`);
-        }, 12e4);
+          this.log.info(`Warte auf die n\xE4chste Abfrage in ${this.config.pollInterval} Minuten...`);
+        }, pollInterval);
         let successCount = 0;
         let errorCount = 0;
         for (const station of enabledStations) {
@@ -139,6 +147,7 @@ class TTAdapter extends utils.Adapter {
           }
         }
         this.log.info(`Erste Abfrage abgeschlossen: ${successCount} erfolgreich, ${errorCount} fehlgeschlagen`);
+        this.log.info(`Warte auf die n\xE4chste Abfrage in ${this.config.pollInterval} Minuten...`);
       }
     } catch (err) {
       this.log.error(`HAFAS Anfrage fehlgeschlagen: ${err.message}`);
@@ -219,7 +228,7 @@ class TTAdapter extends utils.Adapter {
             this.sendTo(obj.from, obj.command, stations, obj.callback);
           }
         } catch (error) {
-          this.log.error(`HAFAS location search failed: ${error.message}`);
+          this.log.error(`Location search failed: ${error.message}`);
           if (obj.callback) {
             this.sendTo(obj.from, obj.command, { error: error.message }, obj.callback);
           }

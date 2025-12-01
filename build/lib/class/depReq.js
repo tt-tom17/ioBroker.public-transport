@@ -48,14 +48,14 @@ class DepartureRequest extends import_library.BaseClass {
       const mergedOptions = { ...import_types.defaultDepartureOpt, ...options };
       this.response = await hService.getDepartures(stationId, mergedOptions);
       this.adapter.log.debug(JSON.stringify(this.response.departures, null, 1));
-      await this.library.writedp(`${this.adapter.namespace}.${stationId}`, void 0, import_definition.defaultFolder);
+      await this.library.writedp(`${this.adapter.namespace}.Departures.${stationId}`, void 0, import_definition.defaultFolder);
       if (products) {
         this.response.departures = this.filterByProducts(this.response.departures, products);
       }
       const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(this.response.departures);
       await this.library.cleanUpTree([`${this.adapter.namespace}.${stationId}`], null, 1);
       await this.library.writeFromJson(
-        `${this.adapter.namespace}.${stationId}.`,
+        `${this.adapter.namespace}.Departures.${stationId}.`,
         "departures",
         import_definition.genericStateObjects,
         departureStates,
