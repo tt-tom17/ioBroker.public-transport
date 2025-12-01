@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/lib/types/transportService.ts"],
-  "sourcesContent": ["import type {\n    Departures,\n    DeparturesArrivalsOptions,\n    Journeys,\n    JourneysOptions,\n    Location,\n    LocationsOptions,\n    Station,\n    Stop,\n} from 'hafas-client';\n\n/**\n * Gemeinsames Interface f\u00FCr HafasService und VendoService.\n * Erm\u00F6glicht die austauschbare Verwendung beider Services.\n */\nexport interface ITransportService {\n    getLocations(query: string, options?: LocationsOptions): Promise<ReadonlyArray<Station | Stop | Location>>;\n    getDepartures(stationId: string, options?: DeparturesArrivalsOptions): Promise<Departures>;\n    getRoute(fromId: string, toId: string, options?: JourneysOptions): Promise<Journeys>;\n}\n"],
-  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
-  "names": []
-}

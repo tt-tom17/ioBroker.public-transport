@@ -1,12 +1,12 @@
 import * as utils from '@iobroker/adapter-core';
+import type { VendoService } from '../class/dbVendoService';
 import type { DepartureRequest } from '../class/depReq';
-import type { HafasService } from '../hafasService';
 import type { Library } from '../tools/library';
 
 declare class TTAdapter extends utils.Adapter {
     library: Library;
-    hService: HafasService;
+    vService: VendoService;
     depRequest: DepartureRequest;
-    getHafasService(): HafasService;
+    getVendoService(): VendoService;
     unload: boolean;
 }

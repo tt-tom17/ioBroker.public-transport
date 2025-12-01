@@ -34,12 +34,10 @@ module.exports = __toCommonJS(main_exports);
 var utils = __toESM(require("@iobroker/adapter-core"));
 var import_dbVendoService = require("./lib/class/dbVendoService");
 var import_depReq = require("./lib/class/depReq");
-var import_hafasService = require("./lib/class/hafasService");
 var import_library = require("./lib/tools/library");
 class TTAdapter extends utils.Adapter {
   library;
   unload = false;
-  hService;
   depRequest;
   vService;
   pollIntervall;
@@ -55,12 +53,6 @@ class TTAdapter extends utils.Adapter {
     this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
   }
-  getHafasService() {
-    if (!this.hService) {
-      throw new Error("HafasService wurde noch nicht initialisiert");
-    }
-    return this.hService;
-  }
   getVendoService() {
     if (!this.vService) {
       throw new Error("VendoService wurde noch nicht initialisiert");
@@ -74,67 +66,54 @@ class TTAdapter extends utils.Adapter {
     await this.library.init();
     const states = await this.getStatesAsync("*");
     await this.library.initStates(states);
-    const profileName = this.config.hafasProfile;
     const clientName = this.config.clientName || "iobroker-tt-adapter";
-    this.hService = new import_hafasService.HafasService(clientName, profileName);
     this.vService = new import_dbVendoService.VendoService(clientName);
     this.depRequest = new import_depReq.DepartureRequest(this);
     try {
-      const results = await this.vService.getLocations("berlin", { results: 5 });
-      this.log.info(`dbVendo Standorte gefunden: ${results.length}`);
-      this.log.debug(JSON.stringify(results, null, 2));
-    } catch (err) {
-      this.log.error(`dbVendo Anfrage fehlgeschlagen: ${err.message}`);
-    }
-    try {
-      if (this.getHafasService()) {
-        if (!this.config.departures || this.config.departures.length === 0) {
-          this.log.warn(
-            "Keine Stationen in der Konfiguration gefunden. Bitte in der Admin-UI konfigurieren."
-          );
-          return;
-        }
-        const enabledStations = this.config.departures.filter((station) => station.enabled);
-        if (enabledStations.length === 0) {
-          this.log.warn("Keine aktivierten Stationen gefunden. Bitte mindestens eine Station aktivieren.");
-          return;
-        }
-        this.log.info(`${enabledStations.length} aktive Station(en) gefunden:`);
+      if (!this.config.departures || this.config.departures.length === 0) {
+        this.log.warn("Keine Stationen in der Konfiguration gefunden. Bitte in der Admin-UI konfigurieren.");
+        return;
+      }
+      const enabledStations = this.config.departures.filter((station) => station.enabled);
+      if (enabledStations.length === 0) {
+        this.log.warn("Keine aktivierten Stationen gefunden. Bitte mindestens eine Station aktivieren.");
+        return;
+      }
+      this.log.info(`${enabledStations.length} aktive Station(en) gefunden:`);
+      for (const station of enabledStations) {
+        this.log.info(`  - ${station.customName || station.name} (ID: ${station.id})`);
+      }
+      this.pollIntervall = this.setInterval(async () => {
         for (const station of enabledStations) {
-          this.log.info(`  - ${station.customName || station.name} (ID: ${station.id})`);
+          if (!station.id) {
+            this.log.warn(`Station "${station.name}" hat keine g\xFCltige ID, \xFCberspringe...`);
+            continue;
+          }
+          const offsetTime = station.offsetTime ? station.offsetTime : 0;
+          const when = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1e3;
+          const duration = station.duration ? station.duration : 10;
+          const results = station.numDepartures ? station.numDepartures : 10;
+          const options = { results, when, duration };
+          const products = station.products ? station.products : void 0;
+          this.log.info(`Rufe Abfahrten ab f\xFCr: ${station.customName || station.name} (${station.id})`);
+          await this.depRequest.getDepartures(station.id, this.vService, options, products);
         }
-        this.pollIntervall = this.setInterval(async () => {
-          for (const station of enabledStations) {
-            if (!station.id) {
-              this.log.warn(`Station "${station.name}" hat keine g\xFCltige ID, \xFCberspringe...`);
-              continue;
-            }
-            const offsetTime = station.offsetTime ? station.offsetTime : 0;
-            const when = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1e3;
-            const duration = station.duration ? station.duration : 10;
-            const results = station.numDepartures ? station.numDepartures : 10;
-            const options = { results, when, duration };
-            const products = station.products ? station.products : void 0;
-            this.log.info(`Rufe Abfahrten ab f\xFCr: ${station.customName || station.name} (${station.id})`);
-            await this.depRequest.getDepartures(station.id, this.vService, options, products);
-          }
-          this.log.info("Abfahrten aktualisiert");
-        }, 3e5);
-        for (const station of enabledStations) {
-          if (station.id) {
-            this.log.info(`Erste Abfrage f\xFCr: ${station.customName || station.name} (${station.id})`);
-            const offsetTime = station.offsetTime ? station.offsetTime : 0;
-            const when = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1e3;
-            const duration = station.duration ? station.duration : 10;
-            const results = station.numDepartures ? station.numDepartures : 10;
-            const options = { results, when, duration };
-            const products = station.products ? station.products : void 0;
-            await this.depRequest.getDepartures(station.id, this.vService, options, products);
-          }
+        this.log.info("Abfahrten aktualisiert");
+      }, 3e5);
+      for (const station of enabledStations) {
+        if (station.id) {
+          this.log.info(`Erste Abfrage f\xFCr: ${station.customName || station.name} (${station.id})`);
+          const offsetTime = station.offsetTime ? station.offsetTime : 0;
+          const when = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1e3;
+          const duration = station.duration ? station.duration : 10;
+          const results = station.numDepartures ? station.numDepartures : 10;
+          const options = { results, when, duration };
+          const products = station.products ? station.products : void 0;
+          await this.depRequest.getDepartures(station.id, this.vService, options, products);
         }
       }
     } catch (err) {
-      this.log.error(`HAFAS Anfrage fehlgeschlagen: ${err.message}`);
+      this.log.error(`Vendo Anfrage fehlgeschlagen: ${err.message}`);
     }
   }
   /**

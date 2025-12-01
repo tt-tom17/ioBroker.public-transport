@@ -1,13 +1,11 @@
 import * as utils from '@iobroker/adapter-core';
 import { VendoService } from './lib/class/dbVendoService';
 import { DepartureRequest } from './lib/class/depReq';
-import { HafasService } from './lib/class/hafasService';
 import { Library } from './lib/tools/library';
 
 export class TTAdapter extends utils.Adapter {
     library: Library;
     unload: boolean = false;
-    hService!: HafasService;
     depRequest!: DepartureRequest;
     vService!: VendoService;
     private pollIntervall: ioBroker.Interval | undefined;
@@ -26,13 +24,6 @@ export class TTAdapter extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
     }
 
-    public getHafasService(): HafasService {
-        if (!this.hService) {
-            throw new Error('HafasService wurde noch nicht initialisiert');
-        }
-        return this.hService;
-    }
-
     public getVendoService(): VendoService {
         if (!this.vService) {
             throw new Error('VendoService wurde noch nicht initialisiert');
@@ -49,81 +40,67 @@ export class TTAdapter extends utils.Adapter {
         const states = await this.getStatesAsync('*');
         await this.library.initStates(states);
 
-        // Initialisiere Services mit Konfiguration aus Admin-UI
-        const profileName = this.config.hafasProfile;
+        // Initialisiere VendoService mit Konfiguration aus Admin-UI
         const clientName = this.config.clientName || 'iobroker-tt-adapter';
 
-        this.hService = new HafasService(clientName, profileName);
         this.vService = new VendoService(clientName);
         this.depRequest = new DepartureRequest(this);
 
         try {
-            const results = await this.vService.getLocations('berlin', { results: 5 });
-            this.log.info(`dbVendo Standorte gefunden: ${results.length}`);
-            this.log.debug(JSON.stringify(results, null, 2));
-        } catch (err) {
-            this.log.error(`dbVendo Anfrage fehlgeschlagen: ${(err as Error).message}`);
-        }
+            // Prüfe ob Stationen konfiguriert sind
+            if (!this.config.departures || this.config.departures.length === 0) {
+                this.log.warn('Keine Stationen in der Konfiguration gefunden. Bitte in der Admin-UI konfigurieren.');
+                return;
+            }
 
-        try {
-            if (this.getHafasService()) {
-                // Prüfe ob Stationen konfiguriert sind
-                if (!this.config.departures || this.config.departures.length === 0) {
-                    this.log.warn(
-                        'Keine Stationen in der Konfiguration gefunden. Bitte in der Admin-UI konfigurieren.',
-                    );
-                    return;
-                }
+            // Hole alle aktivierten Stationen
+            const enabledStations = this.config.departures.filter(station => station.enabled);
 
-                // Hole alle aktivierten Stationen
-                const enabledStations = this.config.departures.filter(station => station.enabled);
+            if (enabledStations.length === 0) {
+                this.log.warn('Keine aktivierten Stationen gefunden. Bitte mindestens eine Station aktivieren.');
+                return;
+            }
 
-                if (enabledStations.length === 0) {
-                    this.log.warn('Keine aktivierten Stationen gefunden. Bitte mindestens eine Station aktivieren.');
-                    return;
-                }
+            // Logge gefundene Stationen
+            this.log.info(`${enabledStations.length} aktive Station(en) gefunden:`);
+            for (const station of enabledStations) {
+                this.log.info(`  - ${station.customName || station.name} (ID: ${station.id})`);
+            }
 
-                // Logge gefundene Stationen
-                this.log.info(`${enabledStations.length} aktive Station(en) gefunden:`);
+            // Starte Abfrage für jede aktivierte Station
+            this.pollIntervall = this.setInterval(async () => {
                 for (const station of enabledStations) {
-                    this.log.info(`  - ${station.customName || station.name} (ID: ${station.id})`);
+                    if (!station.id) {
+                        this.log.warn(`Station "${station.name}" hat keine gültige ID, überspringe...`);
+                        continue;
+                    }
+                    const offsetTime = station.offsetTime ? station.offsetTime : 0;
+                    const when: number | null = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1000;
+                    const duration = station.duration ? station.duration : 10;
+                    const results = station.numDepartures ? station.numDepartures : 10;
+                    const options = { results: results, when: when, duration: duration };
+                    const products = station.products ? station.products : undefined;
+                    this.log.info(`Rufe Abfahrten ab für: ${station.customName || station.name} (${station.id})`);
+                    await this.depRequest.getDepartures(station.id, this.vService, options, products);
                 }
+                this.log.info('Abfahrten aktualisiert');
+            }, 300_000);
 
-                // Starte Abfrage für jede aktivierte Station
-                this.pollIntervall = this.setInterval(async () => {
-                    for (const station of enabledStations) {
-                        if (!station.id) {
-                            this.log.warn(`Station "${station.name}" hat keine gültige ID, überspringe...`);
-                            continue;
-                        }
-                        const offsetTime = station.offsetTime ? station.offsetTime : 0;
-                        const when: number | null = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1000;
-                        const duration = station.duration ? station.duration : 10;
-                        const results = station.numDepartures ? station.numDepartures : 10;
-                        const options = { results: results, when: when, duration: duration };
-                        const products = station.products ? station.products : undefined;
-                        this.log.info(`Rufe Abfahrten ab für: ${station.customName || station.name} (${station.id})`);
-                        await this.depRequest.getDepartures(station.id, this.vService, options, products);
-                    }
-                    this.log.info('Abfahrten aktualisiert');
-                }, 300_000);
-
-                // Erste Abfrage sofort ausführen
-                for (const station of enabledStations) {
-                    if (station.id) {
-                        this.log.info(`Erste Abfrage für: ${station.customName || station.name} (${station.id})`);
-                        const offsetTime = station.offsetTime ? station.offsetTime : 0;
-                        const when: number | null = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1000;
-                        const duration = station.duration ? station.duration : 10;
-                        const results = station.numDepartures ? station.numDepartures : 10;
-                        const options = { results: results, when: when, duration: duration };
-                        const products = station.products ? station.products : undefined;
-                        await this.depRequest.getDepartures(station.id, this.vService, options, products);
-                    }
+            // Erste Abfrage sofort ausführen
+            for (const station of enabledStations) {
+                if (station.id) {
+                    this.log.info(`Erste Abfrage für: ${station.customName || station.name} (${station.id})`);
+                    const offsetTime = station.offsetTime ? station.offsetTime : 0;
+                    const when: number | null = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1000;
+                    const duration = station.duration ? station.duration : 10;
+                    const results = station.numDepartures ? station.numDepartures : 10;
+                    const options = { results: results, when: when, duration: duration };
+                    const products = station.products ? station.products : undefined;
+                    await this.depRequest.getDepartures(station.id, this.vService, options, products);
                 }
             }
         } catch (err) {
-            this.log.error(`HAFAS Anfrage fehlgeschlagen: ${(err as Error).message}`);
+            this.log.error(`Vendo Anfrage fehlgeschlagen: ${(err as Error).message}`);
         }
     }
 

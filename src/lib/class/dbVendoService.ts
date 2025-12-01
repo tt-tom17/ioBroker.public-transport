@@ -11,9 +11,8 @@ import type {
     Station,
     Stop,
 } from 'hafas-client';
-import type { ITransportService } from '../types/transportService';
 
-export class VendoService implements ITransportService {
+export class VendoService {
     private client: HafasClient;
 
     constructor(clientName: string) {
