@@ -32,6 +32,7 @@ __export(main_exports, {
 });
 module.exports = __toCommonJS(main_exports);
 var utils = __toESM(require("@iobroker/adapter-core"));
+var import_dbVendoService = require("./lib/class/dbVendoService");
 var import_depReq = require("./lib/class/depReq");
 var import_hafasService = require("./lib/class/hafasService");
 var import_library = require("./lib/tools/library");
@@ -40,7 +41,7 @@ class TTAdapter extends utils.Adapter {
   unload = false;
   hService;
   depRequest;
-  //vClient: ReturnType<typeof dbVendorClient>;
+  vService;
   pollIntervall;
   constructor(options = {}) {
     super({
@@ -57,6 +58,7 @@ class TTAdapter extends utils.Adapter {
     const clientName = this.config.clientName || "iobroker-tt-adapter";
     this.hService = new import_hafasService.HafasService(clientName, profileName);
     this.depRequest = new import_depReq.DepartureRequest(this);
+    this.vService = new import_dbVendoService.VendoService(clientName);
   }
   getHafasService() {
     if (!this.hService) {

@@ -1,21 +1,33 @@
-import { createClient as createVendoClient } from 'db-vendo-client';
+import { createClient } from 'db-vendo-client';
+import { profile as dbVendoProfile } from 'db-vendo-client/p/dbnav/index.js';
+import type {
+    Departures,
+    DeparturesArrivalsOptions,
+    HafasClient,
+    Journeys,
+    JourneysOptions,
+    Location,
+    LocationsOptions,
+    Station,
+    Stop,
+} from 'hafas-client';
 
 export class VendoService {
-    private client: ReturnType<typeof createVendoClient>;
+    private client: HafasClient;
 
     constructor(clientName: string) {
-        this.client = createVendoClient(clientName);
+        this.client = createClient(dbVendoProfile, clientName);
     }
 
-    async getLocations(query: string, options?: any): Promise<any> {
+    async getLocations(query: string, options?: LocationsOptions): Promise<ReadonlyArray<Station | Stop | Location>> {
         return this.client.locations(query, options);
     }
 
-    async getDepartures(stationId: string, options?: any): Promise<any> {
+    async getDepartures(stationId: string, options?: DeparturesArrivalsOptions): Promise<Departures> {
         return this.client.departures(stationId, options);
     }
 
-    async getRoute(fromId: string, toId: string, options?: any): Promise<any> {
+    async getRoute(fromId: string, toId: string, options?: JourneysOptions): Promise<Journeys> {
         return this.client.journeys(fromId, toId, options);
     }
 }

@@ -1,4 +1,5 @@
 import * as utils from '@iobroker/adapter-core';
+import { VendoService } from './lib/class/dbVendoService';
 import { DepartureRequest } from './lib/class/depReq';
 import { HafasService } from './lib/class/hafasService';
 import { Library } from './lib/tools/library';
@@ -8,7 +9,7 @@ export class TTAdapter extends utils.Adapter {
     unload: boolean = false;
     hService: HafasService;
     depRequest: DepartureRequest;
-    //vClient: ReturnType<typeof dbVendorClient>;
+    vService: VendoService;
     private pollIntervall: ioBroker.Interval | undefined;
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
@@ -29,6 +30,7 @@ export class TTAdapter extends utils.Adapter {
         const clientName = this.config.clientName || 'iobroker-tt-adapter';
         this.hService = new HafasService(clientName, profileName);
         this.depRequest = new DepartureRequest(this);
+        this.vService = new VendoService(clientName);
     }
 
     public getHafasService(): HafasService {
