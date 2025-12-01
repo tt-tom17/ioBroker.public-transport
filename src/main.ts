@@ -48,6 +48,13 @@ export class TTAdapter extends utils.Adapter {
         await this.library.init();
         const states = await this.getStatesAsync('*');
         await this.library.initStates(states);
+        try {
+            const results = await this.vService.getLocations('berlin', { results: 5 });
+            this.log.info(`dbVendo Standorte gefunden: ${results.length}`);
+            this.log.debug(JSON.stringify(results, null, 2));
+        } catch (err) {
+            this.log.error(`dbVendo Anfrage fehlgeschlagen: ${(err as Error).message}`);
+        }
 
         try {
             if (this.getHafasService()) {
@@ -90,13 +97,19 @@ export class TTAdapter extends utils.Adapter {
                         await this.depRequest.getDepartures(station.id, options, products);
                     }
                     this.log.info('Abfahrten aktualisiert');
-                }, 60_000);
+                }, 300_000);
 
                 // Erste Abfrage sofort ausführen
                 for (const station of enabledStations) {
                     if (station.id) {
                         this.log.info(`Erste Abfrage für: ${station.customName || station.name} (${station.id})`);
-                        await this.depRequest.getDepartures(station.id);
+                        const offsetTime = station.offsetTime ? station.offsetTime : 0;
+                        const when: number | null = offsetTime === 0 ? null : Date.now() + offsetTime * 60 * 1000;
+                        const duration = station.duration ? station.duration : 10;
+                        const results = station.numDepartures ? station.numDepartures : 10;
+                        const options = { results: results, when: when, duration: duration };
+                        const products = station.products ? station.products : undefined;
+                        await this.depRequest.getDepartures(station.id, options, products);
                     }
                 }
             }
