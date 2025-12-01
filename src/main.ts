@@ -1,6 +1,6 @@
 import * as utils from '@iobroker/adapter-core';
 import { DepartureRequest } from './lib/class/depReq';
-import { HafasService } from './lib/hafasService';
+import { HafasService } from './lib/class/hafasService';
 import { Library } from './lib/tools/library';
 
 export class TTAdapter extends utils.Adapter {

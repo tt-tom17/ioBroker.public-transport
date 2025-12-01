@@ -33,7 +33,7 @@ __export(main_exports, {
 module.exports = __toCommonJS(main_exports);
 var utils = __toESM(require("@iobroker/adapter-core"));
 var import_depReq = require("./lib/class/depReq");
-var import_hafasService = require("./lib/hafasService");
+var import_hafasService = require("./lib/class/hafasService");
 var import_library = require("./lib/tools/library");
 class TTAdapter extends utils.Adapter {
   library;
