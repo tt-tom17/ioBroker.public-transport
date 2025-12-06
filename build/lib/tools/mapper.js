@@ -25,19 +25,20 @@ __export(mapper_exports, {
 });
 module.exports = __toCommonJS(mapper_exports);
 function groupRemarksByType(remarks) {
+  var _a, _b, _c;
   const hints = [];
   const warnings = [];
   const statuses = [];
   for (const remark of remarks) {
     switch (remark.type) {
       case "hint":
-        hints.push(remark.text);
+        hints.push((_a = remark.text) != null ? _a : "");
         break;
       case "warning":
-        warnings.push(remark.text);
+        warnings.push((_b = remark.text) != null ? _b : "");
         break;
       case "status":
-        statuses.push(remark.text);
+        statuses.push((_c = remark.text) != null ? _c : "");
         break;
     }
   }

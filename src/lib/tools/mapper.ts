@@ -1,11 +1,11 @@
 import type * as Hafas from 'hafas-client';
-import type { Departure, DepartureState, DeparturesResponse, Remark, StationState } from '../types/types';
+import type { DepartureState, DeparturesResponse, StationState } from '../types/types';
 /**
  * Gruppiert Remarks nach Typ und fasst deren Texte zusammen
  *
  * @param remarks Array von Remark Objekten
  */
-function groupRemarksByType(remarks: Remark[]): {
+function groupRemarksByType(remarks: readonly (Hafas.Hint | Hafas.Status | Hafas.Warning)[]): {
     hint: string | null;
     warning: string | null;
     status: string | null;
@@ -17,13 +17,13 @@ function groupRemarksByType(remarks: Remark[]): {
     for (const remark of remarks) {
         switch (remark.type) {
             case 'hint':
-                hints.push(remark.text);
+                hints.push(remark.text ?? '');
                 break;
             case 'warning':
-                warnings.push(remark.text);
+                warnings.push(remark.text ?? '');
                 break;
             case 'status':
-                statuses.push(remark.text);
+                statuses.push(remark.text ?? '');
                 break;
         }
     }
@@ -40,7 +40,7 @@ function groupRemarksByType(remarks: Remark[]): {
  *
  * @param departure HAFAS Departure Objekt
  */
-export function mapDepartureToDepartureState(departure: Departure): DepartureState {
+export function mapDepartureToDepartureState(departure: Hafas.Alternative): DepartureState {
     return {
         when: departure.when ?? null,
         plannedWhen: departure.plannedWhen ?? null,
@@ -64,7 +64,7 @@ export function mapDepartureToDepartureState(departure: Departure): DepartureSta
  *
  * @param departures Array von HAFAS Departure Objekten
  */
-export function mapDeparturesToDepartureStates(departures: Departure[]): DepartureState[] {
+export function mapDeparturesToDepartureStates(departures: Hafas.Alternative[]): DepartureState[] {
     return departures.map(mapDepartureToDepartureState);
 }
 
@@ -74,7 +74,7 @@ export function mapDeparturesToDepartureStates(departures: Departure[]): Departu
  * @param response HAFAS DeparturesResponse Objekt
  */
 export function mapDeparturesResponseToStates(response: DeparturesResponse): DepartureState[] {
-    return mapDeparturesToDepartureStates(response.departures);
+    return mapDeparturesToDepartureStates(response.departures as Hafas.Alternative[]);
 }
 
 export function mapStationToStationState(station: Hafas.Station): StationState {
