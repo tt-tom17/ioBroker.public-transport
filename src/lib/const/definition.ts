@@ -35,6 +35,15 @@ export const defaultFolder: ioBroker.FolderObject = {
     native: {},
 };
 
+export const defaultDevice: ioBroker.DeviceObject = {
+    _id: '',
+    type: 'device',
+    common: {
+        name: 'Hey no description... ',
+    },
+    native: {},
+};
+
 const TimeTableData: ChangeTypeOfKeysForState<TimeTableData, ioBroker.StateObject> = {
     departureTime: {
         _id: '',

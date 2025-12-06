@@ -35,6 +35,7 @@ var utils = __toESM(require("@iobroker/adapter-core"));
 var import_dbVendoService = require("./lib/class/dbVendoService");
 var import_departure = require("./lib/class/departure");
 var import_hafasService = require("./lib/class/hafasService");
+var import_station = require("./lib/class/station");
 var import_library = require("./lib/tools/library");
 class TTAdapter extends utils.Adapter {
   library;
@@ -43,6 +44,7 @@ class TTAdapter extends utils.Adapter {
   vService;
   activeService;
   depRequest;
+  stationRequest;
   pollIntervall;
   /**
    * Creates an instance of the adapter.
@@ -80,7 +82,6 @@ class TTAdapter extends utils.Adapter {
     await this.library.init();
     const states = await this.getStatesAsync("*");
     await this.library.initStates(states);
-    const pollInterval = (this.config.pollInterval || 5) * 60 * 1e3;
     const serviceType = this.config.serviceType || "hafas";
     const clientName = this.config.clientName || "iobroker-tt-adapter";
     try {
@@ -101,6 +102,8 @@ class TTAdapter extends utils.Adapter {
       return;
     }
     this.depRequest = new import_departure.DepartureRequest(this);
+    this.stationRequest = new import_station.StationRequest(this);
+    const pollInterval = (this.config.pollInterval || 5) * 60 * 1e3;
     try {
       if (this.getActiveService()) {
         if (!this.config.departures || this.config.departures.length === 0) {
@@ -189,6 +192,33 @@ class TTAdapter extends utils.Adapter {
       }
     } catch (err) {
       this.log.error(`HAFAS Anfrage fehlgeschlagen: ${err.message}`);
+    }
+    try {
+      if (this.getActiveService()) {
+        if (!this.config.departures || this.config.departures.length === 0) {
+          this.log.warn(
+            "Keine Stationen in der Konfiguration gefunden. Bitte in der Admin-UI konfigurieren."
+          );
+          return;
+        }
+        const enabledStations = this.config.departures.filter((station) => station.enabled);
+        if (enabledStations.length === 0) {
+          this.log.warn("Keine aktivierten Stationen gefunden. Bitte mindestens eine Station aktivieren.");
+          return;
+        }
+        this.log.info(`${enabledStations.length} aktive Station(en) gefunden:`);
+        for (const station of enabledStations) {
+          this.log.info(`  - ${station.customName || station.name} (ID: ${station.id})`);
+        }
+        for (const station of enabledStations) {
+          if (station.id) {
+            this.log.info(`Erste Abfrage f\xFCr: ${station.customName || station.name} (${station.id})`);
+            await this.stationRequest.getStop(station.id, this.activeService);
+          }
+        }
+      }
+    } catch (err) {
+      this.log.error(`Fehler bei der Abfrage der Stationen: ${err.message}`);
     }
   }
   /**

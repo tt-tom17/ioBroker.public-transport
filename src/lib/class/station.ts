@@ -9,7 +9,7 @@ export class StationRequest extends BaseClass {
         this.log.setLogPrefix('station');
     }
 
-    private async getStop(
+    public async getStop(
         stationId: string,
         service: any,
         options?: Hafas.StopOptions,
@@ -26,8 +26,8 @@ export class StationRequest extends BaseClass {
             this.adapter.log.debug(JSON.stringify(stop, null, 1));
             // JSON in die States schreiben
             await this.library.writeFromJson(
-                `${this.adapter.namespace}.Stations.${stationId}.`,
-                'departures',
+                `${this.adapter.namespace}.Stations.${stationId}`,
+                'station',
                 genericStateObjects,
                 stop,
                 true,

@@ -20,6 +20,7 @@ var definition_exports = {};
 __export(definition_exports, {
   Defaults: () => Defaults,
   defaultChannel: () => defaultChannel,
+  defaultDevice: () => defaultDevice,
   defaultFolder: () => defaultFolder,
   genericStateObjects: () => genericStateObjects
 });
@@ -35,6 +36,14 @@ const defaultChannel = {
 const defaultFolder = {
   _id: "",
   type: "folder",
+  common: {
+    name: "Hey no description... "
+  },
+  native: {}
+};
+const defaultDevice = {
+  _id: "",
+  type: "device",
   common: {
     name: "Hey no description... "
   },
@@ -377,6 +386,7 @@ const Defaults = {
 0 && (module.exports = {
   Defaults,
   defaultChannel,
+  defaultDevice,
   defaultFolder,
   genericStateObjects
 });

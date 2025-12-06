@@ -2,6 +2,7 @@ import * as utils from '@iobroker/adapter-core';
 import { VendoService } from './lib/class/dbVendoService';
 import { DepartureRequest } from './lib/class/departure';
 import { HafasService } from './lib/class/hafasService';
+import { StationRequest } from './lib/class/station';
 import { Library } from './lib/tools/library';
 import type { ITransportService } from './lib/types/transportService';
 
@@ -12,6 +13,7 @@ export class TTAdapter extends utils.Adapter {
     vService!: VendoService;
     activeService!: ITransportService;
     depRequest!: DepartureRequest;
+    stationRequest!: StationRequest;
     private pollIntervall: ioBroker.Interval | undefined;
 
     /**
@@ -55,8 +57,6 @@ export class TTAdapter extends utils.Adapter {
         const states = await this.getStatesAsync('*');
         await this.library.initStates(states);
 
-        const pollInterval = (this.config.pollInterval || 5) * 60 * 1000;
-
         // Service basierend auf Konfiguration auswählen
         const serviceType = this.config.serviceType || 'hafas'; // 'hafas' oder 'vendo'
         const clientName = this.config.clientName || 'iobroker-tt-adapter';
@@ -82,7 +82,9 @@ export class TTAdapter extends utils.Adapter {
         }
 
         this.depRequest = new DepartureRequest(this);
+        this.stationRequest = new StationRequest(this);
 
+        const pollInterval = (this.config.pollInterval || 5) * 60 * 1000;
         try {
             if (this.getActiveService()) {
                 // Prüfe ob Stationen konfiguriert sind
@@ -183,6 +185,39 @@ export class TTAdapter extends utils.Adapter {
             }
         } catch (err) {
             this.log.error(`HAFAS Anfrage fehlgeschlagen: ${(err as Error).message}`);
+        }
+
+        try {
+            if (this.getActiveService()) {
+                // Prüfe ob Stationen konfiguriert sind
+                if (!this.config.departures || this.config.departures.length === 0) {
+                    this.log.warn(
+                        'Keine Stationen in der Konfiguration gefunden. Bitte in der Admin-UI konfigurieren.',
+                    );
+                    return;
+                }
+                // Hole alle aktivierten Stationen
+                const enabledStations = this.config.departures.filter(station => station.enabled);
+
+                if (enabledStations.length === 0) {
+                    this.log.warn('Keine aktivierten Stationen gefunden. Bitte mindestens eine Station aktivieren.');
+                    return;
+                }
+
+                // Logge gefundene Stationen
+                this.log.info(`${enabledStations.length} aktive Station(en) gefunden:`);
+                for (const station of enabledStations) {
+                    this.log.info(`  - ${station.customName || station.name} (ID: ${station.id})`);
+                }
+                for (const station of enabledStations) {
+                    if (station.id) {
+                        this.log.info(`Erste Abfrage für: ${station.customName || station.name} (${station.id})`);
+                        await this.stationRequest.getStop(station.id, this.activeService);
+                    }
+                }
+            }
+        } catch (err) {
+            this.log.error(`Fehler bei der Abfrage der Stationen: ${(err as Error).message}`);
         }
     }
 

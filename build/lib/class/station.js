@@ -39,8 +39,8 @@ class StationRequest extends import_library.BaseClass {
       const stop = await service.getStop(stationId, options);
       this.adapter.log.debug(JSON.stringify(stop, null, 1));
       await this.library.writeFromJson(
-        `${this.adapter.namespace}.Stations.${stationId}.`,
-        "departures",
+        `${this.adapter.namespace}.Stations.${stationId}`,
+        "station",
         import_definition.genericStateObjects,
         stop,
         true
