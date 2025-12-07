@@ -8,7 +8,7 @@ import type { StationState } from '../types/types';
 export class StationRequest extends BaseClass {
     constructor(adapter: TTAdapter) {
         super(adapter);
-        this.log.setLogPrefix('station');
+        this.log.setLogPrefix('stationReq');
     }
 
     public async getStation(
@@ -26,9 +26,17 @@ export class StationRequest extends BaseClass {
             const station: Hafas.Station | Hafas.Stop = await service.getStop(stationId, options);
             // Vollständiges JSON für Debugging
             this.adapter.log.debug(JSON.stringify(station, null, 1));
+            return station;
+        } catch (err) {
+            this.log.error(`Fehler bei der Abfrage der Station ${stationId}: ${(err as Error).message}`);
+            throw err;
+        }
+    }
+    async writeStationData(stationData: Hafas.Station | Hafas.Stop): Promise<void> {
+        try {
             await this.library.writedp(
-                `${this.adapter.namespace}.Stations.${stationId}.info.json`,
-                JSON.stringify(station),
+                `${this.adapter.namespace}.Stations.${stationData.id}.info.json`,
+                JSON.stringify(stationData),
                 {
                     _id: 'nicht_definieren',
                     type: 'state',
@@ -42,14 +50,6 @@ export class StationRequest extends BaseClass {
                     native: {},
                 },
             );
-            return station;
-        } catch (err) {
-            this.log.error(`Fehler bei der Abfrage der Station ${stationId}: ${(err as Error).message}`);
-            throw err;
-        }
-    }
-    async writeStationData(stationData: Hafas.Station | Hafas.Stop): Promise<void> {
-        try {
             const stationState: StationState = mapStationToStationState(stationData);
             // Vor dem Schreiben alte States löschen
             await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationData.id}.info.`, 2000);
