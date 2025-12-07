@@ -56,6 +56,17 @@ export function mapDepartureToDepartureState(departure: Hafas.Alternative): Depa
             operator: departure.line?.operator?.name ?? null,
         },
         remarks: groupRemarksByType(departure.remarks ?? []),
+        info: {
+            name: departure.stop?.name ?? null,
+            id: departure.stop?.id ?? null,
+            type: departure.stop?.type ?? null,
+            location: departure.stop?.location
+                ? {
+                      latitude: departure.stop.location.latitude ?? null,
+                      longitude: departure.stop.location.longitude ?? null,
+                  }
+                : null,
+        },
     };
 }
 

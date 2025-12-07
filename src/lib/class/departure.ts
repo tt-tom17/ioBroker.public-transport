@@ -3,13 +3,11 @@ import type { TTAdapter } from '../../main';
 import { defaultFolder, genericStateObjects } from '../const/definition';
 import { BaseClass } from '../tools/library';
 import { mapDeparturesToDepartureStates } from '../tools/mapper';
-import { defaultDepartureOpt, type Products } from '../types/types';
+import { defaultDepartureOpt, type DepartureState, type Products } from '../types/types';
 
 export class DepartureRequest extends BaseClass {
-    response: Hafas.Departures;
     constructor(adapter: TTAdapter) {
         super(adapter);
-        this.response = {} as Hafas.Departures;
         this.log.setLogPrefix('depReq');
     }
     /**
@@ -18,7 +16,8 @@ export class DepartureRequest extends BaseClass {
      * @param stationId     Die ID der Station, für die Abfahrten abgefragt werden sollen.
      * @param service      Der Service für die Abfrage.
      * @param options      Zusätzliche Optionen für die Abfrage.
-     * @param products    Die aktivierten Produkte (true = erlaubt)
+     * @param products     Die aktivierten Produkte (true = erlaubt)
+     * @returns             true bei Erfolg, sonst false.
      */
     public async getDepartures(
         stationId: string,
@@ -32,48 +31,11 @@ export class DepartureRequest extends BaseClass {
             }
             const mergedOptions = { ...defaultDepartureOpt, ...options };
             // Antwort von HAFAS als vollständiger Typ
-            this.response = await service.getDepartures(stationId, mergedOptions);
+            const response = await service.getDepartures(stationId, mergedOptions);
             // Vollständiges JSON für Debugging
-            this.adapter.log.debug(JSON.stringify(this.response.departures, null, 1));
-            // Stations Ordner erstellen
-            await this.library.writedp(
-                `${this.adapter.namespace}.Stations.${stationId}.Departures`,
-                undefined,
-                defaultFolder,
-            );
-            await this.library.writedp(
-                `${this.adapter.namespace}.Stations.${stationId}.Departures.json`,
-                JSON.stringify(this.response.departures),
-                {
-                    _id: 'nicht_definieren',
-                    type: 'state',
-                    common: {
-                        name: 'raw departures data',
-                        type: 'string',
-                        role: 'json',
-                        read: true,
-                        write: false,
-                    },
-                    native: {},
-                },
-            );
-            // Filtere nach Produkten, falls angegeben
-            const filteredDepartures = products
-                ? this.filterByProducts(this.response.departures, products)
-                : this.response.departures;
-            // Konvertiere zu reduzierten States
-            const departureStates = mapDeparturesToDepartureStates(filteredDepartures);
-            // Vor dem Schreiben alte States löschen
-            await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.Departures.`, 2000);
-            // JSON in die States schreiben
-            await this.library.writeFromJson(
-                `${this.adapter.namespace}.Stations.${stationId}.Departures.`,
-                'departures',
-                genericStateObjects,
-                departureStates,
-                true,
-            );
-            //await this.getStop(stationId, service);
+            this.adapter.log.debug(JSON.stringify(response.departures, null, 1));
+            // Schreibe die Abfahrten in die States
+            await this.writeDepartureStates(stationId, response.departures, products);
             return true;
         } catch (error) {
             this.log.error(
@@ -119,5 +81,74 @@ export class DepartureRequest extends BaseClass {
             }
             return isEnabled;
         });
+    }
+
+    /**
+     * Schreibt die Abfahrten in die States der angegebenen Station.
+     *
+     * @param stationId     Die ID der Station, für die die Abfahrten geschrieben werden sollen.
+     * @param departures    Die Abfahrten, die geschrieben werden sollen.
+     * @param products      Die aktivierten Produkte (true = erlaubt)
+     */
+    async writeDepartureStates(
+        stationId: string,
+        departures: Hafas.Alternative[],
+        products?: Partial<Products>,
+    ): Promise<void> {
+        try {
+            if (this.adapter.config.departures) {
+                for (const departure of this.adapter.config.departures) {
+                    if (departure.id === stationId && departure.enabled === true) {
+                        // Erstelle Station
+                        await this.library.writedp(`${this.adapter.namespace}.Stations.${stationId}`, undefined, {
+                            _id: 'nicht_definieren',
+                            type: 'folder',
+                            common: {
+                                name: departures[0]?.stop?.name || 'Station',
+                            },
+                            native: {},
+                        });
+                    }
+                }
+            }
+            // Departures Ordner erstellen
+            await this.library.writedp(
+                `${this.adapter.namespace}.Stations.${stationId}.Departures`,
+                undefined,
+                defaultFolder,
+            );
+            await this.library.writedp(
+                `${this.adapter.namespace}.Stations.${stationId}.Departures.json`,
+                JSON.stringify(departures),
+                {
+                    _id: 'nicht_definieren',
+                    type: 'state',
+                    common: {
+                        name: 'raw departures data',
+                        type: 'string',
+                        role: 'json',
+                        read: true,
+                        write: false,
+                    },
+                    native: {},
+                },
+            );
+            // Filtere nach Produkten, falls angegeben
+            const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
+            // Konvertiere zu reduzierten States
+            const departureStates: DepartureState[] = mapDeparturesToDepartureStates(filteredDepartures);
+            // Vor dem Schreiben alte States löschen
+            await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.Departures.`, 2000);
+            // JSON in die States schreiben
+            await this.library.writeFromJson(
+                `${this.adapter.namespace}.Stations.${stationId}.Departures.`,
+                'departures',
+                genericStateObjects,
+                departureStates,
+                true,
+            );
+        } catch (err) {
+            this.log.error(`Fehler beim Schreiben der Abfahrten: ${(err as Error).message}`);
+        }
     }
 }

@@ -211,7 +211,7 @@ export class TTAdapter extends utils.Adapter {
                 }
                 for (const station of enabledStations) {
                     if (station.id) {
-                        this.log.info(`Erste Abfrage für: ${station.customName || station.name} (${station.id})`);
+                        this.log.info(`Infos für: ${station.customName || station.name} (${station.id}) abfragen...`);
                         await this.stationRequest.getStation(station.id, this.activeService);
                     }
                 }
@@ -241,21 +241,6 @@ export class TTAdapter extends utils.Adapter {
             callback();
         }
     }
-
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  */
-    // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-    // 	if (obj) {
-    // 		// The object was changed
-    // 		this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    // 	} else {
-    // 		// The object was deleted
-    // 		this.log.info(`object ${id} deleted`);
-    // 	}
-    // }
 
     /**
      * Is called if a subscribed state changes

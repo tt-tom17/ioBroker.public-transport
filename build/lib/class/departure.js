@@ -26,10 +26,8 @@ var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
 class DepartureRequest extends import_library.BaseClass {
-  response;
   constructor(adapter) {
     super(adapter);
-    this.response = {};
     this.log.setLogPrefix("depReq");
   }
   /**
@@ -38,7 +36,8 @@ class DepartureRequest extends import_library.BaseClass {
    * @param stationId     Die ID der Station, für die Abfahrten abgefragt werden sollen.
    * @param service      Der Service für die Abfrage.
    * @param options      Zusätzliche Optionen für die Abfrage.
-   * @param products    Die aktivierten Produkte (true = erlaubt)
+   * @param products     Die aktivierten Produkte (true = erlaubt)
+   * @returns             true bei Erfolg, sonst false.
    */
   async getDepartures(stationId, service, options = {}, products) {
     try {
@@ -46,39 +45,9 @@ class DepartureRequest extends import_library.BaseClass {
         throw new Error("Keine stationId \xFCbergeben");
       }
       const mergedOptions = { ...import_types.defaultDepartureOpt, ...options };
-      this.response = await service.getDepartures(stationId, mergedOptions);
-      this.adapter.log.debug(JSON.stringify(this.response.departures, null, 1));
-      await this.library.writedp(
-        `${this.adapter.namespace}.Stations.${stationId}.Departures`,
-        void 0,
-        import_definition.defaultFolder
-      );
-      await this.library.writedp(
-        `${this.adapter.namespace}.Stations.${stationId}.Departures.json`,
-        JSON.stringify(this.response.departures),
-        {
-          _id: "nicht_definieren",
-          type: "state",
-          common: {
-            name: "raw departures data",
-            type: "string",
-            role: "json",
-            read: true,
-            write: false
-          },
-          native: {}
-        }
-      );
-      const filteredDepartures = products ? this.filterByProducts(this.response.departures, products) : this.response.departures;
-      const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(filteredDepartures);
-      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.Departures.`, 2e3);
-      await this.library.writeFromJson(
-        `${this.adapter.namespace}.Stations.${stationId}.Departures.`,
-        "departures",
-        import_definition.genericStateObjects,
-        departureStates,
-        true
-      );
+      const response = await service.getDepartures(stationId, mergedOptions);
+      this.adapter.log.debug(JSON.stringify(response.departures, null, 1));
+      await this.writeDepartureStates(stationId, response.departures, products);
       return true;
     } catch (error) {
       this.log.error(
@@ -117,6 +86,65 @@ class DepartureRequest extends import_library.BaseClass {
       }
       return isEnabled;
     });
+  }
+  /**
+   * Schreibt die Abfahrten in die States der angegebenen Station.
+   *
+   * @param stationId     Die ID der Station, für die die Abfahrten geschrieben werden sollen.
+   * @param departures    Die Abfahrten, die geschrieben werden sollen.
+   * @param products      Die aktivierten Produkte (true = erlaubt)
+   */
+  async writeDepartureStates(stationId, departures, products) {
+    var _a, _b;
+    try {
+      if (this.adapter.config.departures) {
+        for (const departure of this.adapter.config.departures) {
+          if (departure.id === stationId && departure.enabled === true) {
+            await this.library.writedp(`${this.adapter.namespace}.Stations.${stationId}`, void 0, {
+              _id: "nicht_definieren",
+              type: "folder",
+              common: {
+                name: ((_b = (_a = departures[0]) == null ? void 0 : _a.stop) == null ? void 0 : _b.name) || "Station"
+              },
+              native: {}
+            });
+          }
+        }
+      }
+      await this.library.writedp(
+        `${this.adapter.namespace}.Stations.${stationId}.Departures`,
+        void 0,
+        import_definition.defaultFolder
+      );
+      await this.library.writedp(
+        `${this.adapter.namespace}.Stations.${stationId}.Departures.json`,
+        JSON.stringify(departures),
+        {
+          _id: "nicht_definieren",
+          type: "state",
+          common: {
+            name: "raw departures data",
+            type: "string",
+            role: "json",
+            read: true,
+            write: false
+          },
+          native: {}
+        }
+      );
+      const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
+      const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(filteredDepartures);
+      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.Departures.`, 2e3);
+      await this.library.writeFromJson(
+        `${this.adapter.namespace}.Stations.${stationId}.Departures.`,
+        "departures",
+        import_definition.genericStateObjects,
+        departureStates,
+        true
+      );
+    } catch (err) {
+      this.log.error(`Fehler beim Schreiben der Abfahrten: ${err.message}`);
+    }
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

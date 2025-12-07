@@ -27,7 +27,7 @@ var import_mapper = require("../tools/mapper");
 class StationRequest extends import_library.BaseClass {
   constructor(adapter) {
     super(adapter);
-    this.log.setLogPrefix("station");
+    this.log.setLogPrefix("stationReq");
   }
   async getStation(stationId, service, options) {
     try {
@@ -39,9 +39,17 @@ class StationRequest extends import_library.BaseClass {
       }
       const station = await service.getStop(stationId, options);
       this.adapter.log.debug(JSON.stringify(station, null, 1));
+      return station;
+    } catch (err) {
+      this.log.error(`Fehler bei der Abfrage der Station ${stationId}: ${err.message}`);
+      throw err;
+    }
+  }
+  async writeStationData(stationData) {
+    try {
       await this.library.writedp(
-        `${this.adapter.namespace}.Stations.${stationId}.info.json`,
-        JSON.stringify(station),
+        `${this.adapter.namespace}.Stations.${stationData.id}.info.json`,
+        JSON.stringify(stationData),
         {
           _id: "nicht_definieren",
           type: "state",
@@ -55,14 +63,6 @@ class StationRequest extends import_library.BaseClass {
           native: {}
         }
       );
-      return station;
-    } catch (err) {
-      this.log.error(`Fehler bei der Abfrage der Station ${stationId}: ${err.message}`);
-      throw err;
-    }
-  }
-  async writeStationData(stationData) {
-    try {
       const stationState = (0, import_mapper.mapStationToStationState)(stationData);
       await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationData.id}.info.`, 2e3);
       await this.library.writeFromJson(
