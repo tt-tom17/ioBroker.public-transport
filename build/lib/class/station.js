@@ -55,19 +55,25 @@ class StationRequest extends import_library.BaseClass {
           native: {}
         }
       );
-      const stationState = (0, import_mapper.mapStationToStationState)(station);
-      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.info.`, 2e3);
+      return station;
+    } catch (err) {
+      this.log.error(`Fehler bei der Abfrage der Station ${stationId}: ${err.message}`);
+      throw err;
+    }
+  }
+  async writeStationData(stationData) {
+    try {
+      const stationState = (0, import_mapper.mapStationToStationState)(stationData);
+      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationData.id}.info.`, 2e3);
       await this.library.writeFromJson(
-        `${this.adapter.namespace}.Stations.${stationId}.info`,
+        `${this.adapter.namespace}.Stations.${stationData.id}.info`,
         "station",
         import_definition.genericStateObjects,
         stationState,
         true
       );
-      return station;
     } catch (err) {
-      this.log.error(`Fehler bei der Abfrage der Station ${stationId}: ${err.message}`);
-      throw err;
+      this.log.error(`Fehler beim Schreiben der Station-Daten: ${err.message}`);
     }
   }
 }

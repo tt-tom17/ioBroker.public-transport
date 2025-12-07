@@ -77,7 +77,7 @@ export function mapDeparturesResponseToStates(response: Hafas.Departures): Depar
     return mapDeparturesToDepartureStates(response.departures);
 }
 
-export function mapStationToStationState(station: Hafas.Station): StationState {
+export function mapStationToStationState(station: Hafas.Station | Hafas.Stop): StationState {
     return {
         name: station.name,
         id: station.id,
