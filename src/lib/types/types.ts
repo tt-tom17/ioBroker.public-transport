@@ -125,6 +125,15 @@ export type DepartureState = {
         warning: string | null; // alle warnings zusammengefasst
         status: string | null; // alle status zusammengefasst
     };
+    info: {
+        name: string | null;
+        id: string | null;
+        type: string | null;
+        location: {
+            latitude: number | null;
+            longitude: number | null;
+        } | null;
+    };
 };
 
 export type StationState = {
