@@ -56,7 +56,7 @@ export function mapDepartureToDepartureState(departure: Hafas.Alternative): Depa
             operator: departure.line?.operator?.name ?? null,
         },
         remarks: groupRemarksByType(departure.remarks ?? []),
-        info: {
+        stopinfo: {
             name: departure.stop?.name ?? null,
             id: departure.stop?.id ?? null,
             type: departure.stop?.type ?? null,

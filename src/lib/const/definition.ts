@@ -424,7 +424,7 @@ export const Defaults = {
     },
 };
 
-export type Departure = {
+type Departure = {
     when: string;
     plannedWhen: string;
     delay: number;

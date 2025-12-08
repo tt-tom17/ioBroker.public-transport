@@ -125,7 +125,7 @@ export type DepartureState = {
         warning: string | null; // alle warnings zusammengefasst
         status: string | null; // alle status zusammengefasst
     };
-    info: {
+    stopinfo: {
         name: string | null;
         id: string | null;
         type: string | null;

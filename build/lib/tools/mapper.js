@@ -65,7 +65,7 @@ function mapDepartureToDepartureState(departure) {
       operator: (_q = (_p = (_o = departure.line) == null ? void 0 : _o.operator) == null ? void 0 : _p.name) != null ? _q : null
     },
     remarks: groupRemarksByType((_r = departure.remarks) != null ? _r : []),
-    info: {
+    stopinfo: {
       name: (_t = (_s = departure.stop) == null ? void 0 : _s.name) != null ? _t : null,
       id: (_v = (_u = departure.stop) == null ? void 0 : _u.id) != null ? _v : null,
       type: (_x = (_w = departure.stop) == null ? void 0 : _w.type) != null ? _x : null,
