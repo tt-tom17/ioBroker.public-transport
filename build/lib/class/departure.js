@@ -112,12 +112,7 @@ class DepartureRequest extends import_library.BaseClass {
         }
       }
       await this.library.writedp(
-        `${this.adapter.namespace}.Stations.${stationId}.Departures`,
-        void 0,
-        import_definition.defaultFolder
-      );
-      await this.library.writedp(
-        `${this.adapter.namespace}.Stations.${stationId}.Departures.json`,
+        `${this.adapter.namespace}.Stations.${stationId}.json`,
         JSON.stringify(departures),
         {
           _id: "nicht_definieren",
@@ -134,10 +129,10 @@ class DepartureRequest extends import_library.BaseClass {
       );
       const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
       const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(filteredDepartures);
-      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.Departures.`, 2e3);
+      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.`, 2e3);
       await this.library.writeFromJson(
-        `${this.adapter.namespace}.Stations.${stationId}.Departures.`,
-        "departures",
+        `${this.adapter.namespace}.Stations.${stationId}.`,
+        "departure",
         import_definition.genericStateObjects,
         departureStates,
         true

@@ -1,4 +1,4 @@
-export type ChangeTypeToChannelAndState<Obj> = Obj extends object
+/*export type ChangeTypeToChannelAndState<Obj> = Obj extends object
     ? {
           [K in keyof Obj]-?: ChangeTypeToChannelAndState<Obj[K]>;
       } & customChannelType
@@ -7,7 +7,7 @@ export type ChangeTypeToChannelAndState<Obj> = Obj extends object
 export type ChangeToChannel<Obj, T> = Obj extends object
     ? { [K in keyof Obj]-?: customChannelType & T }
     : ioBroker.StateObject;
-
+*/
 export type ChangeTypeOfKeysForState<Obj, N> = Obj extends object
     ? customChannelType & { [K in keyof Obj]: ChangeTypeOfKeysForState<Obj[K], N> }
     : N;
@@ -44,69 +44,43 @@ export const defaultDevice: ioBroker.DeviceObject = {
     native: {},
 };
 
-const TimeTableData: ChangeTypeOfKeysForState<TimeTableData, ioBroker.StateObject> = {
-    departureTime: {
+const Departure: ChangeTypeOfKeysForState<Departure, ioBroker.StateObject> = {
+    when: {
         _id: '',
         type: 'state',
         common: {
-            name: 'Departure Time',
+            name: 'When',
+            type: 'string',
+            role: 'date',
+            read: true,
+            write: false,
+            desc: 'Departure time',
+        },
+        native: {},
+    },
+    plannedWhen: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Planned When',
+            type: 'string',
+            role: 'date',
+            read: true,
+            write: false,
+            desc: 'Planned Departure time',
+        },
+        native: {},
+    },
+    delay: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Delay',
             type: 'number',
-            role: 'value.time',
+            role: 'value',
             read: true,
             write: false,
-            desc: 'Departure Time as timestamp',
-        },
-        native: {},
-    },
-    departureDelaySeconds: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Departure Delay Seconds',
-            type: 'number',
-            role: 'value.interval',
-            read: true,
-            write: false,
-            desc: 'Departure Delay in Seconds',
-        },
-        native: {},
-    },
-    departureDelayed: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Departure Delayed',
-            type: 'boolean',
-            role: 'indicator',
-            read: true,
-            write: false,
-            desc: 'Is the Departure delayed?',
-        },
-        native: {},
-    },
-    departureOnTime: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Departure On Time',
-            type: 'boolean',
-            role: 'indicator',
-            read: true,
-            write: false,
-            desc: 'Is the Departure on time?',
-        },
-        native: {},
-    },
-    departurePlanned: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Departure Planned Time',
-            type: 'number',
-            role: 'value.time',
-            read: true,
-            write: false,
-            desc: 'Planned Departure Time as timestamp',
+            desc: 'Delay in seconds',
         },
         native: {},
     },
@@ -120,58 +94,6 @@ const TimeTableData: ChangeTypeOfKeysForState<TimeTableData, ioBroker.StateObjec
             read: true,
             write: false,
             desc: 'Direction of the vehicle',
-        },
-        native: {},
-    },
-    json: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'TimeTableData JSON',
-            type: 'string',
-            role: 'json',
-            read: true,
-            write: false,
-            desc: 'TimeTableData JSON',
-        },
-        native: {},
-    },
-    mode: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Mode',
-            type: 'string',
-            role: 'text',
-            read: true,
-            write: false,
-            desc: 'Mode of the vehicle',
-        },
-        native: {},
-    },
-    name: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Name',
-            type: 'string',
-            role: 'text',
-            read: true,
-            write: false,
-            desc: 'Name of the vehicle',
-        },
-        native: {},
-    },
-    operator: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Operator',
-            type: 'string',
-            role: 'text',
-            read: true,
-            write: false,
-            desc: 'Operator of the vehicle',
         },
         native: {},
     },
@@ -201,45 +123,32 @@ const TimeTableData: ChangeTypeOfKeysForState<TimeTableData, ioBroker.StateObjec
         },
         native: {},
     },
-    product: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Product',
-            type: 'string',
-            role: 'text',
-            read: true,
-            write: false,
-            desc: 'Product of the vehicle',
-        },
-        native: {},
-    },
 };
 
-const Station: ChangeTypeOfKeysForState<Station, ioBroker.StateObject> = {
-    customName: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Custom Name',
-            type: 'string',
-            role: 'text',
-            read: true,
-            write: true,
-            desc: 'Custom Name for the Station',
-        },
-        native: {},
-    },
+const Stopinfo: ChangeTypeOfKeysForState<Stopinfo, ioBroker.StateObject> = {
     name: {
         _id: '',
         type: 'state',
         common: {
-            name: 'Station Name',
+            name: 'Stop Name',
             type: 'string',
             role: 'text',
             read: true,
             write: false,
-            desc: 'Station Name',
+            desc: 'Stop Name',
+        },
+        native: {},
+    },
+    id: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Stop ID',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Stop ID',
         },
         native: {},
     },
@@ -247,83 +156,168 @@ const Station: ChangeTypeOfKeysForState<Station, ioBroker.StateObject> = {
         _id: '',
         type: 'state',
         common: {
-            name: 'Station Type',
+            name: 'Type',
             type: 'string',
             role: 'text',
             read: true,
             write: false,
-            desc: 'Station Type',
+            desc: 'Type',
         },
         native: {},
     },
-    json: {
+};
+
+const Location: ChangeTypeOfKeysForState<Location, ioBroker.StateObject> = {
+    latitude: {
         _id: '',
         type: 'state',
         common: {
-            name: 'Station JSON',
-            type: 'string',
-            role: 'json',
+            name: 'Location Latitude',
+            type: 'number',
+            role: 'value.gps.latitude',
             read: true,
             write: false,
-            desc: 'Station JSON',
+            desc: 'Location Latitude',
         },
         native: {},
     },
-    location: {
-        latitude: {
-            _id: '',
-            type: 'state',
-            common: {
-                name: 'Station Latitude',
-                type: 'number',
-                role: 'value.latitude',
-                read: true,
-                write: false,
-                desc: 'Station Latitude',
-            },
-            native: {},
+    longitude: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Location Longitude',
+            type: 'number',
+            role: 'value.gps.longitude',
+            read: true,
+            write: false,
+            desc: 'Location Longitude',
         },
-        longitude: {
-            _id: '',
-            type: 'state',
-            common: {
-                name: 'Station Longitude',
-                type: 'number',
-                role: 'value.longitude',
-                read: true,
-                write: false,
-                desc: 'Station Longitude',
-            },
-            native: {},
-        },
+        native: {},
     },
-    data: {
-        ...TimeTableData,
-        _array: {
-            _id: '',
-            type: 'folder',
-            common: {
-                name: 'TimeTableData Array',
-            },
-            native: {},
+};
+
+const Line: ChangeTypeOfKeysForState<Line, ioBroker.StateObject> = {
+    name: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Line Name',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Line Name',
         },
-        _channel: {
-            _id: '',
-            type: 'folder',
-            common: {
-                name: 'TimeTableData Channel',
-            },
-            native: {},
+        native: {},
+    },
+    fahrtNr: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Fahrt Number',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Fahrt Number',
         },
+        native: {},
+    },
+    productName: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Product Name',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Product Name',
+        },
+        native: {},
+    },
+    mode: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Mode',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Mode',
+        },
+        native: {},
+    },
+    operator: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Operator',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Operator',
+        },
+        native: {},
+    },
+};
+
+const Remarks: ChangeTypeOfKeysForState<Remarks, ioBroker.StateObject> = {
+    hint: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Remarks Hint',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Remarks Hint',
+        },
+        native: {},
+    },
+    warning: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Remarks Warning',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Remarks Warning',
+        },
+        native: {},
+    },
+    status: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Remarks Status',
+            type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+            desc: 'Remarks Status',
+        },
+        native: {},
     },
 };
 
 export const genericStateObjects: {
     default: ioBroker.StateObject;
     customString: ioBroker.StateObject;
-    /* abfahrten: customChannelType & {
-        station: customChannelType & ChangeTypeOfKeysForState<Station, ioBroker.StateObject>;
-    }; */
+    departure: customChannelType &
+        ChangeTypeOfKeysForState<Departure, ioBroker.StateObject> & {
+            line: customChannelType & ChangeTypeOfKeysForState<Line, ioBroker.StateObject>;
+            stopinfo: customChannelType &
+                ChangeTypeOfKeysForState<Stopinfo, ioBroker.StateObject> & {
+                    location: customChannelType & ChangeTypeOfKeysForState<Location, ioBroker.StateObject>;
+                };
+            remarks: customChannelType & ChangeTypeOfKeysForState<Remarks, ioBroker.StateObject>;
+        };
 } = {
     default: {
         _id: 'No_definition',
@@ -349,27 +343,69 @@ export const genericStateObjects: {
         },
         native: {},
     },
-    /* abfahrten: {
+    departure: {
+        ...Departure,
         _channel: {
             _id: '',
             type: 'folder',
             common: {
-                name: 'Abfahrten',
+                name: 'Abfahrt',
             },
             native: {},
         },
-        station: {
-            ...Station,
+        _array: {
+            _id: '',
+            type: 'folder',
+            common: {
+                name: 'Abfahrt',
+            },
+            native: {},
+        },
+        line: {
+            ...Line,
             _channel: {
                 _id: '',
                 type: 'folder',
                 common: {
-                    name: 'Station',
+                    name: 'Line',
                 },
                 native: {},
             },
         },
-    }, */
+        stopinfo: {
+            ...Stopinfo,
+            _channel: {
+                _id: '',
+                type: 'folder',
+                common: {
+                    name: 'Stopinfo',
+                },
+                native: {},
+            },
+            location: {
+                ...Location,
+                _channel: {
+                    _id: '',
+                    type: 'folder',
+                    common: {
+                        name: 'Location',
+                    },
+                    native: {},
+                },
+            },
+        },
+        remarks: {
+            ...Remarks,
+            _channel: {
+                _id: '',
+                type: 'folder',
+                common: {
+                    name: 'Remarks',
+                },
+                native: {},
+            },
+        },
+    },
 };
 
 export const Defaults = {
@@ -388,31 +424,36 @@ export const Defaults = {
     },
 };
 
-export type TimeTableData = {
-    departureTime: number;
-    departureDelaySeconds: number;
-    departureDelayed: boolean;
-    departureOnTime: boolean;
-    departurePlanned: number;
+export type Departure = {
+    when: string;
+    plannedWhen: string;
+    delay: number;
     direction: string;
-    json: string;
-    mode: string;
-    name: string;
-    operator: string;
-    plannedPlatform: string;
     platform: string;
-    product: string;
+    plannedPlatform: string;
 };
 
-export type Station = {
-    customName: string;
-    //id: string;
+type Line = {
     name: string;
+    fahrtNr: string;
+    productName: string;
+    mode: string;
+    operator: string;
+};
+
+type Remarks = {
+    hint: string;
+    warning: string;
+    status: string;
+};
+
+type Stopinfo = {
+    name: string;
+    id: string;
     type: string;
-    location: {
-        latitude: number;
-        longitude: number;
-    };
-    json: string;
-    data: TimeTableData;
+};
+
+type Location = {
+    latitude: number;
+    longitude: number;
 };

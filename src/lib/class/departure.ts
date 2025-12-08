@@ -1,6 +1,6 @@
 import type * as Hafas from 'hafas-client';
 import type { TTAdapter } from '../../main';
-import { defaultFolder, genericStateObjects } from '../const/definition';
+import { genericStateObjects } from '../const/definition';
 import { BaseClass } from '../tools/library';
 import { mapDeparturesToDepartureStates } from '../tools/mapper';
 import { defaultDepartureOpt, type DepartureState, type Products } from '../types/types';
@@ -111,14 +111,8 @@ export class DepartureRequest extends BaseClass {
                     }
                 }
             }
-            // Departures Ordner erstellen
             await this.library.writedp(
-                `${this.adapter.namespace}.Stations.${stationId}.Departures`,
-                undefined,
-                defaultFolder,
-            );
-            await this.library.writedp(
-                `${this.adapter.namespace}.Stations.${stationId}.Departures.json`,
+                `${this.adapter.namespace}.Stations.${stationId}.json`,
                 JSON.stringify(departures),
                 {
                     _id: 'nicht_definieren',
@@ -138,11 +132,11 @@ export class DepartureRequest extends BaseClass {
             // Konvertiere zu reduzierten States
             const departureStates: DepartureState[] = mapDeparturesToDepartureStates(filteredDepartures);
             // Vor dem Schreiben alte States löschen
-            await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.Departures.`, 2000);
+            await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.`, 2000);
             // JSON in die States schreiben
             await this.library.writeFromJson(
-                `${this.adapter.namespace}.Stations.${stationId}.Departures.`,
-                'departures',
+                `${this.adapter.namespace}.Stations.${stationId}.`,
+                'departure',
                 genericStateObjects,
                 departureStates,
                 true,
