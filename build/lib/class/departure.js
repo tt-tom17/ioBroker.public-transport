@@ -73,14 +73,14 @@ class DepartureRequest extends import_library.BaseClass {
       var _a, _b, _c;
       const lineProduct = (_a = departure.line) == null ? void 0 : _a.product;
       if (!lineProduct) {
-        this.log.info(
+        this.log.info2(
           `Abfahrt ${((_b = departure.line) == null ? void 0 : _b.name) || "unbekannt"} Richtung ${departure.direction} gefiltert: Keine Produktinfo vorhanden`
         );
         return false;
       }
       const isEnabled = enabledProducts.includes(lineProduct);
       if (!isEnabled) {
-        this.log.info(
+        this.log.info2(
           `Abfahrt ${(_c = departure.line) == null ? void 0 : _c.name} Richtung ${departure.direction} gefiltert: Produkt "${lineProduct}" nicht aktiviert`
         );
       }

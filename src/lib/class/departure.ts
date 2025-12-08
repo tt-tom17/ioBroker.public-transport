@@ -68,14 +68,14 @@ export class DepartureRequest extends BaseClass {
         return departures.filter(departure => {
             const lineProduct = departure.line?.product;
             if (!lineProduct) {
-                this.log.info(
+                this.log.info2(
                     `Abfahrt ${departure.line?.name || 'unbekannt'} Richtung ${departure.direction} gefiltert: Keine Produktinfo vorhanden`,
                 );
                 return false;
             }
             const isEnabled = enabledProducts.includes(lineProduct);
             if (!isEnabled) {
-                this.log.info(
+                this.log.info2(
                     `Abfahrt ${departure.line?.name} Richtung ${departure.direction} gefiltert: Produkt "${lineProduct}" nicht aktiviert`,
                 );
             }

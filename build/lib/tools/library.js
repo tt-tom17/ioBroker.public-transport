@@ -76,6 +76,11 @@ class CustomLog {
   info(log, log2 = "") {
     __privateGet(this, _adapter).log.info(log2 ? `[${log}] ${log2}` : `[${__privateGet(this, _prefix)}] ${log}`);
   }
+  info2(log, log2 = "") {
+    if (!__privateGet(this, _adapter).config.suppressInfoLogs) {
+      __privateGet(this, _adapter).log.info(log2 ? `[${log}] ${log2}` : `[${__privateGet(this, _prefix)}] ${log}`);
+    }
+  }
   warn(log, log2 = "") {
     __privateGet(this, _adapter).log.warn(log2 ? `[${log}] ${log2}` : `[${__privateGet(this, _prefix)}] ${log}`);
   }

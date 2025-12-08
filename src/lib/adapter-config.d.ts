@@ -10,6 +10,7 @@ declare global {
 			logUnknownTokens?: boolean;
 			departures?: DepartureStation[];
 			pollInterval?: number;
+			suppressInfoLogs?: boolean;
 		}
 		
 		interface DepartureStation {

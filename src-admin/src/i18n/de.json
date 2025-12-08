@@ -11,6 +11,8 @@
     "clientConfig_logUnknownTokens_helper": "Aktivieren, wenn unbekannte Tokens geloggt werden sollen.",
     "clientConfig_pollInterval_label": "Abfrageintervall (Minuten)",
     "clientConfig_pollInterval_helper": "Intervall in Minuten, in dem die Abfahrten aktualisiert werden.",
+    "clientConfig_suppressInfoLogs_label": "Info-Logs unterdrücken",
+    "clientConfig_suppressInfoLogs_helper": "Aktivieren, um Informations-Logs zu unterdrücken.",
     "settings_title": "Einstellungen",
     "stationSearch_title": "Station suchen",
     "stationSearch_input_label": "Stationsname",

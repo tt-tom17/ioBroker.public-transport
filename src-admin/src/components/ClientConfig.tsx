@@ -48,6 +48,7 @@ class ClientConfig extends ConfigGeneric<ConfigGenericProps, ConfigGenericState>
         const clientName = ConfigGeneric.getValue(this.props.data, 'clientName') as string;
         const pollInterval = ConfigGeneric.getValue(this.props.data, 'pollInterval') as number;
         const logUnknownTokens = ConfigGeneric.getValue(this.props.data, 'logUnknownTokens') as boolean;
+        const suppressInfoLogs = ConfigGeneric.getValue(this.props.data, 'suppressInfoLogs') as boolean;
 
         const handlePollIntervalChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
             const newValue = parseInt(event.target.value, 10);
@@ -69,6 +70,10 @@ class ClientConfig extends ConfigGeneric<ConfigGenericProps, ConfigGenericState>
 
         const handlelogUnknownTokensChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
             await this.onChange('logUnknownTokens', event.target.checked);
+        };
+
+        const handleSuppressInfoLogsChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+            await this.onChange('suppressInfoLogs', event.target.checked);
         };
 
         return (
@@ -162,6 +167,23 @@ class ClientConfig extends ConfigGeneric<ConfigGenericProps, ConfigGenericState>
                             label={I18n.t('clientConfig_logUnknownTokens_label')}
                         />
                         <FormHelperText>{I18n.t('clientConfig_logUnknownTokens_helper')}</FormHelperText>
+                    </FormControl>
+
+                    <FormControl
+                        sx={{ flex: { sm: '1 1 0' }, minWidth: { xs: '100%', sm: 200 } }}
+                        disabled={disabled}
+                    >
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={suppressInfoLogs || false}
+                                    onChange={handleSuppressInfoLogsChange}
+                                    disabled={disabled}
+                                />
+                            }
+                            label={I18n.t('clientConfig_suppressInfoLogs_label')}
+                        />
+                        <FormHelperText>{I18n.t('clientConfig_suppressInfoLogs_helper')}</FormHelperText>
                     </FormControl>
                 </Box>
             </Box>

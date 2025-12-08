@@ -11,6 +11,8 @@
     "clientConfig_logUnknownTokens_helper": "Enable if unknown tokens should be logged.",
     "clientConfig_pollInterval_label": "Poll Interval (minutes)",
     "clientConfig_pollInterval_helper": "Interval in minutes at which departures are updated.",
+    "clientConfig_suppressInfoLogs_label": "Suppress Info Logs",
+    "clientConfig_suppressInfoLogs_helper": "Enable to suppress informational logs.",
     "settings_title": "Settings",
     "stationSearch_title": "Search Station",
     "stationSearch_input_label": "Station Name",
