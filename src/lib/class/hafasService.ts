@@ -131,4 +131,8 @@ export class HafasService implements ITransportService {
     ): Promise<Hafas.Station | Hafas.Stop | Hafas.Location> {
         return this.getClient().stop(stationId, options);
     }
+
+    async getRemarks(opt?: Hafas.RemarksOptions): Promise<Hafas.WarningsWithRealtimeData> {
+        return this.getClient().remarks(opt);
+    }
 }
