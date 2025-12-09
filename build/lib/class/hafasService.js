@@ -116,7 +116,7 @@ class HafasService {
    * @param options optionale Routen-Optionen
    * @returns Promise mit Routeninformationen (typisiert als any)
    */
-  async getRoute(fromId, toId, options) {
+  async getJourneys(fromId, toId, options) {
     return this.getClient().journeys(fromId, toId, options);
   }
   /**

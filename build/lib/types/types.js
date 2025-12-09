@@ -28,11 +28,11 @@ const defaultDepartureOpt = {
   language: "de"
 };
 const defaultJourneyOpt = {
-  departure: null,
-  arrival: null,
-  earlierThan: null,
-  laterThan: null,
-  results: null,
+  //departure: null,
+  //arrival: null,
+  //earlierThan: null,
+  //laterThan: null,
+  results: 3,
   via: null,
   stopovers: false,
   transfers: -1,
@@ -47,7 +47,7 @@ const defaultJourneyOpt = {
     tram: true,
     bus: true,
     ferry: true,
-    express: true,
+    //express: true,
     regional: true
   },
   tickets: false,

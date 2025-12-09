@@ -114,7 +114,7 @@ export class HafasService implements ITransportService {
      * @param options optionale Routen-Optionen
      * @returns Promise mit Routeninformationen (typisiert als any)
      */
-    async getRoute(fromId: string, toId: string, options?: Hafas.JourneysOptions): Promise<Hafas.Journeys> {
+    async getJourneys(fromId: string, toId: string, options?: Hafas.JourneysOptions): Promise<Hafas.Journeys> {
         return this.getClient().journeys(fromId, toId, options);
     }
 

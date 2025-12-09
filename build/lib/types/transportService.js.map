@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../../src/lib/types/transportService.ts"],
-  "sourcesContent": ["import type * as Hafas from 'hafas-client';\n\n/**\n * Gemeinsames Interface f\u00FCr Transport-Services (HAFAS und Vendo)\n */\nexport interface ITransportService {\n    init(): void;\n    getLocations(\n        query: string,\n        options?: Hafas.LocationsOptions,\n    ): Promise<ReadonlyArray<Hafas.Station | Hafas.Stop | Hafas.Location>>;\n    getDepartures(stationId: string, options?: Hafas.DeparturesArrivalsOptions): Promise<Hafas.Departures>;\n    getRoute(fromId: string, toId: string, options?: Hafas.JourneysOptions): Promise<Hafas.Journeys>;\n    getStop(stationId: string, options?: Hafas.StopOptions): Promise<Hafas.Station | Hafas.Stop | Hafas.Location>;\n    // Weitere gemeinsame Methoden hier hinzuf\u00FCgen\n}\n"],
+  "sourcesContent": ["import type * as Hafas from 'hafas-client';\n\n/**\n * Gemeinsames Interface f\u00FCr Transport-Services (HAFAS und Vendo)\n */\nexport interface ITransportService {\n    init(): void;\n    getLocations(\n        query: string,\n        options?: Hafas.LocationsOptions,\n    ): Promise<ReadonlyArray<Hafas.Station | Hafas.Stop | Hafas.Location>>;\n    getDepartures(stationId: string, options?: Hafas.DeparturesArrivalsOptions): Promise<Hafas.Departures>;\n    getJourneys(fromId: string, toId: string, options?: Hafas.JourneysOptions): Promise<Hafas.Journeys>;\n    getStop(stationId: string, options?: Hafas.StopOptions): Promise<Hafas.Station | Hafas.Stop | Hafas.Location>;\n    // Weitere gemeinsame Methoden hier hinzuf\u00FCgen\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

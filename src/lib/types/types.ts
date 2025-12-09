@@ -61,11 +61,11 @@ type journeyOpt = {
 
 // Default-Werte
 export const defaultJourneyOpt: Partial<journeyOpt> = {
-    departure: null,
-    arrival: null,
-    earlierThan: null,
-    laterThan: null,
-    results: null,
+    //departure: null,
+    //arrival: null,
+    //earlierThan: null,
+    //laterThan: null,
+    results: 3,
     via: null,
     stopovers: false,
     transfers: -1,
@@ -80,7 +80,7 @@ export const defaultJourneyOpt: Partial<journeyOpt> = {
         tram: true,
         bus: true,
         ferry: true,
-        express: true,
+        //express: true,
         regional: true,
     },
     tickets: false,

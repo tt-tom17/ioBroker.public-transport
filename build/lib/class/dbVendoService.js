@@ -92,7 +92,7 @@ class VendoService {
    * @param options optionale Routenoptionen
    * @returns Promise mit Routen
    */
-  async getRoute(fromId, toId, options) {
+  async getJourneys(fromId, toId, options) {
     return this.getNavClient().journeys(fromId, toId, options);
   }
   /**

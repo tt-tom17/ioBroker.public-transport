@@ -35,6 +35,7 @@ var utils = __toESM(require("@iobroker/adapter-core"));
 var import_dbVendoService = require("./lib/class/dbVendoService");
 var import_departure = require("./lib/class/departure");
 var import_hafasService = require("./lib/class/hafasService");
+var import_journeys = require("./lib/class/journeys");
 var import_station = require("./lib/class/station");
 var import_library = require("./lib/tools/library");
 class TTAdapter extends utils.Adapter {
@@ -44,6 +45,7 @@ class TTAdapter extends utils.Adapter {
   vService;
   activeService;
   depRequest;
+  journeysRequest;
   stationRequest;
   pollIntervall;
   /**
@@ -103,6 +105,7 @@ class TTAdapter extends utils.Adapter {
     }
     this.depRequest = new import_departure.DepartureRequest(this);
     this.stationRequest = new import_station.StationRequest(this);
+    this.journeysRequest = new import_journeys.JourneysRequest(this);
     const pollInterval = (this.config.pollInterval || 5) * 60 * 1e3;
     try {
       if (this.getActiveService()) {
@@ -255,6 +258,10 @@ class TTAdapter extends utils.Adapter {
       }
     } catch (err) {
       this.log.error(this.library.translate("msg_stationQueryError", err.message));
+    }
+    try {
+    } catch (err) {
+      this.log.error(`Fehler beim Initialisieren des Adapters: ${err.message}`);
     }
   }
   /**

@@ -2,6 +2,7 @@ import * as utils from '@iobroker/adapter-core';
 import { VendoService } from './lib/class/dbVendoService';
 import { DepartureRequest } from './lib/class/departure';
 import { HafasService } from './lib/class/hafasService';
+import { JourneysRequest } from './lib/class/journeys';
 import { StationRequest } from './lib/class/station';
 import { Library } from './lib/tools/library';
 import type { ITransportService } from './lib/types/transportService';
@@ -13,6 +14,7 @@ export class TTAdapter extends utils.Adapter {
     vService!: VendoService;
     activeService!: ITransportService;
     depRequest!: DepartureRequest;
+    journeysRequest!: JourneysRequest;
     stationRequest!: StationRequest;
     private pollIntervall: ioBroker.Interval | undefined;
 
@@ -83,6 +85,7 @@ export class TTAdapter extends utils.Adapter {
 
         this.depRequest = new DepartureRequest(this);
         this.stationRequest = new StationRequest(this);
+        this.journeysRequest = new JourneysRequest(this);
 
         const pollInterval = (this.config.pollInterval || 5) * 60 * 1000;
         try {
@@ -254,6 +257,13 @@ export class TTAdapter extends utils.Adapter {
             }
         } catch (err) {
             this.log.error(this.library.translate('msg_stationQueryError', (err as Error).message));
+        }
+
+        try {
+            //await this.journeysRequest.getJourneys('8011160', '8010205', this.activeService);
+            //await this.journeysRequest.getJourneys('900003201', '900550090', this.activeService);
+        } catch (err) {
+            this.log.error(`Fehler beim Initialisieren des Adapters: ${(err as Error).message}`);
         }
     }
 
