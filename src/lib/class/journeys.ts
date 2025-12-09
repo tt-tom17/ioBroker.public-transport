@@ -25,7 +25,7 @@ export class JourneysRequest extends BaseClass {
     ): Promise<boolean> {
         try {
             if (!from || !to) {
-                throw new Error('Keine Start- oder Zielstation übergeben');
+                throw new Error(this.library.translate('msg_journeyNoFromTo'));
             }
             const mergedOptions = { ...defaultJourneyOpt, ...options };
             // Antwort von HAFAS als vollständiger Typ
@@ -36,9 +36,7 @@ export class JourneysRequest extends BaseClass {
             //await this.writeJourneysStates(stationId, response.departures, products);
             return true;
         } catch (error) {
-            this.log.error(
-                `Fehler bei der Abfrage der Abfahrten für Station ${from} nach ${to}: ${(error as Error).message}`,
-            );
+            this.log.error(this.library.translate('msg_journeyQueryError', from, to, (error as Error).message));
             return false;
         }
     }
@@ -116,7 +114,7 @@ export class JourneysRequest extends BaseClass {
                     _id: 'nicht_definieren',
                     type: 'state',
                     common: {
-                        name: 'raw departures data',
+                        name: this.library.translate('raw_journeys_data'),
                         type: 'string',
                         role: 'json',
                         read: true,

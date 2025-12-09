@@ -27,7 +27,7 @@ export class DepartureRequest extends BaseClass {
     ): Promise<boolean> {
         try {
             if (!stationId) {
-                throw new Error('Keine stationId übergeben');
+                throw new Error(this.library.translate('msg_departureNoStationId'));
             }
             const mergedOptions = { ...defaultDepartureOpt, ...options };
             // Antwort von HAFAS als vollständiger Typ
@@ -38,9 +38,7 @@ export class DepartureRequest extends BaseClass {
             await this.writeDepartureStates(stationId, response.departures, products);
             return true;
         } catch (error) {
-            this.log.error(
-                `Fehler bei der Abfrage der Abfahrten für Station ${stationId}: ${(error as Error).message}`,
-            );
+            this.log.error(this.library.translate('msg_departureQueryError', stationId, (error as Error).message));
             return false;
         }
     }
@@ -69,14 +67,23 @@ export class DepartureRequest extends BaseClass {
             const lineProduct = departure.line?.product;
             if (!lineProduct) {
                 this.log.info2(
-                    `Abfahrt ${departure.line?.name || 'unbekannt'} Richtung ${departure.direction} gefiltert: Keine Produktinfo vorhanden`,
+                    this.library.translate(
+                        'msg_departureFilterNoProduct',
+                        departure.line?.name || 'unbekannt / unknown',
+                        departure.direction ?? 'unbekannt / unknown',
+                    ),
                 );
                 return false;
             }
             const isEnabled = enabledProducts.includes(lineProduct);
             if (!isEnabled) {
                 this.log.info2(
-                    `Abfahrt ${departure.line?.name} Richtung ${departure.direction} gefiltert: Produkt "${lineProduct}" nicht aktiviert`,
+                    this.library.translate(
+                        'msg_departureFilterProductDisabled',
+                        departure.line?.name || 'unbekannt / unknown',
+                        departure.direction ?? 'unbekannt / unknown',
+                        lineProduct,
+                    ),
                 );
             }
             return isEnabled;
@@ -118,7 +125,7 @@ export class DepartureRequest extends BaseClass {
                     _id: 'nicht_definieren',
                     type: 'state',
                     common: {
-                        name: 'raw departures data',
+                        name: this.library.translate('raw_departure_data'),
                         type: 'string',
                         role: 'json',
                         read: true,
@@ -142,7 +149,7 @@ export class DepartureRequest extends BaseClass {
                 true,
             );
         } catch (err) {
-            this.log.error(`Fehler beim Schreiben der Abfahrten: ${(err as Error).message}`);
+            this.log.error(this.library.translate('msg_departureWriteError', (err as Error).message));
         }
     }
 }
