@@ -1,7 +1,9 @@
 import * as utils from '@iobroker/adapter-core';
 import { VendoService } from './lib/class/dbVendoService';
 import { DepartureRequest } from './lib/class/departure';
+import { DeparturePolling } from './lib/class/departurePolling';
 import { HafasService } from './lib/class/hafasService';
+import { JourneyPolling } from './lib/class/journeyPolling';
 import { JourneysRequest } from './lib/class/journeys';
 import { StationRequest } from './lib/class/station';
 import { Library } from './lib/tools/library';
@@ -16,7 +18,8 @@ export class TTAdapter extends utils.Adapter {
     depRequest!: DepartureRequest;
     journeysRequest!: JourneysRequest;
     stationRequest!: StationRequest;
-    private pollIntervall: ioBroker.Interval | undefined;
+    private departurePolling!: DeparturePolling;
+    private journeyPolling!: JourneyPolling;
 
     /**
      * Creates an instance of the adapter.
@@ -51,133 +54,6 @@ export class TTAdapter extends utils.Adapter {
     }
 
     /**
-     * Gibt die aktivierten Stationen aus der Konfiguration zurück.
-     *
-     * @returns Array der aktivierten Stationen oder undefined wenn keine vorhanden sind
-     */
-    private getEnabledStations(): ioBroker.AdapterConfig['departures'] | undefined {
-        if (!this.config.departures || this.config.departures.length === 0) {
-            this.log.warn(this.library.translate('msg_noStationsConfigured'));
-            return undefined;
-        }
-
-        const enabledStations = this.config.departures.filter(station => station.enabled);
-
-        if (enabledStations.length === 0) {
-            this.log.warn(this.library.translate('msg_noEnabledStationsFound'));
-            return undefined;
-        }
-
-        return enabledStations;
-    }
-
-    /**
-     * Loggt die gefundenen Stationen.
-     *
-     * @param stations Array der Stationen
-     */
-    private logStations(stations: NonNullable<ioBroker.AdapterConfig['departures']>): void {
-        this.log.info(this.library.translate('msg_activeStationsFound', stations.length));
-        for (const station of stations) {
-            this.log.info(
-                this.library.translate('msg_stationListEntry', station.customName || station.name, station.id),
-            );
-        }
-    }
-
-    /**
-     * Erstellt die Optionen für eine Abfahrtsanfrage.
-     *
-     * @param station Die Station
-     * @returns Die Optionen für die Abfrage
-     */
-    private createDepartureOptions(station: any): { results: number; when?: Date; duration: number } {
-        const offsetTime = station.offsetTime ? station.offsetTime : 0;
-        const when: Date | undefined = offsetTime === 0 ? undefined : new Date(Date.now() + offsetTime * 60 * 1000);
-        const duration = station.duration ? station.duration : 10;
-        const results = station.numDepartures ? station.numDepartures : 10;
-
-        return { results, when, duration };
-    }
-
-    /**
-     * Führt eine Abfrage für alle aktivierten Stationen durch.
-     *
-     * @param stations Array der Stationen
-     * @returns Objekt mit successCount und errorCount
-     */
-    private async queryDeparturesForStations(
-        stations: NonNullable<ioBroker.AdapterConfig['departures']>,
-    ): Promise<{ successCount: number; errorCount: number }> {
-        let successCount = 0;
-        let errorCount = 0;
-
-        for (const station of stations) {
-            if (!station.id) {
-                this.log.warn(this.library.translate('msg_stationNoValidId', station.customName || station.name));
-                continue;
-            }
-
-            const options = this.createDepartureOptions(station);
-            const products = station.products ? station.products : undefined;
-
-            this.log.info(
-                this.library.translate('msg_fetchingDepartures', station.customName || station.name, station.id),
-            );
-
-            const success = await this.depRequest.getDepartures(station.id, this.activeService, options, products);
-
-            if (success) {
-                successCount++;
-                this.log.info(
-                    this.library.translate('msg_departuresUpdated', station.customName || station.name, station.id),
-                );
-            } else {
-                errorCount++;
-                this.log.warn(
-                    this.library.translate(
-                        'msg_departuresUpdateFailed',
-                        station.customName || station.name,
-                        station.id,
-                    ),
-                );
-            }
-        }
-
-        return { successCount, errorCount };
-    }
-
-    /**
-     * Initialisiert das Polling für Abfahrten.
-     *
-     * @param pollInterval Das Intervall in Millisekunden
-     */
-    private async initializeDeparturesPolling(pollInterval: number): Promise<void> {
-        if (!this.getActiveService()) {
-            return;
-        }
-
-        const enabledStations = this.getEnabledStations();
-        if (!enabledStations) {
-            return;
-        }
-
-        this.logStations(enabledStations);
-
-        // Erste Abfrage sofort ausführen
-        const { successCount, errorCount } = await this.queryDeparturesForStations(enabledStations);
-        this.log.info(this.library.translate('msg_firstQueryCompleted', successCount, errorCount));
-        this.log.info(this.library.translate('msg_waitingForNextQuery', pollInterval / 60_000));
-
-        // Starte Intervall für regelmäßige Abfragen
-        this.pollIntervall = this.setInterval(async () => {
-            const { successCount, errorCount } = await this.queryDeparturesForStations(enabledStations);
-            this.log.info(this.library.translate('msg_queryCompleted', successCount, errorCount));
-            this.log.info(this.library.translate('msg_waitingForNextQuery', pollInterval / 60_000));
-        }, pollInterval);
-    }
-
-    /**
      * Holt Stationsinformationen für alle aktivierten Stationen.
      */
     private async fetchStationInformation(): Promise<void> {
@@ -197,8 +73,7 @@ export class TTAdapter extends utils.Adapter {
             return;
         }
 
-        this.logStations(enabledStations);
-
+        this.log.info(this.library.translate('msg_activeStationsFound', enabledStations.length));
         for (const station of enabledStations) {
             if (station.id) {
                 this.log.info(
@@ -245,13 +120,21 @@ export class TTAdapter extends utils.Adapter {
         this.depRequest = new DepartureRequest(this);
         this.stationRequest = new StationRequest(this);
         this.journeysRequest = new JourneysRequest(this);
+        this.departurePolling = new DeparturePolling(this);
+        this.journeyPolling = new JourneyPolling(this);
 
-        const pollInterval = (this.config.pollInterval || 5) * 60 * 1000;
+        const pollInterval = this.config.pollInterval || 5;
 
         try {
-            await this.initializeDeparturesPolling(pollInterval);
+            await this.departurePolling.startDepartures(pollInterval);
         } catch (err) {
             this.log.error(this.library.translate('msg_hafasRequestFailed', (err as Error).message));
+        }
+
+        try {
+            await this.journeyPolling.startJourneys(pollInterval);
+        } catch (err) {
+            this.log.error(this.library.translate('msg_journeyQueryError', (err as Error).message));
         }
 
         try {
@@ -276,12 +159,8 @@ export class TTAdapter extends utils.Adapter {
     private onUnload(callback: () => void): void {
         try {
             // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            if (this.pollIntervall) {
-                clearInterval(this.pollIntervall);
-            }
+            this.departurePolling?.stop();
+            this.journeyPolling?.stop();
 
             callback();
         } catch {

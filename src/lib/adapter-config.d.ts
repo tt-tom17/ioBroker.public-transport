@@ -9,6 +9,7 @@ declare global {
 			clientName?: string;
 			logUnknownTokens?: boolean;
 			departures?: DepartureStation[];
+			journeys?: JourneyRoute[];
 			pollInterval?: number;
 			suppressInfoLogs?: boolean;
 		}
@@ -32,6 +33,25 @@ declare global {
     		ferry?: boolean;      // Fähre
     		express?: boolean;    // ICE/IC/EC (Fernverkehr)
     		regional?: boolean;   // RE/RB (Regionalverkehr)
+		}
+
+		interface JourneyRoute {
+			id: string;
+			name: string;
+			customName?: string;
+			enabled: boolean;
+			from: string;
+			to: string;
+			departure?: string;
+			arrival?: string;
+			results?: number;
+			via?: string;
+			stopovers?: boolean;
+			transfers?: number;
+			transferTime?: number;
+			accessibility?: 'partial' | 'complete';
+			bike?: boolean;
+			products?: Products;
 		}
 	}
 }
