@@ -32,8 +32,8 @@ export class JourneysRequest extends BaseClass {
             const response = await service.getJourneys(from, to, mergedOptions);
             // Vollständiges JSON für Debugging
             this.adapter.log.debug(JSON.stringify(response, null, 1));
-            // Schreibe die Abfahrten in die States
-            //await this.writeDepartureStates(stationId, response.departures, products);
+            // Schreibe die Verbindungen in die States
+            //await this.writeJourneysStates(stationId, response.departures, products);
             return true;
         } catch (error) {
             this.log.error(
@@ -88,7 +88,7 @@ export class JourneysRequest extends BaseClass {
      * @param departures    Die Abfahrten, die geschrieben werden sollen.
      * @param products      Die aktivierten Produkte (true = erlaubt)
      */
-    /* async writeDepartureStates(
+    /* async writeJourneyStates(
         stationId: string,
         departures: Hafas.Alternative[],
         products?: Partial<Products>,

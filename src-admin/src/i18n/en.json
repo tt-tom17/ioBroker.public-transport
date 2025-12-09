@@ -1,6 +1,7 @@
 {
     "client_config": "Configuration",
     "departure_manager": "Departure Manager",
+    "journey_manager": "Journey Manager",
     "clientConfig_title": "Client Configuration",
     "clientConfig_profile_label": "Profile",
     "clientConfig_profile_helper": "Select the profile for the transport connection.",
@@ -47,5 +48,22 @@
     "disabled": "Disabled",
     "active": "Active",
     "offset_time": "Offset Time",
-    "offset_time_hint": "Offset time in minutes for departure times"
+    "offset_time_hint": "Offset time in minutes for departure times",
+    "journeys_overview": "Journeys Overview",
+    "add_journey": "Add Journey",
+    "no_journeys_hint": "No journeys configured. Click \"Add Journey\" to get started.",
+    "journey_configuration": "Journey Configuration",
+    "journey_name": "Journey Name",
+    "journey_name_hint": "Name to identify this journey",
+    "from_station": "From Station",
+    "to_station": "To Station",
+    "select_from_station": "Select Start Station",
+    "change_from_station": "Change Start Station",
+    "select_to_station": "Select Destination Station",
+    "change_to_station": "Change Destination Station",
+    "select_journey_to_configure": "Select a journey to configure",
+    "journey_results_count": "Number of Journeys",
+    "journey_results_count_hint": "Number of journey results to fetch (1-20)",
+    "from": "From",
+    "to": "To"
 }

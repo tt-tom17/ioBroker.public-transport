@@ -97,7 +97,7 @@ class JourneysRequest extends import_library.BaseClass {
    * @param departures    Die Abfahrten, die geschrieben werden sollen.
    * @param products      Die aktivierten Produkte (true = erlaubt)
    */
-  /* async writeDepartureStates(
+  /* async writeJourneyStates(
       stationId: string,
       departures: Hafas.Alternative[],
       products?: Partial<Products>,
