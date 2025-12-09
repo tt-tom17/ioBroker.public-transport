@@ -12,6 +12,5 @@ export interface ITransportService {
     getDepartures(stationId: string, options?: Hafas.DeparturesArrivalsOptions): Promise<Hafas.Departures>;
     getRoute(fromId: string, toId: string, options?: Hafas.JourneysOptions): Promise<Hafas.Journeys>;
     getStop(stationId: string, options?: Hafas.StopOptions): Promise<Hafas.Station | Hafas.Stop | Hafas.Location>;
-    getRemarks(opt: Hafas.RemarksOptions | undefined): Promise<Hafas.WarningsWithRealtimeData>;
     // Weitere gemeinsame Methoden hier hinzufügen
 }

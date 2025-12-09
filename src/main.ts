@@ -255,15 +255,6 @@ export class TTAdapter extends utils.Adapter {
         } catch (err) {
             this.log.error(this.library.translate('msg_stationQueryError', (err as Error).message));
         }
-
-        try {
-            if (this.getActiveService()) {
-                const remarks = await this.activeService.getRemarks(undefined);
-                this.log.info(JSON.stringify(remarks));
-            }
-        } catch (err) {
-            this.log.error(this.library.translate('msg_RemarksQueryFailed', (err as Error).message));
-        }
     }
 
     /**

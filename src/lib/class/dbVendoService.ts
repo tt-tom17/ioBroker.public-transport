@@ -98,8 +98,4 @@ export class VendoService implements ITransportService {
     ): Promise<Vendo.Station | Vendo.Stop | Vendo.Location> {
         return this.getNavClient().stop(stationId, options);
     }
-
-    async getRemarks(opt?: Vendo.RemarksOptions): Promise<Vendo.WarningsWithRealtimeData> {
-        return this.getNavClient().remarks(opt);
-    }
 }
