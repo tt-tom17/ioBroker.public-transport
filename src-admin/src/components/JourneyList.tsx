@@ -16,7 +16,7 @@ import React from 'react';
 
 interface Journey {
     id: string;
-    name: string;
+    customName: string;
     fromStationId?: string;
     fromStationName?: string;
     toStationId?: string;
@@ -97,7 +97,7 @@ const JourneyList: React.FC<JourneyListProps> = ({
                                 onClick={() => onJourneyClick(journey.id)}
                             >
                                 <ListItemText
-                                    primary={journey.name}
+                                    primary={journey.customName}
                                     secondary={
                                         <>
                                             {journey.fromStationName && (

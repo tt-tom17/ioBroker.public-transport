@@ -37,7 +37,7 @@ declare global {
 
 		interface JourneyRoute {
 			id: string;
-			name: string;
+			customName: string;
 			enabled: boolean;
 			numResults?: number;
 			fromStationId: string;

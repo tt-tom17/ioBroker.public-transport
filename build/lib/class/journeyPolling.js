@@ -73,12 +73,13 @@ class JourneyPolling extends import_pollingManager.PollingManager {
    */
   async queryConfig(config, service) {
     if (!config.fromStationId || !config.toStationId) {
-      this.adapter.log.warn(this.adapter.library.translate("msg_journeyNoFromTo", config.name || ""));
+      this.adapter.log.warn(this.adapter.library.translate("msg_journeyNoFromTo", config.customName || ""));
       return false;
     }
     const options = this.createJourneyOptions(config);
     try {
       return await this.adapter.journeysRequest.getJourneys(
+        config.id,
         config.fromStationId,
         config.toStationId,
         service,
@@ -86,7 +87,11 @@ class JourneyPolling extends import_pollingManager.PollingManager {
       );
     } catch (error) {
       this.adapter.log.error(
-        this.adapter.library.translate("msg_journeyQueryFailed", config.name || "", error.message)
+        this.adapter.library.translate(
+          "msg_journeyQueryFailed",
+          config.customName || "",
+          error.message
+        )
       );
       return false;
     }

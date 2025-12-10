@@ -42,7 +42,7 @@ class DepartureRequest extends import_library.BaseClass {
   async getDepartures(stationId, service, options = {}, products) {
     try {
       if (!stationId) {
-        throw new Error("Keine stationId \xFCbergeben");
+        throw new Error(this.library.translate("msg_departureNoStationId"));
       }
       const mergedOptions = { ...import_types.defaultDepartureOpt, ...options };
       const response = await service.getDepartures(stationId, mergedOptions);
@@ -50,9 +50,7 @@ class DepartureRequest extends import_library.BaseClass {
       await this.writeDepartureStates(stationId, response.departures, products);
       return true;
     } catch (error) {
-      this.log.error(
-        `Fehler bei der Abfrage der Abfahrten f\xFCr Station ${stationId}: ${error.message}`
-      );
+      this.log.error(this.library.translate("msg_departureQueryError", stationId, error.message));
       return false;
     }
   }
@@ -70,18 +68,27 @@ class DepartureRequest extends import_library.BaseClass {
       return [...departures];
     }
     return departures.filter((departure) => {
-      var _a, _b, _c;
+      var _a, _b, _c, _d, _e;
       const lineProduct = (_a = departure.line) == null ? void 0 : _a.product;
       if (!lineProduct) {
         this.log.info2(
-          `Abfahrt ${((_b = departure.line) == null ? void 0 : _b.name) || "unbekannt"} Richtung ${departure.direction} gefiltert: Keine Produktinfo vorhanden`
+          this.library.translate(
+            "msg_departureFilterNoProduct",
+            ((_b = departure.line) == null ? void 0 : _b.name) || "unbekannt / unknown",
+            (_c = departure.direction) != null ? _c : "unbekannt / unknown"
+          )
         );
         return false;
       }
       const isEnabled = enabledProducts.includes(lineProduct);
       if (!isEnabled) {
         this.log.info2(
-          `Abfahrt ${(_c = departure.line) == null ? void 0 : _c.name} Richtung ${departure.direction} gefiltert: Produkt "${lineProduct}" nicht aktiviert`
+          this.library.translate(
+            "msg_departureFilterProductDisabled",
+            ((_d = departure.line) == null ? void 0 : _d.name) || "unbekannt / unknown",
+            (_e = departure.direction) != null ? _e : "unbekannt / unknown",
+            lineProduct
+          )
         );
       }
       return isEnabled;
@@ -118,7 +125,7 @@ class DepartureRequest extends import_library.BaseClass {
           _id: "nicht_definieren",
           type: "state",
           common: {
-            name: "raw departures data",
+            name: this.library.translate("raw_departure_data"),
             type: "string",
             role: "json",
             read: true,
@@ -138,7 +145,7 @@ class DepartureRequest extends import_library.BaseClass {
         true
       );
     } catch (err) {
-      this.log.error(`Fehler beim Schreiben der Abfahrten: ${err.message}`);
+      this.log.error(this.library.translate("msg_departureWriteError", err.message));
     }
   }
 }

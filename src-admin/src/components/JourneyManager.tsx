@@ -7,7 +7,7 @@ import { defaultProducts, type Products } from './ProductSelector';
 
 interface Journey {
     id: string;
-    name: string;
+    customName: string;
     fromStationId?: string;
     fromStationName?: string;
     toStationId?: string;
@@ -59,7 +59,7 @@ class JourneyManager extends ConfigGeneric<ConfigGenericProps, JourneyManagerSta
         const newId = `journey_${Date.now()}`;
         const newJourney: Journey = {
             id: newId,
-            name: `Journey ${this.state.journeys.length + 1}`,
+            customName: `Journey ${this.state.journeys.length + 1}`,
             enabled: true,
             numResults: 5,
             products: { ...defaultProducts },

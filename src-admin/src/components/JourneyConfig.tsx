@@ -7,7 +7,7 @@ import StationSearch from './StationSearch';
 
 interface Journey {
     id: string;
-    name: string;
+    customName: string;
     fromStationId?: string;
     fromStationName?: string;
     toStationId?: string;
@@ -29,7 +29,7 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, config
 
     const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         if (journey && onUpdate) {
-            onUpdate(journey.id, { name: event.target.value });
+            onUpdate(journey.id, { customName: event.target.value });
         }
     };
 
@@ -90,7 +90,7 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, config
                             {/* Journey Name */}
                             <TextField
                                 label={I18n.t('journey_name')}
-                                value={journey.name}
+                                value={journey.customName}
                                 onChange={handleNameChange}
                                 fullWidth
                                 size="small"

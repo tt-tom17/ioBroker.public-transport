@@ -5,7 +5,7 @@ import { PollingManager } from './pollingManager';
 
 interface JourneyConfig {
     id: string;
-    name: string;
+    customName: string;
     enabled: boolean;
     numResults?: number;
     fromStationId: string;
@@ -84,7 +84,7 @@ export class JourneyPolling extends PollingManager<JourneyConfig> {
      */
     protected async queryConfig(config: JourneyConfig, service: ITransportService): Promise<boolean> {
         if (!config.fromStationId || !config.toStationId) {
-            this.adapter.log.warn(this.adapter.library.translate('msg_journeyNoFromTo', config.name || ''));
+            this.adapter.log.warn(this.adapter.library.translate('msg_journeyNoFromTo', config.customName || ''));
             return false;
         }
 
@@ -92,6 +92,7 @@ export class JourneyPolling extends PollingManager<JourneyConfig> {
 
         try {
             return await this.adapter.journeysRequest.getJourneys(
+                config.id,
                 config.fromStationId,
                 config.toStationId,
                 service,
@@ -99,7 +100,11 @@ export class JourneyPolling extends PollingManager<JourneyConfig> {
             );
         } catch (error) {
             this.adapter.log.error(
-                this.adapter.library.translate('msg_journeyQueryFailed', config.name || '', (error as Error).message),
+                this.adapter.library.translate(
+                    'msg_journeyQueryFailed',
+                    config.customName || '',
+                    (error as Error).message,
+                ),
             );
             return false;
         }
