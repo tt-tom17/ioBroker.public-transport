@@ -60,7 +60,7 @@ export class StationRequest extends BaseClass {
                 // JSON in die States schreiben
                 await this.library.writeFromJson(
                     `${this.adapter.namespace}.Stations.${stationData.id}.info`,
-                    '',
+                    'station',
                     genericStateObjects,
                     stationState,
                     true,

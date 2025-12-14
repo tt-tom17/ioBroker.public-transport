@@ -6,6 +6,7 @@
  */
 import type * as Hafas from 'hafas-client';
 import { createClient as hafasClient } from 'hafas-client';
+import { profile as oebbProfile } from 'hafas-client/p/oebb/index.js';
 import { profile as vbbProfile } from 'hafas-client/p/vbb/index.js';
 import type { ITransportService } from '../types/transportService';
 
@@ -75,8 +76,11 @@ export class HafasService implements ITransportService {
             case 'vbb': {
                 return vbbProfile;
             }
+            case 'oebb': {
+                return oebbProfile;
+            }
             default: {
-                throw new Error(`Unbekanntes Profile: ${String(profile)}. Verfügbare Profile: 'vbb'.`);
+                throw new Error(`Unbekanntes Profile: ${String(profile)}. Verfügbare Profile: 'vbb', 'oebb'.`);
             }
         }
     }

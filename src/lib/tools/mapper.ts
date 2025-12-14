@@ -123,6 +123,9 @@ export function mapStationToStationState(station: Hafas.Station): StationState {
                                     ferry: stop.products.ferry ?? undefined,
                                     express: stop.products.express ?? undefined,
                                     regional: stop.products.regional ?? undefined,
+                                    regionalexpress: stop.products.regionalExpress ?? undefined,
+                                    national: stop.products.national ?? undefined,
+                                    nationalexpress: stop.products.nationalExpress ?? undefined,
                                 }
                               : undefined,
                       })) ?? undefined)
@@ -132,7 +135,7 @@ export function mapStationToStationState(station: Hafas.Station): StationState {
 
 export function mapJourneyToJourneyState(journey: Hafas.Journey): JourneyState {
     return {
-        legs:
+        section:
             journey.legs?.map(leg => ({
                 tripId: leg.tripId ?? undefined,
                 stationFrom: {
@@ -191,6 +194,8 @@ export function mapJourneyToJourneyState(journey: Hafas.Journey): JourneyState {
                 plannedDeparturePlatform: leg.plannedDeparturePlatform ?? undefined,
                 arrivalPrognosisType: leg.arrivalPrognosisType ?? undefined,
                 departurePrognosisType: leg.departurePrognosisType ?? undefined,
+                walking: leg.walking ?? undefined,
+                distance: leg.distance ?? undefined,
                 remarks: leg.remarks ? groupRemarksByType(leg.remarks) : undefined,
                 /*cycle: leg.cycle
                     ? {

@@ -118,7 +118,7 @@ export class JourneyPolling extends PollingManager<JourneyConfig> {
     public async startJourneys(pollIntervalMinutes: number): Promise<void> {
         await this.start(this.adapter.config.journeyConfig as JourneyConfig[], pollIntervalMinutes, {
             noConfig: 'msg_noJourneysConfigured',
-            noEnabled: 'msg_noEnabledJourneysFound',
+            noEnabled: 'msg_noEnabledJourneys',
             count: 'msg_activeJourneysFound',
             entry: 'msg_journeyListEntry',
             fetching: 'msg_fetchingJourneys',

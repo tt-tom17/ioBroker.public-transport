@@ -232,6 +232,8 @@ export type LegState = {
     plannedDeparturePlatform: string | undefined;
     arrivalPrognosisType: string | undefined;
     departurePrognosisType: string | undefined;
+    walking?: boolean | undefined;
+    distance?: number | undefined;
     remarks: Remark | undefined;
     alternatives:
         | {
@@ -246,7 +248,7 @@ export type LegState = {
 };
 
 export type JourneyState = {
-    legs: LegState[] | undefined;
+    section: LegState[] | undefined;
     stationFrom?: StationState | undefined;
     stationTo?: StationState | undefined;
     refreshToken?: string | undefined;

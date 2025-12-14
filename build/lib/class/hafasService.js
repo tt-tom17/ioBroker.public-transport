@@ -22,6 +22,7 @@ __export(hafasService_exports, {
 });
 module.exports = __toCommonJS(hafasService_exports);
 var import_hafas_client = require("hafas-client");
+var import_oebb = require("hafas-client/p/oebb/index.js");
 var import_vbb = require("hafas-client/p/vbb/index.js");
 class HafasService {
   client = null;
@@ -83,8 +84,11 @@ class HafasService {
       case "vbb": {
         return import_vbb.profile;
       }
+      case "oebb": {
+        return import_oebb.profile;
+      }
       default: {
-        throw new Error(`Unbekanntes Profile: ${String(profile)}. Verf\xFCgbare Profile: 'vbb'.`);
+        throw new Error(`Unbekanntes Profile: ${String(profile)}. Verf\xFCgbare Profile: 'vbb', 'oebb'.`);
       }
     }
   }

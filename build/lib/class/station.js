@@ -71,7 +71,7 @@ class StationRequest extends import_library.BaseClass {
         const stationState = (0, import_mapper.mapStationToStationState)(stationData);
         await this.library.writeFromJson(
           `${this.adapter.namespace}.Stations.${stationData.id}.info`,
-          "",
+          "station",
           import_definition.genericStateObjects,
           stationState,
           true

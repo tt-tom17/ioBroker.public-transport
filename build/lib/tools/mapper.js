@@ -96,7 +96,7 @@ function mapStationToStationState(station) {
       longitude: station.location.longitude
     } : void 0,
     stops: station.type === "station" ? (_b = (_a = station.stops) == null ? void 0 : _a.filter((stop) => stop.type === "stop").map((stop) => {
-      var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
+      var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
       return {
         name: (_a2 = stop.name) != null ? _a2 : void 0,
         id: (_b2 = stop.id) != null ? _b2 : void 0,
@@ -112,7 +112,10 @@ function mapStationToStationState(station) {
           bus: (_i = stop.products.bus) != null ? _i : void 0,
           ferry: (_j = stop.products.ferry) != null ? _j : void 0,
           express: (_k = stop.products.express) != null ? _k : void 0,
-          regional: (_l = stop.products.regional) != null ? _l : void 0
+          regional: (_l = stop.products.regional) != null ? _l : void 0,
+          regionalexpress: (_m = stop.products.regionalExpress) != null ? _m : void 0,
+          national: (_n = stop.products.national) != null ? _n : void 0,
+          nationalexpress: (_o = stop.products.nationalExpress) != null ? _o : void 0
         } : void 0
       };
     })) != null ? _b : void 0 : void 0
@@ -121,8 +124,8 @@ function mapStationToStationState(station) {
 function mapJourneyToJourneyState(journey) {
   var _a, _b;
   return {
-    legs: (_b = (_a = journey.legs) == null ? void 0 : _a.map((leg) => {
-      var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P, _Q;
+    section: (_b = (_a = journey.legs) == null ? void 0 : _a.map((leg) => {
+      var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P, _Q, _R, _S;
       return {
         tripId: (_a2 = leg.tripId) != null ? _a2 : void 0,
         stationFrom: {
@@ -169,6 +172,8 @@ function mapJourneyToJourneyState(journey) {
         plannedDeparturePlatform: (_N = leg.plannedDeparturePlatform) != null ? _N : void 0,
         arrivalPrognosisType: (_O = leg.arrivalPrognosisType) != null ? _O : void 0,
         departurePrognosisType: (_P = leg.departurePrognosisType) != null ? _P : void 0,
+        walking: (_Q = leg.walking) != null ? _Q : void 0,
+        distance: (_R = leg.distance) != null ? _R : void 0,
         remarks: leg.remarks ? groupRemarksByType(leg.remarks) : void 0,
         /*cycle: leg.cycle
             ? {
@@ -177,7 +182,7 @@ function mapJourneyToJourneyState(journey) {
                   nr: leg.cycle.nr ?? undefined,
               }
             : undefined,*/
-        alternatives: (_Q = leg.alternatives) == null ? void 0 : _Q.map((alt) => {
+        alternatives: (_S = leg.alternatives) == null ? void 0 : _S.map((alt) => {
           var _a3, _b3, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2, _l2, _m2, _n2;
           return {
             tripId: (_a3 = alt.tripId) != null ? _a3 : void 0,

@@ -129,7 +129,7 @@ const Departure = {
     native: {}
   }
 };
-const Stopinfo = {
+const StationStopInfo = {
   name: {
     _id: "",
     type: "state",
@@ -332,47 +332,6 @@ const Remarks = {
     native: {}
   }
 };
-const Station = {
-  id: {
-    _id: "",
-    type: "state",
-    common: {
-      name: "Station ID",
-      type: "string",
-      role: "text",
-      read: true,
-      write: false,
-      desc: "Station ID"
-    },
-    native: {}
-  },
-  name: {
-    _id: "",
-    type: "state",
-    common: {
-      name: "Station Name",
-      type: "string",
-      role: "text",
-      read: true,
-      write: false,
-      desc: "Station Name"
-    },
-    native: {}
-  },
-  type: {
-    _id: "",
-    type: "state",
-    common: {
-      name: "Station Type",
-      type: "string",
-      role: "text",
-      read: true,
-      write: false,
-      desc: "Station Type"
-    },
-    native: {}
-  }
-};
 const Leg = {
   tripId: {
     _id: "",
@@ -555,6 +514,32 @@ const Leg = {
       desc: "Departure Prognosis Type"
     },
     native: {}
+  },
+  walking: {
+    _id: "",
+    type: "state",
+    common: {
+      name: "Walking",
+      type: "boolean",
+      role: "indicator",
+      read: true,
+      write: false,
+      desc: "Is this section a transfer?"
+    },
+    native: {}
+  },
+  distance: {
+    _id: "",
+    type: "state",
+    common: {
+      name: "Distance",
+      type: "number",
+      role: "value.distance",
+      read: true,
+      write: false,
+      desc: "Distance in meters"
+    },
+    native: {}
   }
 };
 const AlternativeTrip = {
@@ -679,7 +664,7 @@ const genericStateObjects = {
       }
     },
     stopinfo: {
-      ...Stopinfo,
+      ...StationStopInfo,
       _channel: {
         _id: "",
         type: "folder",
@@ -729,13 +714,13 @@ const genericStateObjects = {
       },
       native: {}
     },
-    legs: {
+    section: {
       ...Leg,
       _channel: {
         _id: "",
         type: "folder",
         common: {
-          name: "Leg"
+          name: "Section"
         },
         native: {}
       },
@@ -743,12 +728,12 @@ const genericStateObjects = {
         _id: "",
         type: "folder",
         common: {
-          name: "Leg"
+          name: "Section"
         },
         native: {}
       },
       stationFrom: {
-        ...Station,
+        ...StationStopInfo,
         _channel: {
           _id: "",
           type: "folder",
@@ -770,7 +755,7 @@ const genericStateObjects = {
         }
       },
       stationTo: {
-        ...Station,
+        ...StationStopInfo,
         _channel: {
           _id: "",
           type: "folder",
@@ -842,6 +827,28 @@ const genericStateObjects = {
             native: {}
           }
         }
+      }
+    }
+  },
+  station: {
+    ...StationStopInfo,
+    _channel: {
+      _id: "",
+      type: "folder",
+      common: {
+        name: "Station"
+      },
+      native: {}
+    },
+    location: {
+      ...Location,
+      _channel: {
+        _id: "",
+        type: "folder",
+        common: {
+          name: "Location"
+        },
+        native: {}
       }
     }
   }

@@ -125,7 +125,7 @@ const Departure: ChangeTypeOfKeysForState<Departure, ioBroker.StateObject> = {
     },
 };
 
-const Stopinfo: ChangeTypeOfKeysForState<Stopinfo, ioBroker.StateObject> = {
+const StationStopInfo: ChangeTypeOfKeysForState<StationStopInfo, ioBroker.StateObject> = {
     name: {
         _id: '',
         type: 'state',
@@ -332,48 +332,6 @@ const Remarks: ChangeTypeOfKeysForState<Remarks, ioBroker.StateObject> = {
     },
 };
 
-const Station: ChangeTypeOfKeysForState<Station, ioBroker.StateObject> = {
-    id: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Station ID',
-            type: 'string',
-            role: 'text',
-            read: true,
-            write: false,
-            desc: 'Station ID',
-        },
-        native: {},
-    },
-    name: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Station Name',
-            type: 'string',
-            role: 'text',
-            read: true,
-            write: false,
-            desc: 'Station Name',
-        },
-        native: {},
-    },
-    type: {
-        _id: '',
-        type: 'state',
-        common: {
-            name: 'Station Type',
-            type: 'string',
-            role: 'text',
-            read: true,
-            write: false,
-            desc: 'Station Type',
-        },
-        native: {},
-    },
-};
-
 const Leg: ChangeTypeOfKeysForState<Leg, ioBroker.StateObject> = {
     tripId: {
         _id: '',
@@ -557,6 +515,32 @@ const Leg: ChangeTypeOfKeysForState<Leg, ioBroker.StateObject> = {
         },
         native: {},
     },
+    walking: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Walking',
+            type: 'boolean',
+            role: 'indicator',
+            read: true,
+            write: false,
+            desc: 'Is this section a transfer?',
+        },
+        native: {},
+    },
+    distance: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'Distance',
+            type: 'number',
+            role: 'value.distance',
+            read: true,
+            write: false,
+            desc: 'Distance in meters',
+        },
+        native: {},
+    },
 };
 
 const AlternativeTrip: ChangeTypeOfKeysForState<AlternativeTrip, ioBroker.StateObject> = {
@@ -634,20 +618,20 @@ export const genericStateObjects: {
         ChangeTypeOfKeysForState<Departure, ioBroker.StateObject> & {
             line: customChannelType & ChangeTypeOfKeysForState<Line, ioBroker.StateObject>;
             stopinfo: customChannelType &
-                ChangeTypeOfKeysForState<Stopinfo, ioBroker.StateObject> & {
+                ChangeTypeOfKeysForState<StationStopInfo, ioBroker.StateObject> & {
                     location: customChannelType & ChangeTypeOfKeysForState<Location, ioBroker.StateObject>;
                 };
             remarks: customChannelType & ChangeTypeOfKeysForState<Remarks, ioBroker.StateObject>;
         };
     journey: customChannelType & {
-        legs: customChannelType &
+        section: customChannelType &
             ChangeTypeOfKeysForState<Leg, ioBroker.StateObject> & {
                 stationFrom: customChannelType &
-                    ChangeTypeOfKeysForState<Station, ioBroker.StateObject> & {
+                    ChangeTypeOfKeysForState<StationStopInfo, ioBroker.StateObject> & {
                         location: customChannelType & ChangeTypeOfKeysForState<Location, ioBroker.StateObject>;
                     };
                 stationTo: customChannelType &
-                    ChangeTypeOfKeysForState<Station, ioBroker.StateObject> & {
+                    ChangeTypeOfKeysForState<StationStopInfo, ioBroker.StateObject> & {
                         location: customChannelType & ChangeTypeOfKeysForState<Location, ioBroker.StateObject>;
                     };
                 line: customChannelType & ChangeTypeOfKeysForState<Line, ioBroker.StateObject>;
@@ -658,6 +642,10 @@ export const genericStateObjects: {
                     };
             };
     };
+    station: customChannelType &
+        ChangeTypeOfKeysForState<StationStopInfo, ioBroker.StateObject> & {
+            location: customChannelType & ChangeTypeOfKeysForState<Location, ioBroker.StateObject>;
+        };
 } = {
     default: {
         _id: 'No_definition',
@@ -713,7 +701,7 @@ export const genericStateObjects: {
             },
         },
         stopinfo: {
-            ...Stopinfo,
+            ...StationStopInfo,
             _channel: {
                 _id: '',
                 type: 'folder',
@@ -763,13 +751,13 @@ export const genericStateObjects: {
             },
             native: {},
         },
-        legs: {
+        section: {
             ...Leg,
             _channel: {
                 _id: '',
                 type: 'folder',
                 common: {
-                    name: 'Leg',
+                    name: 'Section',
                 },
                 native: {},
             },
@@ -777,12 +765,12 @@ export const genericStateObjects: {
                 _id: '',
                 type: 'folder',
                 common: {
-                    name: 'Leg',
+                    name: 'Section',
                 },
                 native: {},
             },
             stationFrom: {
-                ...Station,
+                ...StationStopInfo,
                 _channel: {
                     _id: '',
                     type: 'folder',
@@ -804,7 +792,7 @@ export const genericStateObjects: {
                 },
             },
             stationTo: {
-                ...Station,
+                ...StationStopInfo,
                 _channel: {
                     _id: '',
                     type: 'folder',
@@ -879,6 +867,28 @@ export const genericStateObjects: {
             },
         },
     },
+    station: {
+        ...StationStopInfo,
+        _channel: {
+            _id: '',
+            type: 'folder',
+            common: {
+                name: 'Station',
+            },
+            native: {},
+        },
+        location: {
+            ...Location,
+            _channel: {
+                _id: '',
+                type: 'folder',
+                common: {
+                    name: 'Location',
+                },
+                native: {},
+            },
+        },
+    },
 };
 
 export const Defaults = {
@@ -922,18 +932,12 @@ type Remarks = {
     status: string;
 };
 
-type Stopinfo = {
-    name: string;
-    id: string;
-    type: string;
-};
-
 type Location = {
     latitude: number;
     longitude: number;
 };
 
-type Station = {
+type StationStopInfo = {
     id: string;
     name: string;
     type: string;
@@ -954,6 +958,8 @@ type Leg = {
     plannedDeparturePlatform: string;
     arrivalPrognosisType: string;
     departurePrognosisType: string;
+    walking?: boolean;
+    distance?: number;
 };
 
 type AlternativeTrip = {
