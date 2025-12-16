@@ -144,18 +144,12 @@ class TTAdapter extends utils.Adapter {
       this.log.error(this.library.translate("msg_hafasRequestFailed", err.message));
     }
     try {
-      await this.journeyPolling.startJourneys(pollInterval);
     } catch (err) {
       this.log.error(this.library.translate("msg_journeyQueryError", err.message));
     }
     try {
-      await this.fetchStationInformation();
     } catch (err) {
       this.log.error(this.library.translate("msg_stationQueryError", err.message));
-    }
-    try {
-    } catch (err) {
-      this.log.error(this.library.translate("msg_adapterInitializedfailed", err.message));
     }
   }
   /**

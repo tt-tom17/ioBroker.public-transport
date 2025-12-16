@@ -132,22 +132,15 @@ export class TTAdapter extends utils.Adapter {
         }
 
         try {
-            await this.journeyPolling.startJourneys(pollInterval);
+            //await this.journeyPolling.startJourneys(pollInterval);
         } catch (err) {
             this.log.error(this.library.translate('msg_journeyQueryError', (err as Error).message));
         }
 
         try {
-            await this.fetchStationInformation();
+            //await this.fetchStationInformation();
         } catch (err) {
             this.log.error(this.library.translate('msg_stationQueryError', (err as Error).message));
-        }
-
-        try {
-            //await this.journeysRequest.getJourneys('8011160', '8010205', this.activeService);
-            //await this.journeysRequest.getJourneys('900003201', '900550090', this.activeService);
-        } catch (err) {
-            this.log.error(this.library.translate('msg_adapterInitializedfailed', (err as Error).message));
         }
     }
 

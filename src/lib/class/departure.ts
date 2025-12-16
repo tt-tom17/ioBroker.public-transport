@@ -1,6 +1,6 @@
 import type * as Hafas from 'hafas-client';
 import type { TTAdapter } from '../../main';
-import { genericStateObjects } from '../const/definition';
+//import { genericStateObjects } from '../const/definition';
 import { BaseClass } from '../tools/library';
 import { mapDeparturesToDepartureStates } from '../tools/mapper';
 import { defaultDepartureOpt, type DepartureState, type Products } from '../types/types';
@@ -33,7 +33,7 @@ export class DepartureRequest extends BaseClass {
             // Antwort von HAFAS als vollständiger Typ
             const response = await service.getDepartures(stationId, mergedOptions);
             // Vollständiges JSON für Debugging
-            this.adapter.log.debug(JSON.stringify(response.departures, null, 1));
+            //this.adapter.log.debug(JSON.stringify(response.departures, null, 1));
             // Schreibe die Abfahrten in die States
             await this.writeDepartureStates(stationId, response.departures, products);
             return true;
@@ -141,15 +141,136 @@ export class DepartureRequest extends BaseClass {
             // Vor dem Schreiben alte States löschen
             await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.`, 2000);
             // JSON in die States schreiben
-            await this.library.writeFromJson(
-                `${this.adapter.namespace}.Stations.${stationId}.`,
-                'departure',
-                genericStateObjects,
-                departureStates,
-                true,
-            );
+            await this.writeStates(departureStates, stationId);
         } catch (err) {
             this.log.error(this.library.translate('msg_departureWriteError', (err as Error).message));
+        }
+    }
+
+    async writeStates(response: DepartureState[], stationId: string): Promise<void> {
+        for (const [index, obj] of response.entries()) {
+            try {
+                console.log(`\n=== Starte Objekt ${index + 1} von ${response.length} ===`);
+                const departureIndex = `Departures_${`00${index}`.slice(-2)}`;
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}`,
+                    undefined,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'channel',
+                        common: {
+                            name: departureIndex,
+                        },
+                        native: {},
+                    },
+                );
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.when`,
+                    obj.when,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_time'),
+                            type: 'string',
+                            role: 'date',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.plannedWhen`,
+                    obj.plannedWhen,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_plannedTime'),
+                            type: 'string',
+                            role: 'date',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.delay`,
+                    obj.delay,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_delayInSeconds'),
+                            type: 'number',
+                            role: 'time',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.platform`,
+                    obj.platform,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_platform'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.plannedPlatform`,
+                    obj.plannedPlatform,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_plannedPlatform'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.direction`,
+                    obj.direction,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_direction'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                console.log(`✓ Objekt ${index + 1} erfolgreich verarbeitet`);
+            } catch (error) {
+                console.error(`✗ Fehler bei Objekt ${index + 1}:`, error);
+                // Optional: Weiter mit nächstem Objekt oder abbrechen
+            }
         }
     }
 }
