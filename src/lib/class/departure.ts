@@ -30,7 +30,7 @@ export class DepartureRequest extends BaseClass {
                 throw new Error(this.library.translate('msg_departureNoStationId'));
             }
             const mergedOptions = { ...defaultDepartureOpt, ...options };
-            // Antwort von HAFAS als vollständiger Typ
+            // Antwort vom Tranport-Client als vollständiger Typ
             const response = await service.getDepartures(stationId, mergedOptions);
             // Vollständiges JSON für Debugging
             //this.adapter.log.debug(JSON.stringify(response.departures, null, 1));
@@ -111,7 +111,7 @@ export class DepartureRequest extends BaseClass {
                             _id: 'nicht_definieren',
                             type: 'folder',
                             common: {
-                                name: departures[0]?.stop?.name || 'Station',
+                                name: departure.customName || departure.name || 'Station',
                             },
                             native: {},
                         });
@@ -147,11 +147,25 @@ export class DepartureRequest extends BaseClass {
         }
     }
 
+    /**
+     * schreibt die Abfahrts-States in die ioBroker States.
+     *
+     * @param response  Die Abfahrts-States, die geschrieben werden sollen.
+     * @param stationId  Die ID der Station, für die die States geschrieben werden sollen.
+     */
     async writeStates(response: DepartureState[], stationId: string): Promise<void> {
         for (const [index, obj] of response.entries()) {
             try {
                 console.log(`\n=== Starte Objekt ${index + 1} von ${response.length} ===`);
                 const departureIndex = `Departures_${`00${index}`.slice(-2)}`;
+                let delayed = false,
+                    onTime = false;
+                if (obj.delay !== undefined && obj.delay >= 0) {
+                    delayed = true;
+                } else {
+                    onTime = true;
+                }
+                // Erstelle Channel Departures_XX und darunter die States
                 await this.library.writedp(
                     `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}`,
                     undefined,
@@ -164,8 +178,9 @@ export class DepartureRequest extends BaseClass {
                         native: {},
                     },
                 );
+                // Departure
                 await this.library.writedp(
-                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.when`,
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Departure`,
                     obj.when,
                     {
                         _id: 'nicht_definieren',
@@ -181,8 +196,9 @@ export class DepartureRequest extends BaseClass {
                     },
                     true,
                 );
+                // Planned Departure Time
                 await this.library.writedp(
-                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.plannedWhen`,
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.DeparturePlanned`,
                     obj.plannedWhen,
                     {
                         _id: 'nicht_definieren',
@@ -198,9 +214,10 @@ export class DepartureRequest extends BaseClass {
                     },
                     true,
                 );
+                // Delay in Seconds
                 await this.library.writedp(
-                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.delay`,
-                    obj.delay,
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Delay`,
+                    obj.delay || 0,
                     {
                         _id: 'nicht_definieren',
                         type: 'state',
@@ -215,8 +232,45 @@ export class DepartureRequest extends BaseClass {
                     },
                     true,
                 );
+                // Departure Delayed
                 await this.library.writedp(
-                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.platform`,
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.DepartureDelayed`,
+                    delayed,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_isDelayed'),
+                            type: 'boolean',
+                            role: 'indicator',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Departure On Time
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.DepartureOnTime`,
+                    onTime,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_isOnTime'),
+                            type: 'boolean',
+                            role: 'indicator',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Platform
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Platform`,
                     obj.platform,
                     {
                         _id: 'nicht_definieren',
@@ -232,8 +286,9 @@ export class DepartureRequest extends BaseClass {
                     },
                     true,
                 );
+                // Planned Platform
                 await this.library.writedp(
-                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.plannedPlatform`,
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.PlatformPlanned`,
                     obj.plannedPlatform,
                     {
                         _id: 'nicht_definieren',
@@ -249,14 +304,203 @@ export class DepartureRequest extends BaseClass {
                     },
                     true,
                 );
+                // Direction
                 await this.library.writedp(
-                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.direction`,
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Direction`,
                     obj.direction,
                     {
                         _id: 'nicht_definieren',
                         type: 'state',
                         common: {
                             name: this.library.translate('departure_direction'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Line Name
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Name`,
+                    obj.line?.name,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_lineName'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Line Product
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Product`,
+                    obj.line?.product,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_lineProduct'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Line Operator
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Operator`,
+                    obj.line?.operator,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_lineOperator'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Line Mode
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Mode`,
+                    obj.line?.mode,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_lineMode'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Remarks Channel
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Remarks`,
+                    undefined,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'channel',
+                        common: {
+                            name: this.library.translate('departure_remark'),
+                        },
+                        native: {},
+                    },
+                );
+                // Remark Hint
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Remarks.Hint`,
+                    obj.remarks?.hint,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_remarkHint'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Remark Status
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Remarks.Status`,
+                    obj.remarks?.status,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_remarkStatus'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Remark warning
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Remarks.Warning`,
+                    obj.remarks?.warning,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_remarkWarning'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Stop Channel
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Stop`,
+                    undefined,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'channel',
+                        common: {
+                            name: this.library.translate('departure_stop'),
+                        },
+                        native: {},
+                    },
+                );
+                // Stop Name
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Stop.Name`,
+                    obj.stopinfo?.name,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_stopName'),
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    },
+                    true,
+                );
+                // Stop Id
+                await this.library.writedp(
+                    `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Stop.Id`,
+                    obj.stopinfo?.id,
+                    {
+                        _id: 'nicht_definieren',
+                        type: 'state',
+                        common: {
+                            name: this.library.translate('departure_stopId'),
                             type: 'string',
                             role: 'text',
                             read: true,
