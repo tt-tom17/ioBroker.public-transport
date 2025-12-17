@@ -105,43 +105,61 @@ export class DepartureRequest extends BaseClass {
         try {
             if (this.adapter.config.stationConfig) {
                 for (const departure of this.adapter.config.stationConfig) {
-                    if (departure.id === stationId && departure.enabled === true) {
-                        // Erstelle Station
-                        await this.library.writedp(`${this.adapter.namespace}.Stations.${stationId}`, undefined, {
+                    // Erstelle Station
+                    await this.library.writedp(`${this.adapter.namespace}.Stations.${departure.id}`, undefined, {
+                        _id: 'nicht_definieren',
+                        type: 'folder',
+                        common: {
+                            name: departure.customName || departure.name || 'Station',
+                            statusStates: { onlineId: `${this.adapter.namespace}.Stations.${departure.id}.enabled` },
+                        },
+                        native: {},
+                    });
+                    await this.library.writedp(
+                        `${this.adapter.namespace}.Stations.${departure.id}.json`,
+                        departure.enabled ? JSON.stringify(departures) : '',
+                        {
                             _id: 'nicht_definieren',
-                            type: 'folder',
+                            type: 'state',
                             common: {
-                                name: departure.customName || departure.name || 'Station',
+                                name: this.library.translate('raw_departure_data'),
+                                type: 'string',
+                                role: 'json',
+                                read: true,
+                                write: false,
                             },
                             native: {},
-                        });
+                        },
+                    );
+                    await this.library.writedp(
+                        `${this.adapter.namespace}.Stations.${departure.id}.enabled`,
+                        departure.enabled,
+                        {
+                            _id: 'nicht_definieren',
+                            type: 'state',
+                            common: {
+                                name: this.library.translate('station_enabled'),
+                                type: 'boolean',
+                                role: 'indicator',
+                                read: true,
+                                write: false,
+                            },
+                            native: {},
+                        },
+                    );
+
+                    // Vor dem Schreiben alte States löschen
+                    await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${departure.id}.`, 2000);
+                    if (departure.enabled === true && departure.id === stationId) {
+                        // Filtere nach Produkten, falls angegeben
+                        const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
+                        // Konvertiere zu reduzierten States
+                        const departureStates: DepartureState[] = mapDeparturesToDepartureStates(filteredDepartures);
+                        // JSON in die States schreiben
+                        await this.writeStates(departureStates, stationId);
                     }
                 }
             }
-            await this.library.writedp(
-                `${this.adapter.namespace}.Stations.${stationId}.json`,
-                JSON.stringify(departures),
-                {
-                    _id: 'nicht_definieren',
-                    type: 'state',
-                    common: {
-                        name: this.library.translate('raw_departure_data'),
-                        type: 'string',
-                        role: 'json',
-                        read: true,
-                        write: false,
-                    },
-                    native: {},
-                },
-            );
-            // Filtere nach Produkten, falls angegeben
-            const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
-            // Konvertiere zu reduzierten States
-            const departureStates: DepartureState[] = mapDeparturesToDepartureStates(filteredDepartures);
-            // Vor dem Schreiben alte States löschen
-            await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.`, 2000);
-            // JSON in die States schreiben
-            await this.writeStates(departureStates, stationId);
         } catch (err) {
             this.log.error(this.library.translate('msg_departureWriteError', (err as Error).message));
         }

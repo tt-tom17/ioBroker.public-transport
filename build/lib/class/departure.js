@@ -103,38 +103,55 @@ class DepartureRequest extends import_library.BaseClass {
     try {
       if (this.adapter.config.stationConfig) {
         for (const departure of this.adapter.config.stationConfig) {
-          if (departure.id === stationId && departure.enabled === true) {
-            await this.library.writedp(`${this.adapter.namespace}.Stations.${stationId}`, void 0, {
+          await this.library.writedp(`${this.adapter.namespace}.Stations.${departure.id}`, void 0, {
+            _id: "nicht_definieren",
+            type: "folder",
+            common: {
+              name: departure.customName || departure.name || "Station",
+              statusStates: { onlineId: `${this.adapter.namespace}.Stations.${departure.id}.enabled` }
+            },
+            native: {}
+          });
+          await this.library.writedp(
+            `${this.adapter.namespace}.Stations.${departure.id}.json`,
+            departure.enabled ? JSON.stringify(departures) : "",
+            {
               _id: "nicht_definieren",
-              type: "folder",
+              type: "state",
               common: {
-                name: departure.customName || departure.name || "Station"
+                name: this.library.translate("raw_departure_data"),
+                type: "string",
+                role: "json",
+                read: true,
+                write: false
               },
               native: {}
-            });
+            }
+          );
+          await this.library.writedp(
+            `${this.adapter.namespace}.Stations.${departure.id}.enabled`,
+            departure.enabled,
+            {
+              _id: "nicht_definieren",
+              type: "state",
+              common: {
+                name: this.library.translate("station_enabled"),
+                type: "boolean",
+                role: "indicator",
+                read: true,
+                write: false
+              },
+              native: {}
+            }
+          );
+          await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${departure.id}.`, 2e3);
+          if (departure.enabled === true && departure.id === stationId) {
+            const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
+            const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(filteredDepartures);
+            await this.writeStates(departureStates, stationId);
           }
         }
       }
-      await this.library.writedp(
-        `${this.adapter.namespace}.Stations.${stationId}.json`,
-        JSON.stringify(departures),
-        {
-          _id: "nicht_definieren",
-          type: "state",
-          common: {
-            name: this.library.translate("raw_departure_data"),
-            type: "string",
-            role: "json",
-            read: true,
-            write: false
-          },
-          native: {}
-        }
-      );
-      const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
-      const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(filteredDepartures);
-      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.`, 2e3);
-      await this.writeStates(departureStates, stationId);
     } catch (err) {
       this.log.error(this.library.translate("msg_departureWriteError", err.message));
     }
