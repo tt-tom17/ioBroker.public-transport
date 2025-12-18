@@ -14,7 +14,7 @@ export class TTAdapter extends utils.Adapter {
     unload: boolean = false;
     hService!: HafasService;
     vService!: VendoService;
-    activeService!: ITransportService;
+    activeService!: ITransportService | undefined;
     depRequest!: DepartureRequest;
     journeysRequest!: JourneysRequest;
     stationRequest!: StationRequest;
@@ -207,7 +207,7 @@ export class TTAdapter extends utils.Adapter {
                         return;
                     }
 
-                    const results = await this.activeService.getLocations(query, { results: 20 });
+                    const results = await this.getActiveService().getLocations(query, { results: 20 });
 
                     // Formatiere Ergebnisse für die UI
                     const stations = results.map((location: any) => ({

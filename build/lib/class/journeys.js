@@ -21,12 +21,16 @@ __export(journeys_exports, {
   JourneysRequest: () => JourneysRequest
 });
 module.exports = __toCommonJS(journeys_exports);
+var import_station = require("../class/station");
 var import_library = require("../tools/library");
 var import_types = require("../types/types");
 class JourneysRequest extends import_library.BaseClass {
+  station;
+  service;
   constructor(adapter) {
     super(adapter);
     this.log.setLogPrefix("journeyReq");
+    this.station = new import_station.StationRequest(adapter);
   }
   /**
    *  Ruft Abfahrten für eine gegebene stationId ab und schreibt sie in die States.
@@ -43,10 +47,11 @@ class JourneysRequest extends import_library.BaseClass {
       if (!from || !to) {
         throw new Error(this.library.translate("msg_journeyNoFromTo"));
       }
+      this.service = service;
       const mergedOptions = { ...import_types.defaultJourneyOpt, ...options };
-      const response = await service.getJourneys(from, to, mergedOptions);
+      const response = await this.service.getJourneys(from, to, mergedOptions);
       this.adapter.log.debug(JSON.stringify(response, null, 1));
-      await this.writeJourneysStates(journeyId, response.journeys);
+      await this.writeJourneysStates(journeyId, response);
       return true;
     } catch (error) {
       this.log.error(this.library.translate("msg_journeyQueryError ", from, to, error.message));
@@ -100,33 +105,17 @@ class JourneysRequest extends import_library.BaseClass {
     try {
       if (this.adapter.config.journeyConfig) {
         for (const journey of this.adapter.config.journeyConfig) {
-          await this.library.writedp(`${this.adapter.namespace}.Journeys.${journeyId}`, void 0, {
+          await this.library.writedp(`${this.adapter.namespace}.Journeys.${journey.id}`, void 0, {
             _id: "nicht_definieren",
             type: "folder",
             common: {
               name: journey.customName,
-              statusStates: { onlineId: `${this.adapter.namespace}.Journeys.${journeyId}.enabled` }
+              statusStates: { onlineId: `${this.adapter.namespace}.Journeys.${journey.id}.enabled` }
             },
             native: {}
           });
           await this.library.writedp(
-            `${this.adapter.namespace}.Journeys.${journeyId}.json`,
-            JSON.stringify(journeys),
-            {
-              _id: "nicht_definieren",
-              type: "state",
-              common: {
-                name: this.library.translate("raw_journeys_data"),
-                type: "string",
-                role: "json",
-                read: true,
-                write: false
-              },
-              native: {}
-            }
-          );
-          await this.library.writedp(
-            `${this.adapter.namespace}.Journeys.${journeyId}.enabled`,
+            `${this.adapter.namespace}.Journeys.${journey.id}.enabled`,
             journey.enabled,
             {
               _id: "nicht_definieren",
@@ -152,36 +141,28 @@ class JourneysRequest extends import_library.BaseClass {
     }
   }
   async writesBaseStates(basePath, journeys) {
-    var _a, _b;
+    var _a, _b, _c, _d;
     try {
-      const stationFrom = ((_a = journeys[0].legs[0].origin) == null ? void 0 : _a.name) || "unknown";
-      const stationTo = ((_b = journeys[0].legs[journeys[0].legs.length - 1].destination) == null ? void 0 : _b.name) || "unknown";
-      await this.library.writedp(`${basePath}.StationFrom`, stationFrom, {
+      await this.library.writedp(`${basePath}.json`, JSON.stringify(journeys), {
         _id: "nicht_definieren",
         type: "state",
         common: {
-          name: this.library.translate("journey_fromStation"),
+          name: this.library.translate("raw_journeys_data"),
           type: "string",
-          role: "info.name",
+          role: "json",
           read: true,
           write: false
         },
         native: {}
       });
-      await this.library.writedp(`${basePath}.StationTo`, stationTo, {
-        _id: "nicht_definieren",
-        type: "state",
-        common: {
-          name: this.library.translate("journey_toStation"),
-          type: "string",
-          role: "info.name",
-          read: true,
-          write: false
-        },
-        native: {}
-      });
+      const stationFromId = ((_b = (_a = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _a[0].legs[0].origin) == null ? void 0 : _b.id) || void 0;
+      const stationToId = ((_d = (_c = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _c[0].legs[journeys.journeys[0].legs.length - 1].destination) == null ? void 0 : _d.id) || void 0;
+      const stationFrom = await this.station.getStation(stationFromId, this.service);
+      const stationTo = await this.station.getStation(stationToId, this.service);
+      await this.station.writeStationData(`${basePath}.StationFrom`, stationFrom);
+      await this.station.writeStationData(`${basePath}.StationTo`, stationTo);
     } catch (err) {
-      this.log.error(this.library.translate("msg_journeyStateWriteError", err.message));
+      this.log.error(this.library.translate("msg_journeyStateWriteError ", err.message));
     }
   }
 }

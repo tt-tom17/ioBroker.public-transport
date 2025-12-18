@@ -14,6 +14,15 @@ export class StationRequest extends BaseClass {
     private isStation(station: Hafas.Station | Hafas.Stop): station is Hafas.Station {
         return station.type === 'station';
     }
+
+    /**
+     * Ruft Informationen einer Station anhand der stationId ab.
+     *
+     * @param stationId     Die ID der Station.
+     * @param service       Der Service für die Abfrage.
+     * @param options       Zusätzliche Optionen für die Abfrage.
+     * @returns             Die Informationen der Station oder Haltestelle.
+     */
     public async getStation(
         stationId: string,
         service: any,
@@ -36,6 +45,12 @@ export class StationRequest extends BaseClass {
         }
     }
 
+    /**
+     * Schreibt die Stationsdaten in die States.
+     *
+     * @param basePath      Der Basis-Pfad für die States.
+     * @param stationData   Die Daten der Station oder Haltestelle.
+     */
     public async writeStationData(basePath: string, stationData: Hafas.Station | Hafas.Stop): Promise<void> {
         try {
             await this.library.writedp(`${basePath}.json`, JSON.stringify(stationData), {

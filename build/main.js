@@ -207,7 +207,7 @@ class TTAdapter extends utils.Adapter {
             }
             return;
           }
-          const results = await this.activeService.getLocations(query, { results: 20 });
+          const results = await this.getActiveService().getLocations(query, { results: 20 });
           const stations = results.map((location) => ({
             id: location.id,
             name: location.name,

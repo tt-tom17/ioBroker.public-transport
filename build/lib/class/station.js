@@ -32,6 +32,14 @@ class StationRequest extends import_library.BaseClass {
   isStation(station) {
     return station.type === "station";
   }
+  /**
+   * Ruft Informationen einer Station anhand der stationId ab.
+   *
+   * @param stationId     Die ID der Station.
+   * @param service       Der Service für die Abfrage.
+   * @param options       Zusätzliche Optionen für die Abfrage.
+   * @returns             Die Informationen der Station oder Haltestelle.
+   */
   async getStation(stationId, service, options) {
     try {
       if (!stationId) {
@@ -48,6 +56,12 @@ class StationRequest extends import_library.BaseClass {
       throw err;
     }
   }
+  /**
+   * Schreibt die Stationsdaten in die States.
+   *
+   * @param basePath      Der Basis-Pfad für die States.
+   * @param stationData   Die Daten der Station oder Haltestelle.
+   */
   async writeStationData(basePath, stationData) {
     try {
       await this.library.writedp(`${basePath}.json`, JSON.stringify(stationData), {
