@@ -156,7 +156,7 @@ export class DepartureRequest extends BaseClass {
                         // Konvertiere zu reduzierten States
                         const departureStates: DepartureState[] = mapDeparturesToDepartureStates(filteredDepartures);
                         // JSON in die States schreiben
-                        await this.writeStates(departureStates, stationId);
+                        await this.writeBaseStates(departureStates, stationId);
                     }
                 }
             }
@@ -171,7 +171,7 @@ export class DepartureRequest extends BaseClass {
      * @param response  Die Abfahrts-States, die geschrieben werden sollen.
      * @param stationId  Die ID der Station, für die die States geschrieben werden sollen.
      */
-    async writeStates(response: DepartureState[], stationId: string): Promise<void> {
+    async writeBaseStates(response: DepartureState[], stationId: string): Promise<void> {
         for (const [index, obj] of response.entries()) {
             try {
                 this.log.info2(`=== Starte Objekt ${index + 1} von ${response.length} ===`);

@@ -79,7 +79,11 @@ export class TTAdapter extends utils.Adapter {
                 this.log.info(
                     this.library.translate('msg_fetchingStationInfo', station.customName || station.name, station.id),
                 );
-                await this.stationRequest.getStation(station.id, this.activeService);
+                const stationData = await this.stationRequest.getStation(station.id, this.activeService);
+                await this.stationRequest.writeStationData(
+                    `${this.namespace}.Stations.${station.id}.info`,
+                    stationData,
+                );
             }
         }
     }
@@ -126,13 +130,13 @@ export class TTAdapter extends utils.Adapter {
         const pollInterval = this.config.pollInterval || 5;
 
         try {
-            await this.departurePolling.startDepartures(pollInterval);
+            //await this.departurePolling.startDepartures(pollInterval);
         } catch (err) {
             this.log.error(this.library.translate('msg_hafasRequestFailed', (err as Error).message));
         }
 
         try {
-            //await this.journeyPolling.startJourneys(pollInterval);
+            await this.journeyPolling.startJourneys(pollInterval);
         } catch (err) {
             this.log.error(this.library.translate('msg_journeyQueryError', (err as Error).message));
         }

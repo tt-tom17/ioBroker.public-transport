@@ -2,8 +2,8 @@ import type * as Hafas from 'hafas-client';
 import type { TTAdapter } from '../../main';
 import { genericStateObjects } from '../const/definition';
 import { BaseClass } from '../tools/library';
-import { mapStationToStationState } from '../tools/mapper';
-import type { StationState } from '../types/types';
+import { mapStationToStationState, mapStopToStopState } from '../tools/mapper';
+import type { StationState, Stopstate } from '../types/types';
 
 export class StationRequest extends BaseClass {
     constructor(adapter: TTAdapter) {
@@ -29,7 +29,6 @@ export class StationRequest extends BaseClass {
             const station: Hafas.Station | Hafas.Stop = await service.getStop(stationId, options);
             // Vollständiges JSON für Debugging
             this.adapter.log.debug(JSON.stringify(station, null, 1));
-            await this.writeStationData(station);
             return station;
         } catch (err) {
             this.log.error(this.library.translate('msg_stationQueryError', stationId, (err as Error).message));
@@ -37,37 +36,30 @@ export class StationRequest extends BaseClass {
         }
     }
 
-    async writeStationData(stationData: Hafas.Station | Hafas.Stop): Promise<void> {
+    public async writeStationData(basePath: string, stationData: Hafas.Station | Hafas.Stop): Promise<void> {
         try {
-            await this.library.writedp(
-                `${this.adapter.namespace}.Stations.${stationData.id}.info.json`,
-                JSON.stringify(stationData),
-                {
-                    _id: 'nicht_definieren',
-                    type: 'state',
-                    common: {
-                        name: 'raw station data',
-                        type: 'string',
-                        role: 'json',
-                        read: true,
-                        write: false,
-                    },
-                    native: {},
+            await this.library.writedp(`${basePath}.json`, JSON.stringify(stationData), {
+                _id: 'nicht_definieren',
+                type: 'state',
+                common: {
+                    name: 'raw station data',
+                    type: 'string',
+                    role: 'json',
+                    read: true,
+                    write: false,
                 },
-            );
+                native: {},
+            });
             if (this.isStation(stationData)) {
                 const stationState: StationState = mapStationToStationState(stationData);
                 // JSON in die States schreiben
-                await this.library.writeFromJson(
-                    `${this.adapter.namespace}.Stations.${stationData.id}.info`,
-                    'station',
-                    genericStateObjects,
-                    stationState,
-                    true,
-                );
+                await this.library.writeFromJson(`${basePath}`, 'station', genericStateObjects, stationState, true);
+            } else {
+                const stopState: Stopstate = mapStopToStopState(stationData);
+                await this.library.writeFromJson(`${basePath}`, 'station.stop', genericStateObjects, stopState, true);
             }
             // Vor dem Schreiben alte States löschen
-            await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationData.id}.info.`, 2000);
+            await this.library.garbageColleting(`${basePath}.`, 2000);
         } catch (err) {
             this.log.error(this.library.translate('msg_stationWriteError', (err as Error).message));
         }

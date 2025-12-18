@@ -1,5 +1,5 @@
 import type * as Hafas from 'hafas-client';
-import type { DepartureState, JourneyState, StationState } from '../types/types';
+import type { DepartureState, JourneyState, StationState, Stopstate } from '../types/types';
 /**
  * Gruppiert Remarks nach Typ und fasst deren Texte zusammen
  *
@@ -130,6 +130,34 @@ export function mapStationToStationState(station: Hafas.Station): StationState {
                               : undefined,
                       })) ?? undefined)
                 : undefined,
+    };
+}
+
+export function mapStopToStopState(stop: Hafas.Stop): Stopstate {
+    return {
+        name: stop.name ?? undefined,
+        id: stop.id ?? undefined,
+        type: stop.type ?? undefined,
+        location: stop.location
+            ? {
+                  latitude: stop.location.latitude ?? undefined,
+                  longitude: stop.location.longitude ?? undefined,
+              }
+            : undefined,
+        products: stop.products
+            ? {
+                  suburban: stop.products.suburban ?? undefined,
+                  subway: stop.products.subway ?? undefined,
+                  tram: stop.products.tram ?? undefined,
+                  bus: stop.products.bus ?? undefined,
+                  ferry: stop.products.ferry ?? undefined,
+                  express: stop.products.express ?? undefined,
+                  regional: stop.products.regional ?? undefined,
+                  regionalExpress: stop.products.regionalExpress ?? undefined,
+                  national: stop.products.national ?? undefined,
+                  nationalExpress: stop.products.nationalExpress ?? undefined,
+              }
+            : undefined,
     };
 }
 
