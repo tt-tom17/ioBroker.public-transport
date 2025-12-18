@@ -157,10 +157,12 @@ class JourneysRequest extends import_library.BaseClass {
       });
       const stationFromId = ((_b = (_a = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _a[0].legs[0].origin) == null ? void 0 : _b.id) || void 0;
       const stationToId = ((_d = (_c = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _c[0].legs[journeys.journeys[0].legs.length - 1].destination) == null ? void 0 : _d.id) || void 0;
-      const stationFrom = await this.station.getStation(stationFromId, this.service);
-      const stationTo = await this.station.getStation(stationToId, this.service);
-      await this.station.writeStationData(`${basePath}.StationFrom`, stationFrom);
-      await this.station.writeStationData(`${basePath}.StationTo`, stationTo);
+      if (stationFromId !== void 0 && stationToId !== void 0) {
+        const stationFrom = await this.station.getStation(stationFromId, this.service);
+        const stationTo = await this.station.getStation(stationToId, this.service);
+        await this.station.writeStationData(`${basePath}.StationFrom`, stationFrom);
+        await this.station.writeStationData(`${basePath}.StationTo`, stationTo);
+      }
     } catch (err) {
       this.log.error(this.library.translate("msg_journeyStateWriteError ", err.message));
     }

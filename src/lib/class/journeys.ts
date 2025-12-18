@@ -160,10 +160,12 @@ export class JourneysRequest extends BaseClass {
             const stationFromId = journeys?.journeys?.[0].legs[0].origin?.id || undefined;
             const stationToId =
                 journeys?.journeys?.[0].legs[journeys.journeys[0].legs.length - 1].destination?.id || undefined;
-            const stationFrom = await this.station.getStation(stationFromId!, this.service);
-            const stationTo = await this.station.getStation(stationToId!, this.service);
-            await this.station.writeStationData(`${basePath}.StationFrom`, stationFrom);
-            await this.station.writeStationData(`${basePath}.StationTo`, stationTo);
+            if (stationFromId !== undefined && stationToId !== undefined) {
+                const stationFrom = await this.station.getStation(stationFromId, this.service);
+                const stationTo = await this.station.getStation(stationToId, this.service);
+                await this.station.writeStationData(`${basePath}.StationFrom`, stationFrom);
+                await this.station.writeStationData(`${basePath}.StationTo`, stationTo);
+            }
 
             /* await this.library.writedp(`${basePath}.StationFrom`, stationFrom.name, {
                 _id: 'nicht_definieren',
