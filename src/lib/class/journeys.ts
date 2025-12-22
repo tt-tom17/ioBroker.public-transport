@@ -7,6 +7,7 @@ import { defaultJourneyOpt } from '../types/types';
 export class JourneysRequest extends BaseClass {
     private station: StationRequest;
     private service: any;
+    private delayOffset: number = this.adapter.config.delayOffset || 2;
 
     constructor(adapter: TTAdapter) {
         super(adapter);
@@ -175,7 +176,7 @@ export class JourneysRequest extends BaseClass {
             // Verbindungen
             await this.writeJourneyStates(basePath, journeys);
         } catch (err) {
-            this.log.error(this.library.translate('msg_journeyBaseStateWriteError ', (err as Error).message));
+            this.log.error(this.library.translate('msg_journeyBaseStateWriteError', (err as Error).message));
         }
     }
     /**
@@ -189,10 +190,13 @@ export class JourneysRequest extends BaseClass {
             if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
                 for (const [index, journey] of journeys.journeys.entries()) {
                     const journeyPath = `${basePath}.Journey_${`00${index}`.slice(-2)}`;
-                    const [arrivalDelayed, arrivalOnTime] = this.getDelayStatus(journey.legs[0].arrivalDelay, 0);
+                    const [arrivalDelayed, arrivalOnTime] = this.getDelayStatus(
+                        journey.legs[0].arrivalDelay,
+                        this.delayOffset,
+                    );
                     const [departureDelayed, departureOnTime] = this.getDelayStatus(
                         journey.legs[journey.legs.length - 1].departureDelay,
-                        0,
+                        this.delayOffset,
                     );
                     const changes = journey.legs.filter((leg: { walking: boolean }) => leg.walking === true).length;
                     const durationMinutes = Math.round(
@@ -810,7 +814,7 @@ export class JourneysRequest extends BaseClass {
      * @param offSet Zeitoffset in minuten
      * @returns [delayed, onTime] - delayed=true wenn verspätet, onTime=true wenn pünktlich
      */
-    private getDelayStatus(Delay: number | null | undefined, offSet: number = 0): [boolean, boolean] {
+    private getDelayStatus(Delay: number | null | undefined, offSet: number): [boolean, boolean] {
         if (Delay === null || Delay === undefined) {
             return [false, false]; // Keine Daten verfügbar
         }

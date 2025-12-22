@@ -12,6 +12,7 @@ declare global {
 			journeyConfig?: JourneyConfig[];
 			pollInterval?: number;
 			suppressInfoLogs?: boolean;
+			delayOffset?: number;
 		}
 		
 		interface StationConfig {
@@ -23,6 +24,7 @@ declare global {
 			offsetTime?: number;
 			duration?: number;
 			products?: Products;
+			delayOffset?: number;
 		}
 
 		interface Products {
@@ -55,6 +57,7 @@ declare global {
 			accessibility?: 'partial' | 'complete';
 			bike?: boolean;
 			products?: Products;
+			delayOffset?: number;
 		}
 	}
 }

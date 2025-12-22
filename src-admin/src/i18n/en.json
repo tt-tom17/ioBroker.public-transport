@@ -14,6 +14,8 @@
     "clientConfig_pollInterval_helper": "Interval in minutes at which departures are updated.",
     "clientConfig_suppressInfoLogs_label": "Suppress Info Logs",
     "clientConfig_suppressInfoLogs_helper": "Enable to suppress informational logs.",
+    "clientConfig_delayOffset_label": "Delay Offset (minutes)",
+    "clientConfig_delayOffset_helper": "Offset in minutes for a delay to still be considered on time.",
     "settings_title": "Settings",
     "stationSearch_title": "Search Station",
     "stationSearch_input_label": "Station Name",

@@ -14,6 +14,8 @@
     "clientConfig_pollInterval_helper": "Intervall in Minuten, in dem die Abfahrten aktualisiert werden.",
     "clientConfig_suppressInfoLogs_label": "Info-Logs unterdrücken",
     "clientConfig_suppressInfoLogs_helper": "Aktivieren, um Informations-Logs zu unterdrücken.",
+    "clientConfig_delayOffset_label": "Verspätungsoffset (Minuten)",
+    "clientConfig_delayOffset_helper": "Offset in Minuten, damit die Verspätung noch als Pünktlich gilt.",
     "settings_title": "Einstellungen",
     "stationSearch_title": "Station suchen",
     "stationSearch_input_label": "Stationsname",

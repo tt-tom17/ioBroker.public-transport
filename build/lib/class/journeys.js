@@ -27,6 +27,7 @@ var import_types = require("../types/types");
 class JourneysRequest extends import_library.BaseClass {
   station;
   service;
+  delayOffset = this.adapter.config.delayOffset || 2;
   constructor(adapter) {
     super(adapter);
     this.log.setLogPrefix("journeyReq");
@@ -171,7 +172,7 @@ class JourneysRequest extends import_library.BaseClass {
       }
       await this.writeJourneyStates(basePath, journeys);
     } catch (err) {
-      this.log.error(this.library.translate("msg_journeyBaseStateWriteError ", err.message));
+      this.log.error(this.library.translate("msg_journeyBaseStateWriteError", err.message));
     }
   }
   /**
@@ -185,10 +186,13 @@ class JourneysRequest extends import_library.BaseClass {
       if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
         for (const [index, journey] of journeys.journeys.entries()) {
           const journeyPath = `${basePath}.Journey_${`00${index}`.slice(-2)}`;
-          const [arrivalDelayed, arrivalOnTime] = this.getDelayStatus(journey.legs[0].arrivalDelay, 0);
+          const [arrivalDelayed, arrivalOnTime] = this.getDelayStatus(
+            journey.legs[0].arrivalDelay,
+            this.delayOffset
+          );
           const [departureDelayed, departureOnTime] = this.getDelayStatus(
             journey.legs[journey.legs.length - 1].departureDelay,
-            0
+            this.delayOffset
           );
           const changes = journey.legs.filter((leg) => leg.walking === true).length;
           const durationMinutes = Math.round(
@@ -754,7 +758,7 @@ class JourneysRequest extends import_library.BaseClass {
    * @param offSet Zeitoffset in minuten
    * @returns [delayed, onTime] - delayed=true wenn verspätet, onTime=true wenn pünktlich
    */
-  getDelayStatus(Delay, offSet = 0) {
+  getDelayStatus(Delay, offSet) {
     if (Delay === null || Delay === void 0) {
       return [false, false];
     }

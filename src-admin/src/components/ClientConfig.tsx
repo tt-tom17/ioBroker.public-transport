@@ -49,6 +49,7 @@ class ClientConfig extends ConfigGeneric<ConfigGenericProps, ConfigGenericState>
         const pollInterval = ConfigGeneric.getValue(this.props.data, 'pollInterval') as number;
         const logUnknownTokens = ConfigGeneric.getValue(this.props.data, 'logUnknownTokens') as boolean;
         const suppressInfoLogs = ConfigGeneric.getValue(this.props.data, 'suppressInfoLogs') as boolean;
+        const delayOffset = ConfigGeneric.getValue(this.props.data, 'delayOffset') as number;
 
         const handlePollIntervalChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
             const newValue = parseInt(event.target.value, 10);
@@ -74,6 +75,11 @@ class ClientConfig extends ConfigGeneric<ConfigGenericProps, ConfigGenericState>
 
         const handleSuppressInfoLogsChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
             await this.onChange('suppressInfoLogs', event.target.checked);
+        };
+
+        const handleDelayOffsetChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+            const newValue = parseInt(event.target.value, 2);
+            await this.onChange('delayOffset', isNaN(newValue) ? 0 : newValue);
         };
 
         return (
@@ -184,6 +190,24 @@ class ClientConfig extends ConfigGeneric<ConfigGenericProps, ConfigGenericState>
                             label={I18n.t('clientConfig_suppressInfoLogs_label')}
                         />
                         <FormHelperText>{I18n.t('clientConfig_suppressInfoLogs_helper')}</FormHelperText>
+                    </FormControl>
+
+                    <FormControl
+                        sx={{ flex: { sm: '1 1 0' }, minWidth: { xs: '100%', sm: 200 } }}
+                        disabled={disabled}
+                        fullWidth
+                    >
+                        {/* Delay Offset for On Time */}
+                        <TextField
+                            label={I18n.t('clientConfig_delayOffset_label')}
+                            type="number"
+                            value={delayOffset || 2}
+                            onChange={handleDelayOffsetChange}
+                            fullWidth
+                            size="small"
+                            inputProps={{ min: 5, step: 1, max: 60 }}
+                            helperText={I18n.t('clientConfig_delayOffset_helper')}
+                        />
                     </FormControl>
                 </Box>
             </Box>
