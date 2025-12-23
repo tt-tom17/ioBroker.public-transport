@@ -1,7 +1,7 @@
 import { ConfigGeneric, type ConfigGenericProps, type ConfigGenericState } from '@iobroker/json-config';
 import { Box, Dialog } from '@mui/material';
 import React from 'react';
-import { defaultProducts, type Products } from './ProductSelector';
+import { defaultProducts, filterAvailableProducts, type Products } from './ProductSelector';
 import StationConfig from './StationConfig';
 import StationList from './StationList';
 import StationSearch from './StationSearch';
@@ -13,6 +13,8 @@ interface Station {
     enabled?: boolean;
     numDepartures?: number;
     products?: Products;
+    availableProducts?: Partial<Products>; // Produkte die von HAFAS für diese Station zurückgegeben wurden
+    client_profile?: string;
 }
 
 interface DepartureManagerState extends ConfigGenericState {
@@ -26,7 +28,7 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
         super(props);
 
         // Initialisiere stations aus props.data.departures
-        const departures = ConfigGeneric.getValue(this.props.data, 'departures');
+        const departures = ConfigGeneric.getValue(this.props.data, 'stationConfig');
         const initialStations = Array.isArray(departures) ? departures : [];
 
         this.state = {
@@ -39,7 +41,7 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
 
     componentDidMount(): void {
         // Lade gespeicherte Stationen beim Start
-        const departures = ConfigGeneric.getValue(this.props.data, 'departures');
+        const departures = ConfigGeneric.getValue(this.props.data, 'stationConfig');
         if (Array.isArray(departures)) {
             this.setState({ stations: departures });
         }
@@ -47,7 +49,7 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
 
     componentDidUpdate(prevProps: ConfigGenericProps): void {
         if (prevProps.data !== this.props.data) {
-            const departures = ConfigGeneric.getValue(this.props.data, 'departures');
+            const departures = ConfigGeneric.getValue(this.props.data, 'stationConfig');
             if (Array.isArray(departures)) {
                 this.setState({ stations: departures });
             }
@@ -58,14 +60,28 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
         this.setState({ showSearchDialog: true });
     };
 
-    handleStationSelected = async (stationId: string, stationName: string): Promise<void> => {
+    handleStationSelected = async (
+        stationId: string,
+        stationName: string,
+        availableProducts?: Partial<Products>,
+    ): Promise<void> => {
+        // Filtere nur die Products mit true Werten
+        const filteredProducts = filterAvailableProducts(availableProducts);
+
+        // Hole die aktuellen ClientConfig-Einstellungen
+        const serviceType = ConfigGeneric.getValue(this.props.data, 'serviceType') as string;
+        const profile = ConfigGeneric.getValue(this.props.data, 'profile') as string;
+        const client_profile = `${serviceType || 'unknown'}:${profile || 'unknown'}`;
+
         const newStation: Station = {
             id: stationId,
             name: stationName,
             customName: stationName,
             enabled: true,
             numDepartures: 10,
-            products: { ...defaultProducts },
+            products: filteredProducts ? { ...filteredProducts } : { ...defaultProducts },
+            availableProducts: filteredProducts,
+            client_profile,
         };
 
         // Prüfe ob Station bereits existiert
@@ -78,7 +94,7 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
             });
 
             // Verwende this.onChange() statt this.props.onChange()
-            await this.onChange('departures', updatedStations);
+            await this.onChange('stationConfig', updatedStations);
         }
 
         this.setState({ showSearchDialog: false });
@@ -89,7 +105,7 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
         this.setState({ stations: updatedStations });
 
         // Verwende this.onChange() statt this.props.onChange()
-        await this.onChange('departures', updatedStations);
+        await this.onChange('stationConfig', updatedStations);
 
         // Wenn die gelöschte Station ausgewählt war, Auswahl zurücksetzen
         if (this.state.selectedStationId === stationId) {
@@ -105,7 +121,7 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
         this.setState({ stations: updatedStations });
 
         // Verwende this.onChange() statt this.props.onChange()
-        await this.onChange('departures', updatedStations);
+        await this.onChange('stationConfig', updatedStations);
     };
 
     handleStationClick = (stationId: string): void => {

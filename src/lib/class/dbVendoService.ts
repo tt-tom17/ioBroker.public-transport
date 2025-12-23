@@ -81,7 +81,7 @@ export class VendoService implements ITransportService {
      * @param options optionale Routenoptionen
      * @returns Promise mit Routen
      */
-    async getRoute(fromId: string, toId: string, options?: Vendo.JourneysOptions): Promise<Vendo.Journeys> {
+    async getJourneys(fromId: string, toId: string, options?: Vendo.JourneysOptions): Promise<Vendo.Journeys> {
         return this.getNavClient().journeys(fromId, toId, options);
     }
 

@@ -14,28 +14,31 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-interface Station {
+interface Journey {
     id: string;
-    name: string;
-    customName?: string;
+    customName: string;
+    fromStationId?: string;
+    fromStationName?: string;
+    toStationId?: string;
+    toStationName?: string;
     enabled?: boolean;
     client_profile?: string;
 }
 
-interface StationListProps {
-    stations: Station[];
-    selectedStationId: string | null;
-    onAddStation: () => void;
-    onDeleteStation: (stationId: string) => void;
-    onStationClick: (stationId: string) => void;
+interface JourneyListProps {
+    journeys: Journey[];
+    selectedJourneyId: string | null;
+    onAddJourney: () => void;
+    onDeleteJourney: (journeyId: string) => void;
+    onJourneyClick: (journeyId: string) => void;
 }
 
-const StationList: React.FC<StationListProps> = ({
-    stations,
-    selectedStationId,
-    onAddStation,
-    onDeleteStation,
-    onStationClick,
+const JourneyList: React.FC<JourneyListProps> = ({
+    journeys,
+    selectedJourneyId,
+    onAddJourney,
+    onDeleteJourney,
+    onJourneyClick,
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -51,20 +54,20 @@ const StationList: React.FC<StationListProps> = ({
                     mb: 2,
                 }}
             >
-                <Typography variant="h6">{I18n.t('stations_overview')}</Typography>
+                <Typography variant="h6">{I18n.t('journeys_overview')}</Typography>
                 <Button
                     variant="contained"
                     startIcon={<AddIcon />}
-                    onClick={onAddStation}
+                    onClick={onAddJourney}
                     size="small"
                     fullWidth={isMobile}
                 >
-                    {I18n.t('add_station')}
+                    {I18n.t('add_journey')}
                 </Button>
             </Box>
 
             <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-                {stations.length === 0 ? (
+                {journeys.length === 0 ? (
                     <Box
                         sx={{
                             display: 'flex',
@@ -74,45 +77,46 @@ const StationList: React.FC<StationListProps> = ({
                             color: 'text.secondary',
                         }}
                     >
-                        <Typography variant="body2">{I18n.t('no_stations_hint')}</Typography>
+                        <Typography variant="body2">{I18n.t('no_journeys_hint')}</Typography>
                     </Box>
                 ) : (
                     <List>
-                        {stations.map(station => (
+                        {journeys.map(journey => (
                             <ListItemButton
-                                key={station.id}
-                                selected={selectedStationId === station.id}
+                                key={journey.id}
+                                selected={selectedJourneyId === journey.id}
                                 sx={{
                                     border: '1px solid',
                                     borderColor: 'divider',
                                     borderRadius: 1,
                                     mb: 1,
-                                    opacity: station.enabled === false ? 0.5 : 1,
+                                    opacity: journey.enabled === false ? 0.5 : 1,
                                     '&.Mui-selected': {
                                         backgroundColor: 'action.selected',
                                     },
                                 }}
-                                onClick={() => onStationClick(station.id)}
+                                onClick={() => onJourneyClick(journey.id)}
                             >
                                 <ListItemText
-                                    primary={station.customName || station.name}
+                                    primary={journey.customName}
                                     secondary={
                                         <>
-                                            <Typography
-                                                component="span"
-                                                variant="caption"
-                                                display="block"
-                                            >
-                                                ID: {station.id}
-                                            </Typography>
-                                            {station.customName && station.customName !== station.name && (
+                                            {journey.fromStationName && (
                                                 <Typography
                                                     component="span"
                                                     variant="caption"
                                                     display="block"
-                                                    color="text.secondary"
                                                 >
-                                                    Original: {station.name}
+                                                    {I18n.t('from')}: {journey.fromStationName}
+                                                </Typography>
+                                            )}
+                                            {journey.toStationName && (
+                                                <Typography
+                                                    component="span"
+                                                    variant="caption"
+                                                    display="block"
+                                                >
+                                                    {I18n.t('to')}: {journey.toStationName}
                                                 </Typography>
                                             )}
                                             <Typography
@@ -120,15 +124,15 @@ const StationList: React.FC<StationListProps> = ({
                                                 variant="caption"
                                                 display="block"
                                             >
-                                                {station.enabled === false ? I18n.t('disabled') : I18n.t('active')}
+                                                {journey.enabled === false ? I18n.t('disabled') : I18n.t('active')}
                                             </Typography>
-                                            {station.client_profile && (
+                                            {journey.client_profile && (
                                                 <Typography
                                                     component="span"
                                                     variant="caption"
                                                     display="block"
                                                 >
-                                                    {station.client_profile}
+                                                    {journey.client_profile}
                                                 </Typography>
                                             )}
                                         </>
@@ -141,7 +145,7 @@ const StationList: React.FC<StationListProps> = ({
                                     aria-label="delete"
                                     onClick={e => {
                                         e.stopPropagation();
-                                        onDeleteStation(station.id);
+                                        onDeleteJourney(journey.id);
                                     }}
                                     size="small"
                                 >
@@ -156,4 +160,4 @@ const StationList: React.FC<StationListProps> = ({
     );
 };
 
-export default StationList;
+export default JourneyList;

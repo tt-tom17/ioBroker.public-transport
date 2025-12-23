@@ -29,51 +29,63 @@ class StationRequest extends import_library.BaseClass {
     super(adapter);
     this.log.setLogPrefix("stationReq");
   }
+  isStation(station) {
+    return station.type === "station";
+  }
+  /**
+   * Ruft Informationen einer Station anhand der stationId ab.
+   *
+   * @param stationId     Die ID der Station.
+   * @param service       Der Service für die Abfrage.
+   * @param options       Zusätzliche Optionen für die Abfrage.
+   * @returns             Die Informationen der Station oder Haltestelle.
+   */
   async getStation(stationId, service, options) {
     try {
       if (!stationId) {
-        throw new Error("Keine stationId \xFCbergeben");
+        throw new Error(this.library.translate("msg_departureNoStationId"));
       }
       if (!service) {
-        throw new Error("Kein Service \xFCbergeben");
+        throw new Error(this.library.translate("msg_noServices"));
       }
       const station = await service.getStop(stationId, options);
       this.adapter.log.debug(JSON.stringify(station, null, 1));
       return station;
     } catch (err) {
-      this.log.error(`Fehler bei der Abfrage der Station ${stationId}: ${err.message}`);
+      this.log.error(this.library.translate("msg_stationQueryError", stationId, err.message));
       throw err;
     }
   }
-  async writeStationData(stationData) {
+  /**
+   * Schreibt die Stationsdaten in die States.
+   *
+   * @param basePath      Der Basis-Pfad für die States.
+   * @param stationData   Die Daten der Station oder Haltestelle.
+   */
+  async writeStationData(basePath, stationData) {
     try {
-      await this.library.writedp(
-        `${this.adapter.namespace}.Stations.${stationData.id}.info.json`,
-        JSON.stringify(stationData),
-        {
-          _id: "nicht_definieren",
-          type: "state",
-          common: {
-            name: "raw station data",
-            type: "string",
-            role: "json",
-            read: true,
-            write: false
-          },
-          native: {}
-        }
-      );
-      const stationState = (0, import_mapper.mapStationToStationState)(stationData);
-      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationData.id}.info.`, 2e3);
-      await this.library.writeFromJson(
-        `${this.adapter.namespace}.Stations.${stationData.id}.info`,
-        "station",
-        import_definition.genericStateObjects,
-        stationState,
-        true
-      );
+      await this.library.writedp(`${basePath}.json`, JSON.stringify(stationData), {
+        _id: "nicht_definieren",
+        type: "state",
+        common: {
+          name: "raw_station_data",
+          type: "string",
+          role: "json",
+          read: true,
+          write: false
+        },
+        native: {}
+      });
+      if (this.isStation(stationData)) {
+        const stationState = (0, import_mapper.mapStationToStationState)(stationData);
+        await this.library.writeFromJson(`${basePath}`, "station", import_definition.genericStateObjects, stationState, true);
+      } else {
+        const stopState = (0, import_mapper.mapStopToStopState)(stationData);
+        await this.library.writeFromJson(`${basePath}`, "station.stop", import_definition.genericStateObjects, stopState, true);
+      }
+      await this.library.garbageColleting(`${basePath}.`, 2e3);
     } catch (err) {
-      this.log.error(`Fehler beim Schreiben der Station-Daten: ${err.message}`);
+      this.log.error(this.library.translate("msg_stationWriteError", err.message));
     }
   }
 }

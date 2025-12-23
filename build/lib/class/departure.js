@@ -21,7 +21,6 @@ __export(departure_exports, {
   DepartureRequest: () => DepartureRequest
 });
 module.exports = __toCommonJS(departure_exports);
-var import_definition = require("../const/definition");
 var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
@@ -42,17 +41,14 @@ class DepartureRequest extends import_library.BaseClass {
   async getDepartures(stationId, service, options = {}, products) {
     try {
       if (!stationId) {
-        throw new Error("Keine stationId \xFCbergeben");
+        throw new Error(this.library.translate("msg_departureNoStationId"));
       }
       const mergedOptions = { ...import_types.defaultDepartureOpt, ...options };
       const response = await service.getDepartures(stationId, mergedOptions);
-      this.adapter.log.debug(JSON.stringify(response.departures, null, 1));
       await this.writeDepartureStates(stationId, response.departures, products);
       return true;
     } catch (error) {
-      this.log.error(
-        `Fehler bei der Abfrage der Abfahrten f\xFCr Station ${stationId}: ${error.message}`
-      );
+      this.log.error(this.library.translate("msg_departureQueryError", stationId, error.message));
       return false;
     }
   }
@@ -70,18 +66,27 @@ class DepartureRequest extends import_library.BaseClass {
       return [...departures];
     }
     return departures.filter((departure) => {
-      var _a, _b, _c;
+      var _a, _b, _c, _d, _e;
       const lineProduct = (_a = departure.line) == null ? void 0 : _a.product;
       if (!lineProduct) {
         this.log.info2(
-          `Abfahrt ${((_b = departure.line) == null ? void 0 : _b.name) || "unbekannt"} Richtung ${departure.direction} gefiltert: Keine Produktinfo vorhanden`
+          this.library.translate(
+            "msg_departureFilterNoProduct",
+            ((_b = departure.line) == null ? void 0 : _b.name) || "unbekannt / unknown",
+            (_c = departure.direction) != null ? _c : "unbekannt / unknown"
+          )
         );
         return false;
       }
       const isEnabled = enabledProducts.includes(lineProduct);
       if (!isEnabled) {
         this.log.info2(
-          `Abfahrt ${(_c = departure.line) == null ? void 0 : _c.name} Richtung ${departure.direction} gefiltert: Produkt "${lineProduct}" nicht aktiviert`
+          this.library.translate(
+            "msg_departureFilterProductDisabled",
+            ((_d = departure.line) == null ? void 0 : _d.name) || "unbekannt / unknown",
+            (_e = departure.direction) != null ? _e : "unbekannt / unknown",
+            lineProduct
+          )
         );
       }
       return isEnabled;
@@ -95,50 +100,426 @@ class DepartureRequest extends import_library.BaseClass {
    * @param products      Die aktivierten Produkte (true = erlaubt)
    */
   async writeDepartureStates(stationId, departures, products) {
-    var _a, _b;
     try {
-      if (this.adapter.config.departures) {
-        for (const departure of this.adapter.config.departures) {
-          if (departure.id === stationId && departure.enabled === true) {
-            await this.library.writedp(`${this.adapter.namespace}.Stations.${stationId}`, void 0, {
+      if (this.adapter.config.stationConfig) {
+        for (const departure of this.adapter.config.stationConfig) {
+          await this.library.writedp(`${this.adapter.namespace}.Stations.${departure.id}`, void 0, {
+            _id: "nicht_definieren",
+            type: "folder",
+            common: {
+              name: departure.customName || departure.name || "Station",
+              statusStates: { onlineId: `${this.adapter.namespace}.Stations.${departure.id}.enabled` }
+            },
+            native: {}
+          });
+          await this.library.writedp(
+            `${this.adapter.namespace}.Stations.${departure.id}.json`,
+            departure.enabled ? JSON.stringify(departures) : "",
+            {
               _id: "nicht_definieren",
-              type: "folder",
+              type: "state",
               common: {
-                name: ((_b = (_a = departures[0]) == null ? void 0 : _a.stop) == null ? void 0 : _b.name) || "Station"
+                name: this.library.translate("raw_departure_data"),
+                type: "string",
+                role: "json",
+                read: true,
+                write: false
               },
               native: {}
-            });
+            }
+          );
+          await this.library.writedp(
+            `${this.adapter.namespace}.Stations.${departure.id}.enabled`,
+            departure.enabled,
+            {
+              _id: "nicht_definieren",
+              type: "state",
+              common: {
+                name: this.library.translate("station_enabled"),
+                type: "boolean",
+                role: "indicator",
+                read: true,
+                write: false
+              },
+              native: {}
+            }
+          );
+          await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${departure.id}.`, 2e3);
+          if (departure.enabled === true && departure.id === stationId) {
+            const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
+            const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(filteredDepartures);
+            await this.writeBaseStates(departureStates, stationId);
           }
         }
       }
-      await this.library.writedp(
-        `${this.adapter.namespace}.Stations.${stationId}.json`,
-        JSON.stringify(departures),
-        {
-          _id: "nicht_definieren",
-          type: "state",
-          common: {
-            name: "raw departures data",
-            type: "string",
-            role: "json",
-            read: true,
-            write: false
-          },
-          native: {}
-        }
-      );
-      const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
-      const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(filteredDepartures);
-      await this.library.garbageColleting(`${this.adapter.namespace}.Stations.${stationId}.`, 2e3);
-      await this.library.writeFromJson(
-        `${this.adapter.namespace}.Stations.${stationId}.`,
-        "departure",
-        import_definition.genericStateObjects,
-        departureStates,
-        true
-      );
     } catch (err) {
-      this.log.error(`Fehler beim Schreiben der Abfahrten: ${err.message}`);
+      this.log.error(this.library.translate("msg_departureWriteError", err.message));
+    }
+  }
+  /**
+   * schreibt die Abfahrts-States in die ioBroker States.
+   *
+   * @param response  Die Abfahrts-States, die geschrieben werden sollen.
+   * @param stationId  Die ID der Station, für die die States geschrieben werden sollen.
+   */
+  async writeBaseStates(response, stationId) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+    for (const [index, obj] of response.entries()) {
+      try {
+        this.log.info2(`=== Starte Objekt ${index + 1} von ${response.length} ===`);
+        const departureIndex = `Departures_${`00${index}`.slice(-2)}`;
+        let delayed = false, onTime = false;
+        if (obj.delay !== void 0 && obj.delay >= 0) {
+          delayed = true;
+        } else {
+          onTime = true;
+        }
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}`,
+          void 0,
+          {
+            _id: "nicht_definieren",
+            type: "channel",
+            common: {
+              name: departureIndex
+            },
+            native: {}
+          }
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Departure`,
+          obj.when,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_time"),
+              type: "string",
+              role: "date",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.DeparturePlanned`,
+          obj.plannedWhen,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_plannedTime"),
+              type: "string",
+              role: "date",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Delay`,
+          obj.delay || 0,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_delayInSeconds"),
+              type: "number",
+              role: "time",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.DepartureDelayed`,
+          delayed,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_isDelayed"),
+              type: "boolean",
+              role: "indicator",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.DepartureOnTime`,
+          onTime,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_isOnTime"),
+              type: "boolean",
+              role: "indicator",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Platform`,
+          obj.platform,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_platform"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.PlatformPlanned`,
+          obj.plannedPlatform,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_plannedPlatform"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Direction`,
+          obj.direction,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_direction"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Name`,
+          (_a = obj.line) == null ? void 0 : _a.name,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_lineName"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Product`,
+          (_b = obj.line) == null ? void 0 : _b.product,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_lineProduct"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Operator`,
+          (_c = obj.line) == null ? void 0 : _c.operator,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_lineOperator"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Mode`,
+          (_d = obj.line) == null ? void 0 : _d.mode,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_lineMode"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Remarks`,
+          void 0,
+          {
+            _id: "nicht_definieren",
+            type: "channel",
+            common: {
+              name: this.library.translate("departure_remark")
+            },
+            native: {}
+          }
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Remarks.Hint`,
+          (_e = obj.remarks) == null ? void 0 : _e.hint,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_remarkHint"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Remarks.Status`,
+          (_f = obj.remarks) == null ? void 0 : _f.status,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_remarkStatus"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Remarks.Warning`,
+          (_g = obj.remarks) == null ? void 0 : _g.warning,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_remarkWarning"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Stop`,
+          void 0,
+          {
+            _id: "nicht_definieren",
+            type: "channel",
+            common: {
+              name: this.library.translate("departure_stop")
+            },
+            native: {}
+          }
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Stop.Name`,
+          (_h = obj.stopinfo) == null ? void 0 : _h.name,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_stopName"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Stop.Id`,
+          (_i = obj.stopinfo) == null ? void 0 : _i.id,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_stopId"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        await this.library.writedp(
+          `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}.Stop.Type`,
+          (_j = obj.stopinfo) == null ? void 0 : _j.type,
+          {
+            _id: "nicht_definieren",
+            type: "state",
+            common: {
+              name: this.library.translate("departure_stopType"),
+              type: "string",
+              role: "text",
+              read: true,
+              write: false
+            },
+            native: {}
+          },
+          true
+        );
+        this.log.info2(`\u2713 Objekt ${index + 1} erfolgreich verarbeitet`);
+      } catch (err) {
+        this.log.error(`\u2717 Fehler bei Objekt ${index + 1}:`, err.message);
+      }
     }
   }
 }

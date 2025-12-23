@@ -28,34 +28,7 @@ const defaultDepartureOpt = {
   language: "de"
 };
 const defaultJourneyOpt = {
-  departure: null,
-  arrival: null,
-  earlierThan: null,
-  laterThan: null,
-  results: null,
-  via: null,
-  stopovers: false,
-  transfers: -1,
-  transferTime: 0,
-  accessibility: "none",
-  bike: false,
-  walkingSpeed: "normal",
-  startWithWalking: true,
-  products: {
-    suburban: true,
-    subway: true,
-    tram: true,
-    bus: true,
-    ferry: true,
-    express: true,
-    regional: true
-  },
-  tickets: false,
-  polylines: false,
-  subStops: true,
-  entrances: true,
-  remarks: true,
-  scheduledDays: false,
+  results: 3,
   language: "de"
 };
 // Annotate the CommonJS export names for ESM import in node:

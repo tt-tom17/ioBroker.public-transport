@@ -27,6 +27,19 @@
                     "bundlerType": "module"
                 }
             }
+        },
+        "_journeyManager": {
+            "type": "panel",
+            "label": "journey_manager",
+            "items": {
+                "journeys": {
+                    "type": "custom",
+                    "i18n": true,
+                    "url": "custom/customComponents.js",
+                    "name": "AdminComponentEasyAccessSet/Components/JourneyManager",
+                    "bundlerType": "module"
+                }
+            }
         }
     }
 }

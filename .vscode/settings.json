@@ -10,6 +10,7 @@
 
     // WICHTIG: diese beiden dürfen NICHT in codeActionsOnSave stehen
     "eslint.validate": ["javascript", "typescript", "typescriptreact", "vue", "json"],
+    "eslint.workingDirectories": [ { "mode": "auto"} ],
 
     "editor.formatOnSave": false,
 

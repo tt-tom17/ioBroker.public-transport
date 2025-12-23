@@ -34,7 +34,10 @@ module.exports = __toCommonJS(main_exports);
 var utils = __toESM(require("@iobroker/adapter-core"));
 var import_dbVendoService = require("./lib/class/dbVendoService");
 var import_departure = require("./lib/class/departure");
+var import_departurePolling = require("./lib/class/departurePolling");
 var import_hafasService = require("./lib/class/hafasService");
+var import_journeyPolling = require("./lib/class/journeyPolling");
+var import_journeys = require("./lib/class/journeys");
 var import_station = require("./lib/class/station");
 var import_library = require("./lib/tools/library");
 class TTAdapter extends utils.Adapter {
@@ -44,8 +47,10 @@ class TTAdapter extends utils.Adapter {
   vService;
   activeService;
   depRequest;
+  journeysRequest;
   stationRequest;
-  pollIntervall;
+  departurePolling;
+  journeyPolling;
   /**
    * Creates an instance of the adapter.
    *
@@ -71,9 +76,39 @@ class TTAdapter extends utils.Adapter {
    */
   getActiveService() {
     if (!this.activeService) {
-      throw new Error("Transport-Service wurde noch nicht initialisiert");
+      throw new Error(this.library.translate("msg_transportServiceNotInitialized"));
     }
     return this.activeService;
+  }
+  /**
+   * Holt Stationsinformationen für alle aktivierten Stationen.
+   */
+  async fetchStationInformation() {
+    if (!this.getActiveService()) {
+      return;
+    }
+    if (!this.config.stationConfig || this.config.stationConfig.length === 0) {
+      this.log.warn(this.library.translate("msg_noStationsConfiguredForStationInfo"));
+      return;
+    }
+    const enabledStations = this.config.stationConfig.filter((station) => station.enabled);
+    if (enabledStations.length === 0) {
+      this.log.warn(this.library.translate("msg_noEnabledStations"));
+      return;
+    }
+    this.log.info(this.library.translate("msg_activeStationsFound", enabledStations.length));
+    for (const station of enabledStations) {
+      if (station.id) {
+        this.log.info(
+          this.library.translate("msg_fetchingStationInfo", station.customName || station.name, station.id)
+        );
+        const stationData = await this.stationRequest.getStation(station.id, this.activeService);
+        await this.stationRequest.writeStationData(
+          `${this.namespace}.Stations.${station.id}.info`,
+          stationData
+        );
+      }
+    }
   }
   /**
    * Is called when databases are connected and adapter received configuration.
@@ -103,156 +138,22 @@ class TTAdapter extends utils.Adapter {
     }
     this.depRequest = new import_departure.DepartureRequest(this);
     this.stationRequest = new import_station.StationRequest(this);
-    const pollInterval = (this.config.pollInterval || 5) * 60 * 1e3;
+    this.journeysRequest = new import_journeys.JourneysRequest(this);
+    this.departurePolling = new import_departurePolling.DeparturePolling(this);
+    this.journeyPolling = new import_journeyPolling.JourneyPolling(this);
+    const pollInterval = this.config.pollInterval || 5;
     try {
-      if (this.getActiveService()) {
-        if (!this.config.departures || this.config.departures.length === 0) {
-          this.log.warn(this.library.translate("msg_noStationsConfigured"));
-          return;
-        }
-        const enabledStations = this.config.departures.filter((station) => station.enabled);
-        if (enabledStations.length === 0) {
-          this.log.warn(this.library.translate("msg_noEnabledStationsFound"));
-          return;
-        }
-        this.log.info(this.library.translate("msg_activeStationsFound", enabledStations.length));
-        for (const station of enabledStations) {
-          this.log.info(
-            this.library.translate("msg_stationListEntry", station.customName || station.name, station.id)
-          );
-        }
-        this.pollIntervall = this.setInterval(async () => {
-          let successCount2 = 0;
-          let errorCount2 = 0;
-          for (const station of enabledStations) {
-            if (!station.id) {
-              this.log.warn(
-                this.library.translate("msg_stationNoValidId", station.customName || station.name)
-              );
-              continue;
-            }
-            const offsetTime = station.offsetTime ? station.offsetTime : 0;
-            const when = offsetTime === 0 ? void 0 : new Date(Date.now() + offsetTime * 60 * 1e3);
-            const duration = station.duration ? station.duration : 10;
-            const results = station.numDepartures ? station.numDepartures : 10;
-            const options = { results, when, duration };
-            const products = station.products ? station.products : void 0;
-            this.log.info(
-              this.library.translate(
-                "msg_fetchingDepartures",
-                station.customName || station.name,
-                station.id
-              )
-            );
-            const success = await this.depRequest.getDepartures(
-              station.id,
-              this.activeService,
-              options,
-              products
-            );
-            if (success) {
-              successCount2++;
-              this.log.info(
-                this.library.translate(
-                  "msg_departuresUpdated",
-                  station.customName || station.name,
-                  station.id
-                )
-              );
-            } else {
-              errorCount2++;
-              this.log.warn(
-                this.library.translate(
-                  "msg_departuresUpdateFailed",
-                  station.customName || station.name,
-                  station.id
-                )
-              );
-            }
-          }
-          this.log.info(this.library.translate("msg_queryCompleted", successCount2, errorCount2));
-          this.log.info(this.library.translate("msg_waitingForNextQuery", pollInterval / 6e4));
-        }, pollInterval);
-        let successCount = 0;
-        let errorCount = 0;
-        for (const station of enabledStations) {
-          if (station.id) {
-            this.log.info(
-              this.library.translate(
-                "msg_fetchingDepartures",
-                station.customName || station.name,
-                station.id
-              )
-            );
-            const offsetTime = station.offsetTime ? station.offsetTime : 0;
-            const when = offsetTime === 0 ? void 0 : new Date(Date.now() + offsetTime * 60 * 1e3);
-            const duration = station.duration ? station.duration : 10;
-            const results = station.numDepartures ? station.numDepartures : 10;
-            const options = { results, when, duration };
-            const products = station.products ? station.products : void 0;
-            const success = await this.depRequest.getDepartures(
-              station.id,
-              this.activeService,
-              options,
-              products
-            );
-            if (success) {
-              successCount++;
-              this.log.info(
-                this.library.translate(
-                  "msg_departuresUpdated",
-                  station.customName || station.name,
-                  station.id
-                )
-              );
-            } else {
-              errorCount++;
-              this.log.warn(
-                this.library.translate(
-                  "msg_departuresUpdateFailed",
-                  station.customName || station.name,
-                  station.id
-                )
-              );
-            }
-          }
-        }
-        this.log.info(this.library.translate("msg_firstQueryCompleted", successCount, errorCount));
-        this.log.info(this.library.translate("msg_waitingForNextQuery", pollInterval / 6e4));
-      }
+      await this.departurePolling.startDepartures(pollInterval);
     } catch (err) {
       this.log.error(this.library.translate("msg_hafasRequestFailed", err.message));
     }
     try {
-      if (this.getActiveService()) {
-        if (!this.config.departures || this.config.departures.length === 0) {
-          this.log.warn(this.library.translate("msg_noStationsConfiguredForStationInfo"));
-          return;
-        }
-        const enabledStations = this.config.departures.filter((station) => station.enabled);
-        if (enabledStations.length === 0) {
-          this.log.warn(this.library.translate("msg_noEnabledStations"));
-          return;
-        }
-        this.log.info(this.library.translate("msg_activeStationsFound", enabledStations.length));
-        for (const station of enabledStations) {
-          this.log.info(
-            this.library.translate("msg_stationListEntry", station.customName || station.name, station.id)
-          );
-        }
-        for (const station of enabledStations) {
-          if (station.id) {
-            this.log.info(
-              this.library.translate(
-                "msg_fetchingStationInfo",
-                station.customName || station.name,
-                station.id
-              )
-            );
-            await this.stationRequest.getStation(station.id, this.activeService);
-          }
-        }
-      }
+      await this.journeyPolling.startJourneys(pollInterval);
+    } catch (err) {
+      this.log.error(this.library.translate("msg_journeyQueryError", err.message));
+    }
+    try {
+      await this.fetchStationInformation();
     } catch (err) {
       this.log.error(this.library.translate("msg_stationQueryError", err.message));
     }
@@ -263,10 +164,10 @@ class TTAdapter extends utils.Adapter {
    * @param callback Function to be called when unload is complete
    */
   onUnload(callback) {
+    var _a, _b;
     try {
-      if (this.pollIntervall) {
-        clearInterval(this.pollIntervall);
-      }
+      (_a = this.departurePolling) == null ? void 0 : _a.stop();
+      (_b = this.journeyPolling) == null ? void 0 : _b.stop();
       callback();
     } catch {
       callback();
@@ -308,7 +209,7 @@ class TTAdapter extends utils.Adapter {
             }
             return;
           }
-          const results = await this.activeService.getLocations(query, { results: 20 });
+          const results = await this.getActiveService().getLocations(query, { results: 20 });
           const stations = results.map((location) => ({
             id: location.id,
             name: location.name,

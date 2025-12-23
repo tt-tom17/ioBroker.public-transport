@@ -8,12 +8,14 @@ declare global {
 			profile?: string;
 			clientName?: string;
 			logUnknownTokens?: boolean;
-			departures?: DepartureStation[];
+			stationConfig?: StationConfig[];
+			journeyConfig?: JourneyConfig[];
 			pollInterval?: number;
 			suppressInfoLogs?: boolean;
+			delayOffset?: number;
 		}
 		
-		interface DepartureStation {
+		interface StationConfig {
 			id: string;
 			name: string;
 			customName?: string;
@@ -22,16 +24,40 @@ declare global {
 			offsetTime?: number;
 			duration?: number;
 			products?: Products;
+			delayOffset?: number;
 		}
 
 		interface Products {
-    		suburban?: boolean;   // S-Bahn
-    		subway?: boolean;     // U-Bahn
-    		tram?: boolean;       // Straßenbahn
-    		bus?: boolean;        // Bus
-    		ferry?: boolean;      // Fähre
-    		express?: boolean;    // ICE/IC/EC (Fernverkehr)
-    		regional?: boolean;   // RE/RB (Regionalverkehr)
+    		suburban?: boolean;         // S-Bahn
+    		subway?: boolean;           // U-Bahn
+    		tram?: boolean;             // Straßenbahn
+    		bus?: boolean;              // Bus
+    		ferry?: boolean;            // Fähre
+    		regional?: boolean;         // RE/RB (Regionalverkehr)
+    		regionalExpress?: boolean;  // RE (Regional Express)
+    		nationalExpress?: boolean;  // ICE (InterCity Express)
+    		national?: boolean;         // IC/EC (InterCity)
+		}
+
+		interface JourneyConfig {
+			id: string;
+			customName: string;
+			enabled: boolean;
+			numResults?: number;
+			fromStationId: string;
+			fromStationName: string;
+			toStationId: string;
+			toStationName: string;
+			departure?: string;
+			arrival?: string;
+			via?: string;
+			stopovers?: boolean;
+			transfers?: number;
+			transferTime?: number;
+			accessibility?: 'partial' | 'complete';
+			bike?: boolean;
+			products?: Products;
+			delayOffset?: number;
 		}
 	}
 }

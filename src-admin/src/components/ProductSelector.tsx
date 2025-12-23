@@ -9,13 +9,15 @@ import { Box, Checkbox, FormControlLabel, Paper, Typography } from '@mui/materia
 import React from 'react';
 
 export interface Products {
-    suburban: boolean;
-    subway: boolean;
-    tram: boolean;
-    bus: boolean;
-    ferry: boolean;
-    express: boolean;
-    regional: boolean;
+    suburban?: boolean;
+    subway?: boolean;
+    tram?: boolean;
+    bus?: boolean;
+    ferry?: boolean;
+    regional?: boolean;
+    regionalExpress?: boolean;
+    nationalExpress?: boolean;
+    national?: boolean;
 }
 
 export const defaultProducts: Products = {
@@ -24,18 +26,44 @@ export const defaultProducts: Products = {
     tram: true,
     bus: true,
     ferry: true,
-    express: true,
     regional: true,
+    regionalExpress: true,
+    nationalExpress: true,
+    national: true,
+};
+
+/**
+ * Filtert availableProducts und behält nur Keys mit true Werten
+ *
+ * @param products - Die zu filternden Produkte
+ * @returns Gefilterte Produkte nur mit true Werten
+ */
+export const filterAvailableProducts = (products?: Partial<Products>): Partial<Products> | undefined => {
+    if (!products) {
+        return undefined;
+    }
+
+    const filtered: Partial<Products> = {};
+    Object.entries(products).forEach(([key, value]) => {
+        if (value === true) {
+            filtered[key as keyof Products] = true;
+        }
+    });
+
+    return Object.keys(filtered).length > 0 ? filtered : undefined;
 };
 
 interface ProductSelectorProps {
     products: Products;
     onChange: (products: Products) => void;
     disabled?: boolean;
+    availableProducts?: Partial<Products>; // Definiert welche Produkte für diese Station/Journey verfügbar sind
 }
 
 const productConfig = [
-    { key: 'express', label: 'ice_ic_ec', icon: DirectionsRailwayIcon, color: '#EC0016' },
+    { key: 'nationalExpress', label: 'ice', icon: DirectionsRailwayIcon, color: '#FF6F00' },
+    { key: 'national', label: 'ic_ec', icon: DirectionsRailwayIcon, color: '#EC0016' },
+    { key: 'regionalExpress', label: 're', icon: TrainIcon, color: '#0A3D62' },
     { key: 'regional', label: 're_rb', icon: TrainIcon, color: '#1455C0' },
     { key: 'suburban', label: 's_bahn', icon: TramIcon, color: '#008D4F' },
     { key: 'subway', label: 'u_bahn', icon: SubwayIcon, color: '#0065AE' },
@@ -44,10 +72,20 @@ const productConfig = [
     { key: 'ferry', label: 'ferry', icon: DirectionsBoatIcon, color: '#0080C8' },
 ] as const;
 
-const ProductSelector: React.FC<ProductSelectorProps> = ({ products, onChange, disabled = false }) => {
+const ProductSelector: React.FC<ProductSelectorProps> = ({
+    products,
+    onChange,
+    disabled = false,
+    availableProducts,
+}) => {
     const handleChange = (key: keyof Products, checked: boolean): void => {
         onChange({ ...products, [key]: checked });
     };
+
+    // Filtere nur die Produkte, die in availableProducts definiert sind
+    const visibleProducts = availableProducts
+        ? productConfig.filter(({ key }) => key in availableProducts)
+        : productConfig;
 
     return (
         <Paper
@@ -61,7 +99,7 @@ const ProductSelector: React.FC<ProductSelectorProps> = ({ products, onChange, d
                 {I18n.t('transport_types')}
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {productConfig.map(({ key, label, icon: Icon, color }) => (
+                {visibleProducts.map(({ key, label, icon: Icon, color }) => (
                     <FormControlLabel
                         key={key}
                         disabled={disabled}

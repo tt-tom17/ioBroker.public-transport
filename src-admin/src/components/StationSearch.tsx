@@ -38,13 +38,16 @@ interface Station {
         subway?: boolean;
         express?: boolean;
         regional?: boolean;
+        regionalExpress?: boolean;
+        nationalExpress?: boolean;
+        national?: boolean;
         ferry?: boolean;
         suburban?: boolean;
     };
 }
 
 interface StationSearchProps extends ConfigGenericProps {
-    onStationSelected?: (stationId: string, stationName: string) => void;
+    onStationSelected?: (stationId: string, stationName: string, availableProducts?: Station['products']) => void;
     onClose?: () => void;
 }
 
@@ -151,7 +154,11 @@ class StationSearch extends ConfigGeneric<StationSearchProps, StationSearchState
         if (this.state.selectedStation) {
             console.log('Confirming station:', this.state.selectedStation);
             if (this.props.onStationSelected) {
-                this.props.onStationSelected(this.state.selectedStation.id, this.state.selectedStation.name);
+                this.props.onStationSelected(
+                    this.state.selectedStation.id,
+                    this.state.selectedStation.name,
+                    this.state.selectedStation.products,
+                );
             }
             this.handleClose();
         }
@@ -171,6 +178,9 @@ class StationSearch extends ConfigGeneric<StationSearchProps, StationSearchState
             subway: { icon: <SubwayIcon fontSize="small" />, label: 'u_bahn', color: '#0065AE' },
             express: { icon: <DirectionsRailwayIcon fontSize="small" />, label: 'ice_ic_ec', color: '#ec0016' },
             regional: { icon: <TrainIcon fontSize="small" />, label: 're_rb', color: '#1455C0' },
+            regionalExpress: { icon: <TrainIcon fontSize="small" />, label: 're', color: '#0A3D62' },
+            nationalExpress: { icon: <TrainIcon fontSize="small" />, label: 'ice', color: '#FF6F00' },
+            national: { icon: <TrainIcon fontSize="small" />, label: 'ic_ec', color: '#FF8F00' },
             ferry: { icon: <DirectionsBoatIcon fontSize="small" />, label: 'ferry', color: '#0080C8' },
             suburban: { icon: <TrainIcon fontSize="small" />, label: 's_bahn', color: '#008D4F' },
         };

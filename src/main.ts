@@ -1,7 +1,10 @@
 import * as utils from '@iobroker/adapter-core';
 import { VendoService } from './lib/class/dbVendoService';
 import { DepartureRequest } from './lib/class/departure';
+import { DeparturePolling } from './lib/class/departurePolling';
 import { HafasService } from './lib/class/hafasService';
+import { JourneyPolling } from './lib/class/journeyPolling';
+import { JourneysRequest } from './lib/class/journeys';
 import { StationRequest } from './lib/class/station';
 import { Library } from './lib/tools/library';
 import type { ITransportService } from './lib/types/transportService';
@@ -11,10 +14,12 @@ export class TTAdapter extends utils.Adapter {
     unload: boolean = false;
     hService!: HafasService;
     vService!: VendoService;
-    activeService!: ITransportService;
+    activeService!: ITransportService | undefined;
     depRequest!: DepartureRequest;
+    journeysRequest!: JourneysRequest;
     stationRequest!: StationRequest;
-    private pollIntervall: ioBroker.Interval | undefined;
+    private departurePolling!: DeparturePolling;
+    private journeyPolling!: JourneyPolling;
 
     /**
      * Creates an instance of the adapter.
@@ -43,9 +48,44 @@ export class TTAdapter extends utils.Adapter {
      */
     public getActiveService(): ITransportService {
         if (!this.activeService) {
-            throw new Error('Transport-Service wurde noch nicht initialisiert');
+            throw new Error(this.library.translate('msg_transportServiceNotInitialized'));
         }
         return this.activeService;
+    }
+
+    /**
+     * Holt Stationsinformationen für alle aktivierten Stationen.
+     */
+    private async fetchStationInformation(): Promise<void> {
+        if (!this.getActiveService()) {
+            return;
+        }
+
+        if (!this.config.stationConfig || this.config.stationConfig.length === 0) {
+            this.log.warn(this.library.translate('msg_noStationsConfiguredForStationInfo'));
+            return;
+        }
+
+        const enabledStations = this.config.stationConfig.filter(station => station.enabled);
+
+        if (enabledStations.length === 0) {
+            this.log.warn(this.library.translate('msg_noEnabledStations'));
+            return;
+        }
+
+        this.log.info(this.library.translate('msg_activeStationsFound', enabledStations.length));
+        for (const station of enabledStations) {
+            if (station.id) {
+                this.log.info(
+                    this.library.translate('msg_fetchingStationInfo', station.customName || station.name, station.id),
+                );
+                const stationData = await this.stationRequest.getStation(station.id, this.activeService);
+                await this.stationRequest.writeStationData(
+                    `${this.namespace}.Stations.${station.id}.info`,
+                    stationData,
+                );
+            }
+        }
     }
 
     /**
@@ -83,175 +123,26 @@ export class TTAdapter extends utils.Adapter {
 
         this.depRequest = new DepartureRequest(this);
         this.stationRequest = new StationRequest(this);
+        this.journeysRequest = new JourneysRequest(this);
+        this.departurePolling = new DeparturePolling(this);
+        this.journeyPolling = new JourneyPolling(this);
 
-        const pollInterval = (this.config.pollInterval || 5) * 60 * 1000;
+        const pollInterval = this.config.pollInterval || 5;
+
         try {
-            if (this.getActiveService()) {
-                // Prüfe ob Stationen konfiguriert sind
-                if (!this.config.departures || this.config.departures.length === 0) {
-                    this.log.warn(this.library.translate('msg_noStationsConfigured'));
-                    return;
-                }
-
-                // Hole alle aktivierten Stationen
-                const enabledStations = this.config.departures.filter(station => station.enabled);
-
-                if (enabledStations.length === 0) {
-                    this.log.warn(this.library.translate('msg_noEnabledStationsFound'));
-                    return;
-                }
-
-                // Logge gefundene Stationen
-                this.log.info(this.library.translate('msg_activeStationsFound', enabledStations.length));
-                for (const station of enabledStations) {
-                    this.log.info(
-                        this.library.translate('msg_stationListEntry', station.customName || station.name, station.id),
-                    );
-                }
-
-                // Starte Abfrage für jede aktivierte Station
-                this.pollIntervall = this.setInterval(async () => {
-                    let successCount = 0;
-                    let errorCount = 0;
-                    for (const station of enabledStations) {
-                        if (!station.id) {
-                            this.log.warn(
-                                this.library.translate('msg_stationNoValidId', station.customName || station.name),
-                            );
-                            continue;
-                        }
-                        const offsetTime = station.offsetTime ? station.offsetTime : 0;
-                        const when: Date | undefined =
-                            offsetTime === 0 ? undefined : new Date(Date.now() + offsetTime * 60 * 1000);
-                        const duration = station.duration ? station.duration : 10;
-                        const results = station.numDepartures ? station.numDepartures : 10;
-                        const options = { results: results, when: when, duration: duration };
-                        const products = station.products ? station.products : undefined;
-                        this.log.info(
-                            this.library.translate(
-                                'msg_fetchingDepartures',
-                                station.customName || station.name,
-                                station.id,
-                            ),
-                        );
-                        const success = await this.depRequest.getDepartures(
-                            station.id,
-                            this.activeService,
-                            options,
-                            products,
-                        );
-                        if (success) {
-                            successCount++;
-                            this.log.info(
-                                this.library.translate(
-                                    'msg_departuresUpdated',
-                                    station.customName || station.name,
-                                    station.id,
-                                ),
-                            );
-                        } else {
-                            errorCount++;
-                            this.log.warn(
-                                this.library.translate(
-                                    'msg_departuresUpdateFailed',
-                                    station.customName || station.name,
-                                    station.id,
-                                ),
-                            );
-                        }
-                    }
-                    this.log.info(this.library.translate('msg_queryCompleted', successCount, errorCount));
-                    this.log.info(this.library.translate('msg_waitingForNextQuery', pollInterval / 60_000));
-                }, pollInterval);
-
-                // Erste Abfrage sofort ausführen
-                let successCount = 0;
-                let errorCount = 0;
-                for (const station of enabledStations) {
-                    if (station.id) {
-                        this.log.info(
-                            this.library.translate(
-                                'msg_fetchingDepartures',
-                                station.customName || station.name,
-                                station.id,
-                            ),
-                        );
-                        const offsetTime = station.offsetTime ? station.offsetTime : 0;
-                        const when: Date | undefined =
-                            offsetTime === 0 ? undefined : new Date(Date.now() + offsetTime * 60 * 1000);
-                        const duration = station.duration ? station.duration : 10;
-                        const results = station.numDepartures ? station.numDepartures : 10;
-                        const options = { results: results, when: when, duration: duration };
-                        const products = station.products ? station.products : undefined;
-                        const success = await this.depRequest.getDepartures(
-                            station.id,
-                            this.activeService,
-                            options,
-                            products,
-                        );
-                        if (success) {
-                            successCount++;
-                            this.log.info(
-                                this.library.translate(
-                                    'msg_departuresUpdated',
-                                    station.customName || station.name,
-                                    station.id,
-                                ),
-                            );
-                        } else {
-                            errorCount++;
-                            this.log.warn(
-                                this.library.translate(
-                                    'msg_departuresUpdateFailed',
-                                    station.customName || station.name,
-                                    station.id,
-                                ),
-                            );
-                        }
-                    }
-                }
-                this.log.info(this.library.translate('msg_firstQueryCompleted', successCount, errorCount));
-                this.log.info(this.library.translate('msg_waitingForNextQuery', pollInterval / 60_000));
-            }
+            await this.departurePolling.startDepartures(pollInterval);
         } catch (err) {
             this.log.error(this.library.translate('msg_hafasRequestFailed', (err as Error).message));
         }
 
         try {
-            if (this.getActiveService()) {
-                // Prüfe ob Stationen konfiguriert sind
-                if (!this.config.departures || this.config.departures.length === 0) {
-                    this.log.warn(this.library.translate('msg_noStationsConfiguredForStationInfo'));
-                    return;
-                }
-                // Hole alle aktivierten Stationen
-                const enabledStations = this.config.departures.filter(station => station.enabled);
+            await this.journeyPolling.startJourneys(pollInterval);
+        } catch (err) {
+            this.log.error(this.library.translate('msg_journeyQueryError', (err as Error).message));
+        }
 
-                if (enabledStations.length === 0) {
-                    this.log.warn(this.library.translate('msg_noEnabledStations'));
-                    return;
-                }
-
-                // Logge gefundene Stationen
-                this.log.info(this.library.translate('msg_activeStationsFound', enabledStations.length));
-                for (const station of enabledStations) {
-                    this.log.info(
-                        this.library.translate('msg_stationListEntry', station.customName || station.name, station.id),
-                    );
-                }
-                for (const station of enabledStations) {
-                    if (station.id) {
-                        this.log.info(
-                            this.library.translate(
-                                'msg_fetchingStationInfo',
-                                station.customName || station.name,
-                                station.id,
-                            ),
-                        );
-                        await this.stationRequest.getStation(station.id, this.activeService);
-                    }
-                }
-            }
+        try {
+            await this.fetchStationInformation();
         } catch (err) {
             this.log.error(this.library.translate('msg_stationQueryError', (err as Error).message));
         }
@@ -265,12 +156,8 @@ export class TTAdapter extends utils.Adapter {
     private onUnload(callback: () => void): void {
         try {
             // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            if (this.pollIntervall) {
-                clearInterval(this.pollIntervall);
-            }
+            this.departurePolling?.stop();
+            this.journeyPolling?.stop();
 
             callback();
         } catch {
@@ -320,7 +207,7 @@ export class TTAdapter extends utils.Adapter {
                         return;
                     }
 
-                    const results = await this.activeService.getLocations(query, { results: 20 });
+                    const results = await this.getActiveService().getLocations(query, { results: 20 });
 
                     // Formatiere Ergebnisse für die UI
                     const stations = results.map((location: any) => ({
