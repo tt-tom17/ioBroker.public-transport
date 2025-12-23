@@ -23,6 +23,7 @@ __export(journeys_exports, {
 module.exports = __toCommonJS(journeys_exports);
 var import_station = require("../class/station");
 var import_library = require("../tools/library");
+var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
 class JourneysRequest extends import_library.BaseClass {
   station;
@@ -399,6 +400,7 @@ class JourneysRequest extends import_library.BaseClass {
           const name = leg.walking ? this.library.translate(`journey_change`, stationFrom) : this.library.translate(`journey_leg_FromTo`, stationFrom, stationTo);
           const [arrivalDelayed, arrivalOnTime] = this.getDelayStatus(leg.arrivalDelay, 0);
           const [departureDelayed, departureOnTime] = this.getDelayStatus(leg.departureDelay, 0);
+          const { hint, warning, status } = (0, import_mapper.groupRemarksByType)(leg.remarks || []);
           await this.library.writedp(`${legPath}`, void 0, {
             _id: "nicht_definieren",
             type: "channel",
@@ -539,6 +541,63 @@ class JourneysRequest extends import_library.BaseClass {
                 name: this.library.translate("journey_departure_on_time"),
                 type: "boolean",
                 role: "indicator",
+                read: true,
+                write: false
+              },
+              native: {}
+            });
+            await this.library.writedp(`${legPath}.Reachable`, leg.reachable, {
+              _id: "nicht_definieren",
+              type: "state",
+              common: {
+                name: this.library.translate("journey_reachable"),
+                type: "boolean",
+                role: "indicator",
+                read: true,
+                write: false
+              },
+              native: {}
+            });
+            await this.library.writedp(`${legPath}.Remarks`, void 0, {
+              _id: "nicht_definieren",
+              type: "channel",
+              common: {
+                name: this.library.translate("journey_remarks"),
+                desc: this.library.translate("journey_remarks_info")
+              },
+              native: {}
+            });
+            await this.library.writedp(`${legPath}.Remarks.Hints`, hint, {
+              _id: "nicht_definieren",
+              type: "state",
+              common: {
+                name: this.library.translate("journey_remarks_hints"),
+                type: "string",
+                role: "text",
+                read: true,
+                write: false
+              },
+              native: {}
+            });
+            await this.library.writedp(`${legPath}.Remarks.Warnings`, warning, {
+              _id: "nicht_definieren",
+              type: "state",
+              common: {
+                name: this.library.translate("journey_remarks_warnings"),
+                type: "string",
+                role: "text",
+                read: true,
+                write: false
+              },
+              native: {}
+            });
+            await this.library.writedp(`${legPath}.Remarks.Status`, status, {
+              _id: "nicht_definieren",
+              type: "state",
+              common: {
+                name: this.library.translate("journey_remarks_status"),
+                type: "string",
+                role: "text",
                 read: true,
                 write: false
               },

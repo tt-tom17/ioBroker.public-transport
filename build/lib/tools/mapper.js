@@ -18,6 +18,7 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var mapper_exports = {};
 __export(mapper_exports, {
+  groupRemarksByType: () => groupRemarksByType,
   mapDepartureToDepartureState: () => mapDepartureToDepartureState,
   mapDeparturesResponseToStates: () => mapDeparturesResponseToStates,
   mapDeparturesToDepartureStates: () => mapDeparturesToDepartureStates,
@@ -238,6 +239,7 @@ function mapJourneysToJourneyStates(journeys) {
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  groupRemarksByType,
   mapDepartureToDepartureState,
   mapDeparturesResponseToStates,
   mapDeparturesToDepartureStates,

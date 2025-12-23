@@ -5,7 +5,7 @@ import type { DepartureState, JourneyState, StationState, Stopstate } from '../t
  *
  * @param remarks Array von Remark Objekten
  */
-function groupRemarksByType(remarks: readonly (Hafas.Hint | Hafas.Status | Hafas.Warning)[]): {
+export function groupRemarksByType(remarks: readonly (Hafas.Hint | Hafas.Status | Hafas.Warning)[]): {
     hint: string | undefined;
     warning: string | undefined;
     status: string | undefined;

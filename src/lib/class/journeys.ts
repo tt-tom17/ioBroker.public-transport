@@ -2,6 +2,7 @@ import type * as Hafas from 'hafas-client';
 import type { TTAdapter } from '../../main';
 import { StationRequest } from '../class/station';
 import { BaseClass } from '../tools/library';
+import { groupRemarksByType } from '../tools/mapper';
 import { defaultJourneyOpt } from '../types/types';
 
 export class JourneysRequest extends BaseClass {
@@ -425,6 +426,7 @@ export class JourneysRequest extends BaseClass {
                         : this.library.translate(`journey_leg_FromTo`, stationFrom, stationTo);
                     const [arrivalDelayed, arrivalOnTime] = this.getDelayStatus(leg.arrivalDelay, 0);
                     const [departureDelayed, departureOnTime] = this.getDelayStatus(leg.departureDelay, 0);
+                    const { hint, warning, status } = groupRemarksByType(leg.remarks || []);
                     // Channel
                     await this.library.writedp(`${legPath}`, undefined, {
                         _id: 'nicht_definieren',
@@ -598,8 +600,58 @@ export class JourneysRequest extends BaseClass {
                             },
                             native: {},
                         });
+                        // Remarks / Hinweise
+                        await this.library.writedp(`${legPath}.Remarks`, undefined, {
+                            _id: 'nicht_definieren',
+                            type: 'channel',
+                            common: {
+                                name: this.library.translate('journey_remarks'),
+                                desc: this.library.translate('journey_remarks_info'),
+                            },
+                            native: {},
+                        });
+                        // Hints
+                        await this.library.writedp(`${legPath}.Remarks.Hints`, hint, {
+                            _id: 'nicht_definieren',
+                            type: 'state',
+                            common: {
+                                name: this.library.translate('journey_remarks_hints'),
+                                type: 'string',
+                                role: 'text',
+                                read: true,
+                                write: false,
+                            },
+                            native: {},
+                        });
+                        // Warnings
+                        await this.library.writedp(`${legPath}.Remarks.Warnings`, warning, {
+                            _id: 'nicht_definieren',
+                            type: 'state',
+                            common: {
+                                name: this.library.translate('journey_remarks_warnings'),
+                                type: 'string',
+                                role: 'text',
+                                read: true,
+                                write: false,
+                            },
+                            native: {},
+                        });
+                        // Status
+                        await this.library.writedp(`${legPath}.Remarks.Status`, status, {
+                            _id: 'nicht_definieren',
+                            type: 'state',
+                            common: {
+                                name: this.library.translate('journey_remarks_status'),
+                                type: 'string',
+                                role: 'text',
+                                read: true,
+                                write: false,
+                            },
+                            native: {},
+                        });
                     } else {
                         // Bei Fußwegen keine Ankunfts-/Abfahrtsdaten schreiben
+                        // Walking Distance
                         await this.library.writedp(`${legPath}.Distance`, leg.distance, {
                             _id: 'nicht_definieren',
                             type: 'state',
