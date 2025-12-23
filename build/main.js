@@ -143,6 +143,7 @@ class TTAdapter extends utils.Adapter {
     this.journeyPolling = new import_journeyPolling.JourneyPolling(this);
     const pollInterval = this.config.pollInterval || 5;
     try {
+      await this.departurePolling.startDepartures(pollInterval);
     } catch (err) {
       this.log.error(this.library.translate("msg_hafasRequestFailed", err.message));
     }
@@ -152,6 +153,7 @@ class TTAdapter extends utils.Adapter {
       this.log.error(this.library.translate("msg_journeyQueryError", err.message));
     }
     try {
+      await this.fetchStationInformation();
     } catch (err) {
       this.log.error(this.library.translate("msg_stationQueryError", err.message));
     }

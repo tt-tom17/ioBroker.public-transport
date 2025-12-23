@@ -130,7 +130,7 @@ export class TTAdapter extends utils.Adapter {
         const pollInterval = this.config.pollInterval || 5;
 
         try {
-            //await this.departurePolling.startDepartures(pollInterval);
+            await this.departurePolling.startDepartures(pollInterval);
         } catch (err) {
             this.log.error(this.library.translate('msg_hafasRequestFailed', (err as Error).message));
         }
@@ -142,7 +142,7 @@ export class TTAdapter extends utils.Adapter {
         }
 
         try {
-            //await this.fetchStationInformation();
+            await this.fetchStationInformation();
         } catch (err) {
             this.log.error(this.library.translate('msg_stationQueryError', (err as Error).message));
         }
