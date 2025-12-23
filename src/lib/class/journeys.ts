@@ -585,6 +585,19 @@ export class JourneysRequest extends BaseClass {
                             },
                             native: {},
                         });
+                        // Reachable / erreichbar
+                        await this.library.writedp(`${legPath}.Reachable`, leg.reachable, {
+                            _id: 'nicht_definieren',
+                            type: 'state',
+                            common: {
+                                name: this.library.translate('journey_reachable'),
+                                type: 'boolean',
+                                role: 'indicator',
+                                read: true,
+                                write: false,
+                            },
+                            native: {},
+                        });
                     } else {
                         // Bei Fußwegen keine Ankunfts-/Abfahrtsdaten schreiben
                         await this.library.writedp(`${legPath}.Distance`, leg.distance, {
