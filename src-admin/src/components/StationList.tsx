@@ -19,6 +19,7 @@ interface Station {
     name: string;
     customName?: string;
     enabled?: boolean;
+    client_profile?: string;
 }
 
 interface StationListProps {
@@ -121,6 +122,15 @@ const StationList: React.FC<StationListProps> = ({
                                             >
                                                 {station.enabled === false ? I18n.t('disabled') : I18n.t('active')}
                                             </Typography>
+                                            {station.client_profile && (
+                                                <Typography
+                                                    component="span"
+                                                    variant="caption"
+                                                    display="block"
+                                                >
+                                                    {station.client_profile}
+                                                </Typography>
+                                            )}
                                         </>
                                     }
                                     primaryTypographyProps={{ fontWeight: 500 }}

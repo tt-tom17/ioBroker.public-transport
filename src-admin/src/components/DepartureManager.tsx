@@ -14,6 +14,7 @@ interface Station {
     numDepartures?: number;
     products?: Products;
     availableProducts?: Partial<Products>; // Produkte die von HAFAS für diese Station zurückgegeben wurden
+    client_profile?: string;
 }
 
 interface DepartureManagerState extends ConfigGenericState {
@@ -66,7 +67,12 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
     ): Promise<void> => {
         // Filtere nur die Products mit true Werten
         const filteredProducts = filterAvailableProducts(availableProducts);
-        
+
+        // Hole die aktuellen ClientConfig-Einstellungen
+        const serviceType = ConfigGeneric.getValue(this.props.data, 'serviceType') as string;
+        const profile = ConfigGeneric.getValue(this.props.data, 'profile') as string;
+        const client_profile = `${serviceType || 'unknown'}:${profile || 'unknown'}`;
+
         const newStation: Station = {
             id: stationId,
             name: stationName,
@@ -75,6 +81,7 @@ class DepartureManager extends ConfigGeneric<ConfigGenericProps, DepartureManage
             numDepartures: 10,
             products: filteredProducts ? { ...filteredProducts } : { ...defaultProducts },
             availableProducts: filteredProducts,
+            client_profile,
         };
 
         // Prüfe ob Station bereits existiert

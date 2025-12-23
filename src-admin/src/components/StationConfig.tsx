@@ -12,6 +12,7 @@ interface Station {
     offsetTime?: number;
     products?: Products;
     availableProducts?: Partial<Products>; // Produkte die von HAFAS für diese Station zurückgegeben wurden
+    client_profile?: string;
 }
 
 interface StationConfigProps {
