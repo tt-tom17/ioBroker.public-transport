@@ -126,7 +126,7 @@ class TTAdapter extends utils.Adapter {
         this.activeService = this.vService;
         this.log.info(this.library.translate("msg_vendoServiceInitialized", clientName));
       } else {
-        const profileName = this.config.profile || "vbb";
+        const profileName = this.config.profile || "unknown";
         this.hService = new import_hafasService.HafasService(clientName, profileName);
         this.hService.init();
         this.activeService = this.hService;

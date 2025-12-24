@@ -110,7 +110,7 @@ export class TTAdapter extends utils.Adapter {
                 this.log.info(this.library.translate('msg_vendoServiceInitialized', clientName));
             } else {
                 // HafasService initialisieren (Standard)
-                const profileName = this.config.profile || 'vbb';
+                const profileName = this.config.profile || 'unknown';
                 this.hService = new HafasService(clientName, profileName);
                 this.hService.init();
                 this.activeService = this.hService;

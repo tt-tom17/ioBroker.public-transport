@@ -37,12 +37,12 @@ class PollingManager {
    */
   getEnabledConfigs(configs, noConfigMsg, noEnabledMsg) {
     if (!configs || configs.length === 0) {
-      this.adapter.log.warn(this.adapter.library.translate(noConfigMsg));
+      this.adapter.log.debug(this.adapter.library.translate(noConfigMsg));
       return void 0;
     }
     const enabledConfigs = configs.filter((config) => config.enabled);
     if (enabledConfigs.length === 0) {
-      this.adapter.log.warn(this.adapter.library.translate(noEnabledMsg));
+      this.adapter.log.debug(this.adapter.library.translate(noEnabledMsg));
       return void 0;
     }
     return enabledConfigs;
