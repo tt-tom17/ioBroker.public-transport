@@ -1,5 +1,5 @@
 import type * as Hafas from 'hafas-client';
-import type { TTAdapter } from '../../main';
+import type { PublicTransport } from '../../main';
 import type { ITransportService } from '../types/transportService';
 import { PollingManager } from './pollingManager';
 
@@ -24,7 +24,7 @@ interface JourneyConfig {
 }
 
 export class JourneyPolling extends PollingManager<JourneyConfig> {
-    constructor(adapter: TTAdapter) {
+    constructor(adapter: PublicTransport) {
         super(adapter);
     }
 

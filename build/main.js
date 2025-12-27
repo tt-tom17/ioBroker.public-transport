@@ -28,7 +28,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var main_exports = {};
 __export(main_exports, {
-  TTAdapter: () => TTAdapter
+  PublicTransport: () => PublicTransport
 });
 module.exports = __toCommonJS(main_exports);
 var utils = __toESM(require("@iobroker/adapter-core"));
@@ -40,7 +40,7 @@ var import_journeyPolling = require("./lib/class/journeyPolling");
 var import_journeys = require("./lib/class/journeys");
 var import_station = require("./lib/class/station");
 var import_library = require("./lib/tools/library");
-class TTAdapter extends utils.Adapter {
+class PublicTransport extends utils.Adapter {
   library;
   unload = false;
   hService;
@@ -59,7 +59,7 @@ class TTAdapter extends utils.Adapter {
   constructor(options = {}) {
     super({
       ...options,
-      name: "tt-adapter",
+      name: "public-transport",
       useFormatDate: true
     });
     this.library = new import_library.Library(this);
@@ -118,7 +118,7 @@ class TTAdapter extends utils.Adapter {
     const states = await this.getStatesAsync("*");
     await this.library.initStates(states);
     const serviceType = this.config.serviceType || "hafas";
-    const clientName = this.config.clientName || "iobroker-tt-adapter";
+    const clientName = this.config.clientName || "iobroker-public-transport";
     try {
       if (serviceType === "vendo") {
         this.vService = new import_dbVendoService.VendoService(clientName);
@@ -234,12 +234,12 @@ class TTAdapter extends utils.Adapter {
   }
 }
 if (require.main !== module) {
-  module.exports = (options) => new TTAdapter(options);
+  module.exports = (options) => new PublicTransport(options);
 } else {
-  (() => new TTAdapter())();
+  (() => new PublicTransport())();
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  TTAdapter
+  PublicTransport
 });
 //# sourceMappingURL=main.js.map

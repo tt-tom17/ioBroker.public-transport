@@ -1,4 +1,4 @@
-import type { TTAdapter } from '../../main';
+import type { PublicTransport } from '../../main';
 import type { ITransportService } from '../types/transportService';
 import { PollingManager } from './pollingManager';
 
@@ -14,7 +14,7 @@ interface DepartureConfig {
 }
 
 export class DeparturePolling extends PollingManager<DepartureConfig> {
-    constructor(adapter: TTAdapter) {
+    constructor(adapter: PublicTransport) {
         super(adapter);
     }
 

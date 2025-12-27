@@ -16,7 +16,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch ioBroker Adapter (dev-server)",
-      "program": "${workspaceFolder}/.dev-server/default/node_modules/iobroker.tt-adapter/build/main.js",
+      "program": "${workspaceFolder}/.dev-server/default/node_modules/iobroker.public-transport/build/main.js",
       "cwd": "${workspaceFolder}/.dev-server/default",
       "args": ["--debug", "0"],
       "runtimeArgs": ["--nolazy", "--enable-source-maps"],
@@ -24,12 +24,12 @@
       "smartStep": true,
 
       "outFiles": [
-        "${workspaceFolder}/.dev-server/default/node_modules/iobroker.tt-adapter/build/**/*.js"
+        "${workspaceFolder}/.dev-server/default/node_modules/iobroker.public-transport/build/**/*.js"
       ],
 
       // <— Standard schließt node_modules aus; hier explizit erlauben
       "resolveSourceMapLocations": [
-        "${workspaceFolder}/.dev-server/default/node_modules/iobroker.tt-adapter/build/**/*.js.map",
+        "${workspaceFolder}/.dev-server/default/node_modules/iobroker.public-transport/build/**/*.js.map",
         "${workspaceFolder}/build/**/*.js.map"
       ],
 

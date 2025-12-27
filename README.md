@@ -1,18 +1,18 @@
-![Logo](admin/tt-adapter.png)
-# ioBroker.tt-adapter
+![Logo](admin/public-transport.png)
+# ioBroker.public-transport
 
-[![NPM version](https://img.shields.io/npm/v/iobroker.tt-adapter.svg)](https://www.npmjs.com/package/iobroker.tt-adapter)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.tt-adapter.svg)](https://www.npmjs.com/package/iobroker.tt-adapter)
-![Number of Installations](https://iobroker.live/badges/tt-adapter-installed.svg)
-![Current version in stable repository](https://iobroker.live/badges/tt-adapter-stable.svg)
+[![NPM version](https://img.shields.io/npm/v/iobroker.public-transport.svg)](https://www.npmjs.com/package/iobroker.public-transport)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.public-transport.svg)](https://www.npmjs.com/package/iobroker.public-transport)
+![Number of Installations](https://iobroker.live/badges/public-transport-installed.svg)
+![Current version in stable repository](https://iobroker.live/badges/public-transport-stable.svg)
 
-[![NPM](https://nodei.co/npm/iobroker.tt-adapter.png?downloads=true)](https://nodei.co/npm/iobroker.tt-adapter/)
+[![NPM](https://nodei.co/npm/iobroker.public-transport.png?downloads=true)](https://nodei.co/npm/iobroker.public-transport/)
 
-**Tests:** ![Test and Release](https://github.com/tt-tom17/ioBroker.tt-adapter/workflows/Test%20and%20Release/badge.svg)
+**Tests:** ![Test and Release](https://github.com/tt-tom17/ioBroker.public-transport/workflows/Test%20and%20Release/badge.svg)
 
-## tt-adapter adapter for ioBroker
+## public-transport adapter for ioBroker
 
-Der tt-adapter ermöglicht die Integration von Fahrplaninformationen des öffentlichen Nahverkehrs in ioBroker. Mit diesem Adapter können Sie Abfahrtszeiten von Haltestellen verschiedener Verkehrsbetriebe abrufen und in Ihrer Smart-Home-Umgebung nutzen.
+Der public-transport ermöglicht die Integration von Fahrplaninformationen des öffentlichen Nahverkehrs in ioBroker. Mit diesem Adapter können Sie Abfahrtszeiten von Haltestellen verschiedener Verkehrsbetriebe abrufen und in Ihrer Smart-Home-Umgebung nutzen.
 
 ### Hauptfunktionen
 

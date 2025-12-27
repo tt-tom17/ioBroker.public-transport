@@ -1,12 +1,12 @@
 import type * as Hafas from 'hafas-client';
-import type { TTAdapter } from '../../main';
+import type { PublicTransport } from '../../main';
 //import { genericStateObjects } from '../const/definition';
 import { BaseClass } from '../tools/library';
 import { mapDeparturesToDepartureStates } from '../tools/mapper';
 import { defaultDepartureOpt, type DepartureState, type Products } from '../types/types';
 
 export class DepartureRequest extends BaseClass {
-    constructor(adapter: TTAdapter) {
+    constructor(adapter: PublicTransport) {
         super(adapter);
         this.log.setLogPrefix('depReq');
     }

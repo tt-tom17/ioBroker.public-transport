@@ -4,7 +4,7 @@ import type { DepartureRequest } from '../class/departure';
 import type { HafasService } from '../hafasService';
 import type { Library } from '../tools/library';
 
-declare class TTAdapter extends utils.Adapter {
+declare class PublicTransport extends utils.Adapter {
     library: Library;
     hService: HafasService;
     vService: VendoService;

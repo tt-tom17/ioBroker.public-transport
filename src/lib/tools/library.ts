@@ -1,8 +1,8 @@
 import _fs from 'fs';
 import { genericStateObjects } from '../const/definition';
-import type { TTAdapter } from '../types/TTAdapter';
+import type { PublicTransport } from '../types/Adapter';
 // only change this for other adapters
-export type AdapterClassDefinition = TTAdapter;
+export type AdapterClassDefinition = PublicTransport;
 
 export type LibraryStateVal = LibraryStateValJson | undefined;
 type LibraryStateValJson = {

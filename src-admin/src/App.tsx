@@ -1,27 +1,27 @@
 // this file used only for simulation and not used in end build
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import React from 'react';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
 import { Box } from '@mui/material';
 
 import {
     GenericApp,
     I18n,
-    type IobTheme,
     Loader,
     type GenericAppProps,
     type GenericAppState,
+    type IobTheme,
 } from '@iobroker/adapter-react-v5';
 
-import enLocal from './i18n/en.json';
 import deLocal from './i18n/de.json';
-import ruLocal from './i18n/ru.json';
-import ptLocal from './i18n/pt.json';
-import nlLocal from './i18n/nl.json';
+import enLocal from './i18n/en.json';
+import esLocal from './i18n/es.json';
 import frLocal from './i18n/fr.json';
 import itLocal from './i18n/it.json';
-import esLocal from './i18n/es.json';
+import nlLocal from './i18n/nl.json';
 import plLocal from './i18n/pl.json';
+import ptLocal from './i18n/pt.json';
+import ruLocal from './i18n/ru.json';
 import ukLocal from './i18n/uk.json';
 import zhCNLocal from './i18n/zh-cn.json';
 
@@ -87,8 +87,8 @@ class App extends GenericApp<GenericAppProps, AppState> {
             <StyledEngineProvider injectFirst>
                 <ThemeProvider theme={this.state.theme}>
                     <Box sx={styles.app}>
-                        <div style={styles.item}>{I18n.t('Welcome to tt-adapter admin interface')}</div>
-                        <div style={styles.item}>Admin-UI Simulation für tt-adapter</div>
+                        <div style={styles.item}>{I18n.t('Welcome to public-transport admin interface')}</div>
+                        <div style={styles.item}>Admin-UI Simulation für public-transport</div>
                         <div style={styles.item}>{I18n.t('This is where you can configure the adapter settings.')}</div>
                     </Box>
                 </ThemeProvider>

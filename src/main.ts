@@ -9,7 +9,7 @@ import { StationRequest } from './lib/class/station';
 import { Library } from './lib/tools/library';
 import type { ITransportService } from './lib/types/transportService';
 
-export class TTAdapter extends utils.Adapter {
+export class PublicTransport extends utils.Adapter {
     library: Library;
     unload: boolean = false;
     hService!: HafasService;
@@ -29,7 +29,7 @@ export class TTAdapter extends utils.Adapter {
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
-            name: 'tt-adapter',
+            name: 'public-transport',
             useFormatDate: true,
         });
         this.library = new Library(this);
@@ -99,7 +99,7 @@ export class TTAdapter extends utils.Adapter {
 
         // Service basierend auf Konfiguration auswählen
         const serviceType = this.config.serviceType || 'hafas'; // 'hafas' oder 'vendo'
-        const clientName = this.config.clientName || 'iobroker-tt-adapter';
+        const clientName = this.config.clientName || 'iobroker-public-transport';
 
         try {
             if (serviceType === 'vendo') {
@@ -239,8 +239,8 @@ export class TTAdapter extends utils.Adapter {
 
 if (require.main !== module) {
     // Export the constructor in compact mode
-    module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new TTAdapter(options);
+    module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new PublicTransport(options);
 } else {
     // otherwise start the instance directly
-    (() => new TTAdapter())();
+    (() => new PublicTransport())();
 }

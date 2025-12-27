@@ -1,4 +1,4 @@
-import type { TTAdapter } from '../../main';
+import type { PublicTransport } from '../../main';
 import type { ITransportService } from '../types/transportService';
 
 interface PollingConfig {
@@ -10,10 +10,10 @@ interface PollingConfig {
 }
 
 export abstract class PollingManager<T extends PollingConfig> {
-    protected adapter: TTAdapter;
+    protected adapter: PublicTransport;
     private pollInterval: ioBroker.Interval | undefined;
 
-    constructor(adapter: TTAdapter) {
+    constructor(adapter: PublicTransport) {
         this.adapter = adapter;
     }
 

@@ -1,5 +1,5 @@
 import type * as Hafas from 'hafas-client';
-import type { TTAdapter } from '../../main';
+import type { PublicTransport } from '../../main';
 import { StationRequest } from '../class/station';
 import { BaseClass } from '../tools/library';
 import { groupRemarksByType } from '../tools/mapper';
@@ -10,7 +10,7 @@ export class JourneysRequest extends BaseClass {
     private service: any;
     private delayOffset: number = this.adapter.config.delayOffset || 2;
 
-    constructor(adapter: TTAdapter) {
+    constructor(adapter: PublicTransport) {
         super(adapter);
         this.log.setLogPrefix('journeyReq');
         this.station = new StationRequest(adapter);
