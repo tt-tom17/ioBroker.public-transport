@@ -18,30 +18,30 @@
 			}
 		},
 		"titleLang": {
-			"en": "tt-Test",
-			"de": "TT-Test",
-			"ru": "TT-тест",
-			"pt": "TT-Test",
-			"nl": "TT-test",
-			"fr": "test TT",
-			"it": "TT-test",
-			"es": "prueba TT",
-			"pl": "TT-test",
-			"uk": "TT-тест",
-			"zh-cn": "TT检验"
+			"en": "Public Transport",
+			"de": "Öffentliche Verkehrsmittel",
+			"ru": "Общественный транспорт",
+			"pt": "Transporte público",
+			"nl": "Openbaar vervoer",
+			"fr": "Transports publics",
+			"it": "Trasporto pubblico",
+			"es": "Transporte público",
+			"pl": "Transport publiczny",
+			"uk": "Громадський транспорт",
+			"zh-cn": "公共交通"
 		},
 		"desc": {
-			"en": "public-transport",
-			"de": "public-transport",
-			"ru": "TT-адаптер",
-			"pt": "public-transport",
-			"nl": "public-transport",
-			"fr": "adaptateur de TT",
-			"it": "public-transport",
-			"es": "public-transport",
-			"pl": "public-transport",
-			"uk": "TT-адаптер",
-			"zh-cn": "public-transport"
+			"en": "Check departures and connections for local public transport",
+			"de": "Abfahrtszeiten und Verbindungen für den öffentlichen Nahverkehr prüfen.",
+			"ru": "Проверьте расписание отправлений и пересадок местного общественного транспорта.",
+			"pt": "Consulte os horários de partida e as conexões do transporte público local.",
+			"nl": "Controleer de vertrek- en aansluittijden van het lokale openbaar vervoer.",
+			"fr": "Consultez les horaires de départ et les correspondances des transports en commun locaux.",
+			"it": "Controlla le partenze e le coincidenze del trasporto pubblico locale",
+			"es": "Consulta salidas y conexiones del transporte público local",
+			"pl": "Sprawdź odjazdy i połączenia lokalnej komunikacji publicznej",
+			"uk": "Перевірте відправлення та пересадки на місцевий громадський транспорт",
+			"zh-cn": "查看当地公共交通的出发时间和换乘信息"
 		},
 		"authors": [
 			"tt-tom17 <tgb@kabelmail.de>"
