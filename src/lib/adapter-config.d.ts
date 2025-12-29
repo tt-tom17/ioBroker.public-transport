@@ -37,6 +37,7 @@ declare global {
     		regionalExpress?: boolean;  // RE (Regional Express)
     		nationalExpress?: boolean;  // ICE (InterCity Express)
     		national?: boolean;         // IC/EC (InterCity)
+			express?: boolean;          // ICE/IC/EC (Express)
 		}
 
 		interface JourneyConfig {

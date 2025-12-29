@@ -18,6 +18,7 @@ export interface Products {
     regionalExpress?: boolean;
     nationalExpress?: boolean;
     national?: boolean;
+    express?: boolean;
 }
 
 export const defaultProducts: Products = {
@@ -30,6 +31,7 @@ export const defaultProducts: Products = {
     regionalExpress: true,
     nationalExpress: true,
     national: true,
+    express: true,
 };
 
 /**
@@ -61,11 +63,12 @@ interface ProductSelectorProps {
 }
 
 const productConfig = [
-    { key: 'nationalExpress', label: 'ice', icon: DirectionsRailwayIcon, color: '#FF6F00' },
-    { key: 'national', label: 'ic_ec', icon: DirectionsRailwayIcon, color: '#EC0016' },
-    { key: 'regionalExpress', label: 're', icon: TrainIcon, color: '#0A3D62' },
+    { key: 'express', label: 'ice_ic_ec', icon: DirectionsRailwayIcon, color: '#EC0016' },
+    { key: 'nationalExpress', label: 'ice', icon: TrainIcon, color: '#FF6F00' },
+    { key: 'national', label: 'ic_ec', icon: TrainIcon, color: '#FF8F00' },
+    { key: 'regionalExpress', label: 're', icon: TrainIcon, color: '#709EBF' },
     { key: 'regional', label: 're_rb', icon: TrainIcon, color: '#1455C0' },
-    { key: 'suburban', label: 's_bahn', icon: TramIcon, color: '#008D4F' },
+    { key: 'suburban', label: 's_bahn', icon: TrainIcon, color: '#008D4F' },
     { key: 'subway', label: 'u_bahn', icon: SubwayIcon, color: '#0065AE' },
     { key: 'tram', label: 'tram', icon: TramIcon, color: '#D5001C' },
     { key: 'bus', label: 'bus', icon: DirectionsBusIcon, color: '#A5027D' },

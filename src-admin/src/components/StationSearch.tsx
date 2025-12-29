@@ -174,11 +174,11 @@ class StationSearch extends ConfigGeneric<StationSearchProps, StationSearchState
         const icons: React.ReactElement[] = [];
         const iconMap: Record<string, { icon: React.ReactElement; label: string; color: string }> = {
             tram: { icon: <TramIcon fontSize="small" />, label: 'tram', color: '#D5001C' },
-            bus: { icon: <DirectionsBusIcon fontSize="small" />, label: 'bus', color: '#a5027D' },
+            bus: { icon: <DirectionsBusIcon fontSize="small" />, label: 'bus', color: '#A5027D' },
             subway: { icon: <SubwayIcon fontSize="small" />, label: 'u_bahn', color: '#0065AE' },
-            express: { icon: <DirectionsRailwayIcon fontSize="small" />, label: 'ice_ic_ec', color: '#ec0016' },
+            express: { icon: <DirectionsRailwayIcon fontSize="small" />, label: 'ice_ic_ec', color: '#EC0016' },
             regional: { icon: <TrainIcon fontSize="small" />, label: 're_rb', color: '#1455C0' },
-            regionalExpress: { icon: <TrainIcon fontSize="small" />, label: 're', color: '#0A3D62' },
+            regionalExpress: { icon: <TrainIcon fontSize="small" />, label: 're', color: '#709EBF' },
             nationalExpress: { icon: <TrainIcon fontSize="small" />, label: 'ice', color: '#FF6F00' },
             national: { icon: <TrainIcon fontSize="small" />, label: 'ic_ec', color: '#FF8F00' },
             ferry: { icon: <DirectionsBoatIcon fontSize="small" />, label: 'ferry', color: '#0080C8' },
