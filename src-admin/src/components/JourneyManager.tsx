@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import React from 'react';
 import JourneyConfig from './JourneyConfig';
 import JourneyList from './JourneyList';
-import { defaultProducts, type Products } from './ProductSelector';
+import { type Products } from './ProductSelector';
 
 interface Journey {
     id: string;
@@ -69,7 +69,8 @@ class JourneyManager extends ConfigGeneric<ConfigGenericProps, JourneyManagerSta
             customName: `Journey ${this.state.journeys.length + 1}`,
             enabled: true,
             numResults: 5,
-            products: { ...defaultProducts },
+            // products werden erst gesetzt, wenn Stationen ausgewählt wurden
+            //products: { ...defaultProducts },
             client_profile,
         };
 

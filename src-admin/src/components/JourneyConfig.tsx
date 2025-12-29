@@ -52,7 +52,19 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, config
 
     const handleProductsChange = (products: Products): void => {
         if (journey && onUpdate) {
-            onUpdate(journey.id, { products });
+            // Wenn availableProducts definiert sind, filtere nur die verfügbaren Produkte
+            let productsToSave: Products = products;
+            if (journey.availableProducts) {
+                productsToSave = {} as Products;
+                // Nur Produkte speichern, die in availableProducts vorhanden sind
+                Object.keys(journey.availableProducts).forEach(key => {
+                    const productKey = key as keyof Products;
+                    if (productKey in products) {
+                        productsToSave[productKey] = products[productKey];
+                    }
+                });
+            }
+            onUpdate(journey.id, { products: productsToSave });
         }
     };
 
