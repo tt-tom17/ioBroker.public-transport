@@ -927,7 +927,6 @@ export class Library extends BaseClass {
             return this.getTranslation(x);
         })}`;
     }
-    // ...existing code...
 
     /**
      * Übersetzt einen Token mit optionalen Platzhaltern
@@ -948,5 +947,19 @@ export class Library extends BaseClass {
         return text;
     }
 
-    // ...existing code...
+    /**
+     * Prüft den Verspätungsstatus.
+     *
+     * @param Delay Verspätung in Sekunden (null = keine Daten, undefined = keine Verspätung)
+     * @param offSet Zeitoffset in minuten
+     * @returns [delayed, onTime] - delayed=true wenn verspätet, onTime=true wenn pünktlich
+     */
+    async getDelayStatus(Delay: number | null | undefined, offSet: number): Promise<[boolean, boolean]> {
+        if (Delay === null || Delay === undefined) {
+            return [false, false]; // Keine Daten verfügbar
+        }
+        const delayed = Delay - offSet * 60 > 0;
+        const onTime = Delay - offSet * 60 <= 0;
+        return [delayed, onTime];
+    }
 }

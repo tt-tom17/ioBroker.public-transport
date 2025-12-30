@@ -814,7 +814,6 @@ class Library extends BaseClass {
       return this.getTranslation(x);
     })}`;
   }
-  // ...existing code...
   /**
    * Übersetzt einen Token mit optionalen Platzhaltern
    *
@@ -829,7 +828,21 @@ class Library extends BaseClass {
     });
     return text;
   }
-  // ...existing code...
+  /**
+   * Prüft den Verspätungsstatus.
+   *
+   * @param Delay Verspätung in Sekunden (null = keine Daten, undefined = keine Verspätung)
+   * @param offSet Zeitoffset in minuten
+   * @returns [delayed, onTime] - delayed=true wenn verspätet, onTime=true wenn pünktlich
+   */
+  async getDelayStatus(Delay, offSet) {
+    if (Delay === null || Delay === void 0) {
+      return [false, false];
+    }
+    const delayed = Delay - offSet * 60 > 0;
+    const onTime = Delay - offSet * 60 <= 0;
+    return [delayed, onTime];
+  }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

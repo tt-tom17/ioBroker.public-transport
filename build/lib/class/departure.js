@@ -25,6 +25,7 @@ var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
 class DepartureRequest extends import_library.BaseClass {
+  delayOffset = this.adapter.config.delayOffset || 2;
   constructor(adapter) {
     super(adapter);
     this.log.setLogPrefix("depReq");
@@ -168,12 +169,7 @@ class DepartureRequest extends import_library.BaseClass {
       try {
         this.log.info2(`=== Starte Objekt ${index + 1} von ${response.length} ===`);
         const departureIndex = `Departures_${`00${index}`.slice(-2)}`;
-        let delayed = false, onTime = false;
-        if (obj.delay !== void 0 && obj.delay >= 0) {
-          delayed = true;
-        } else {
-          onTime = true;
-        }
+        const [delayed, onTime] = await this.library.getDelayStatus(obj.delay, this.delayOffset);
         await this.library.writedp(
           `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}`,
           void 0,

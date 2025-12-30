@@ -187,11 +187,11 @@ class JourneysRequest extends import_library.BaseClass {
       if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
         for (const [index, journey] of journeys.journeys.entries()) {
           const journeyPath = `${basePath}.Journey_${`00${index}`.slice(-2)}`;
-          const [arrivalDelayed, arrivalOnTime] = this.getDelayStatus(
+          const [arrivalDelayed, arrivalOnTime] = await this.library.getDelayStatus(
             journey.legs[journey.legs.length - 1].arrivalDelay,
             this.delayOffset
           );
-          const [departureDelayed, departureOnTime] = this.getDelayStatus(
+          const [departureDelayed, departureOnTime] = await this.library.getDelayStatus(
             journey.legs[0].departureDelay,
             this.delayOffset
           );
@@ -398,8 +398,11 @@ class JourneysRequest extends import_library.BaseClass {
           const stationFrom = ((_a = leg.origin) == null ? void 0 : _a.name) || this.library.translate("unknown_station");
           const stationTo = ((_b = leg.destination) == null ? void 0 : _b.name) || this.library.translate("unknown_station");
           const name = leg.walking ? this.library.translate(`journey_change`, stationFrom) : this.library.translate(`journey_leg_FromTo`, stationFrom, stationTo);
-          const [arrivalDelayed, arrivalOnTime] = this.getDelayStatus(leg.arrivalDelay, 0);
-          const [departureDelayed, departureOnTime] = this.getDelayStatus(leg.departureDelay, 0);
+          const [arrivalDelayed, arrivalOnTime] = await this.library.getDelayStatus(leg.arrivalDelay, 0);
+          const [departureDelayed, departureOnTime] = await this.library.getDelayStatus(
+            leg.departureDelay,
+            0
+          );
           const { hint, warning, status } = (0, import_mapper.groupRemarksByType)(leg.remarks || []);
           await this.library.writedp(`${legPath}`, void 0, {
             _id: "nicht_definieren",
@@ -809,21 +812,6 @@ class JourneysRequest extends import_library.BaseClass {
     } catch (err) {
       this.log.error(this.library.translate("msg_journeyLegLineWriteError", err.message));
     }
-  }
-  /**
-   * Prüft den Verspätungsstatus.
-   *
-   * @param Delay Verspätung in Sekunden (null = keine Daten, undefined = keine Verspätung)
-   * @param offSet Zeitoffset in minuten
-   * @returns [delayed, onTime] - delayed=true wenn verspätet, onTime=true wenn pünktlich
-   */
-  getDelayStatus(Delay, offSet) {
-    if (Delay === null || Delay === void 0) {
-      return [false, false];
-    }
-    const delayed = Delay - offSet * 60 > 0;
-    const onTime = Delay - offSet * 60 <= 0;
-    return [delayed, onTime];
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

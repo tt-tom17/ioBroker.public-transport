@@ -6,6 +6,8 @@ import { mapDeparturesToDepartureStates } from '../tools/mapper';
 import { defaultDepartureOpt, type DepartureState, type Products } from '../types/types';
 
 export class DepartureRequest extends BaseClass {
+    private delayOffset: number = this.adapter.config.delayOffset || 2;
+
     constructor(adapter: PublicTransport) {
         super(adapter);
         this.log.setLogPrefix('depReq');
@@ -176,13 +178,7 @@ export class DepartureRequest extends BaseClass {
             try {
                 this.log.info2(`=== Starte Objekt ${index + 1} von ${response.length} ===`);
                 const departureIndex = `Departures_${`00${index}`.slice(-2)}`;
-                let delayed = false,
-                    onTime = false;
-                if (obj.delay !== undefined && obj.delay >= 0) {
-                    delayed = true;
-                } else {
-                    onTime = true;
-                }
+                const [delayed, onTime] = await this.library.getDelayStatus(obj.delay, this.delayOffset);
                 // Erstelle Channel Departures_XX und darunter die States
                 await this.library.writedp(
                     `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}`,
