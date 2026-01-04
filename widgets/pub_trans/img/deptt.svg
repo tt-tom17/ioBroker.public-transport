@@ -1,0 +1,65 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hintergrund -->
+  <rect width="400" height="300" fill="#1a1a1a"/>
+  <rect width="400" height="50" fill="#2c5aa0"/>
+  <rect width="400" height="3" y="50" fill="#ffcc00"/>
+  
+  <!-- Header Text -->
+  <text x="200" y="32" font-family="Arial, sans-serif" font-size="20" fill="#ffffff" text-anchor="middle" font-weight="bold">ABFAHRTSTAFEL</text>
+  
+  <!-- Spaltenüberschriften -->
+  <rect width="400" height="30" y="53" fill="#2c2c2c"/>
+  <text x="10" y="73" font-family="Courier New, monospace" font-size="11" fill="#ffcc00" font-weight="bold">ZEIT</text>
+  <text x="80" y="73" font-family="Courier New, monospace" font-size="11" fill="#ffcc00" font-weight="bold">LINIE / ZIEL</text>
+  <text x="270" y="73" font-family="Courier New, monospace" font-size="11" fill="#ffcc00" font-weight="bold">VERSP.</text>
+  <text x="335" y="73" font-family="Courier New, monospace" font-size="11" fill="#ffcc00" font-weight="bold">GLEIS</text>
+  
+  <!-- Beispiel-Zeilen -->
+  <!-- Zeile 1 - S-Bahn -->
+  <rect width="400" height="40" y="83" fill="#000000"/>
+  <text x="20" y="108" font-family="Courier New, monospace" font-size="14" fill="#00ff00" font-weight="bold" text-anchor="middle">15:30</text>
+  <rect x="65" y="95" width="35" height="18" rx="2" fill="#006e34"/>
+  <text x="82" y="108" font-family="Arial, sans-serif" font-size="11" fill="#ffffff" font-weight="bold" text-anchor="middle">S1</text>
+  <text x="110" y="108" font-family="Courier New, monospace" font-size="12" fill="#ffffff">Flughafen</text>
+  <text x="280" y="108" font-family="Courier New, monospace" font-size="12" fill="#00ff00" text-anchor="middle">+0</text>
+  <text x="350" y="108" font-family="Courier New, monospace" font-size="12" fill="#ffcc00" text-anchor="middle">3</text>
+  
+  <!-- Zeile 2 - U-Bahn -->
+  <rect width="400" height="40" y="123" fill="#0a0a0a"/>
+  <text x="20" y="148" font-family="Courier New, monospace" font-size="14" fill="#00ff00" font-weight="bold" text-anchor="middle">15:35</text>
+  <rect x="65" y="135" width="35" height="18" rx="2" fill="#0066b3"/>
+  <text x="82" y="148" font-family="Arial, sans-serif" font-size="11" fill="#ffffff" font-weight="bold" text-anchor="middle">U2</text>
+  <text x="110" y="148" font-family="Courier New, monospace" font-size="12" fill="#ffffff">Messegelände</text>
+  <text x="280" y="148" font-family="Courier New, monospace" font-size="12" fill="#ff0000" text-anchor="middle">+5</text>
+  <text x="350" y="148" font-family="Courier New, monospace" font-size="12" fill="#ffcc00" text-anchor="middle">2</text>
+  
+  <!-- Zeile 3 - Tram -->
+  <rect width="400" height="40" y="163" fill="#000000"/>
+  <text x="20" y="188" font-family="Courier New, monospace" font-size="14" fill="#00ff00" font-weight="bold" text-anchor="middle">15:40</text>
+  <rect x="65" y="175" width="35" height="18" rx="2" fill="#d4000b"/>
+  <text x="82" y="188" font-family="Arial, sans-serif" font-size="11" fill="#ffffff" font-weight="bold" text-anchor="middle">6</text>
+  <text x="110" y="188" font-family="Courier New, monospace" font-size="12" fill="#ffffff">Stadtpark</text>
+  <text x="280" y="188" font-family="Courier New, monospace" font-size="12" fill="#00ff00" text-anchor="middle">+0</text>
+  <text x="350" y="188" font-family="Courier New, monospace" font-size="12" fill="#ffcc00" text-anchor="middle">12</text>
+  
+  <!-- Zeile 4 - Bus -->
+  <rect width="400" height="40" y="203" fill="#0a0a0a"/>
+  <text x="20" y="228" font-family="Courier New, monospace" font-size="14" fill="#00ff00" font-weight="bold" text-anchor="middle">15:45</text>
+  <rect x="65" y="215" width="35" height="18" rx="2" fill="#9d1b4c"/>
+  <text x="82" y="228" font-family="Arial, sans-serif" font-size="11" fill="#ffffff" font-weight="bold" text-anchor="middle">142</text>
+  <text x="110" y="228" font-family="Courier New, monospace" font-size="12" fill="#ffffff">Bahnhof Nord</text>
+  <text x="280" y="228" font-family="Courier New, monospace" font-size="12" fill="#00ff00" text-anchor="middle">+0</text>
+  <text x="350" y="228" font-family="Courier New, monospace" font-size="12" fill="#ffcc00" text-anchor="middle">A</text>
+  
+  <!-- Zeile 5 - Zug mit Verspätung -->
+  <rect width="400" height="40" y="243" fill="#000000"/>
+  <text x="20" y="268" font-family="Courier New, monospace" font-size="14" fill="#00ff00" font-weight="bold" text-anchor="middle">15:52</text>
+  <rect x="60" y="255" width="45" height="18" rx="2" fill="#ffffff" stroke="#d4000b" stroke-width="2"/>
+  <text x="82" y="268" font-family="Arial, sans-serif" font-size="10" fill="#d4000b" font-weight="bold" text-anchor="middle">ICE12</text>
+  <text x="115" y="268" font-family="Courier New, monospace" font-size="12" fill="#ffffff">Berlin Hbf</text>
+  <text x="280" y="268" font-family="Courier New, monospace" font-size="12" fill="#ff0000" text-anchor="middle">+15</text>
+  <text x="350" y="268" font-family="Courier New, monospace" font-size="12" fill="#ffcc00" text-anchor="middle">8</text>
+  
+  <!-- Border -->
+  <rect width="400" height="300" fill="none" stroke="#333" stroke-width="2"/>
+</svg>

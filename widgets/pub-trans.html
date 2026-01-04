@@ -133,10 +133,14 @@
 <!-- #endregion -->
 
 <script id="tplpub_transDepTt" type="text/ejs" class="vis-tpl"
-    data-vis-prev='<img src="widgets/pub_trans/img/deptt.png"></img>'
-    data-vis-set="pub_trans" data-vis-type="val" data-vis-name="Departure Table" data-vis-update-style="true"
+    data-vis-prev='<img src="widgets/pub_trans/img/deptt.svg"></img>'
+    data-vis-attrs="headerText[Abfahrten];oidDepartures/id;maxDepartures[10]/number,1,50,1;showClock/checkbox;updateInterval[30]/number,10,300,10;"
+    data-vis-set="pub_trans" 
+    data-vis-type="val" 
+    data-vis-name="Departure Table" 
+    data-vis-update-style="true"
     data-vis-beta="false">
-        <div class="vis-widget pub-transDepTt-comp-container <%== this.data.attr('class') %>" style="width: 172px; height: 142px; overflow: visible;" id="<%= this.data.attr('wid') %>">
+        <div class="vis-widget pub-transDepTt-comp-container <%== this.data.attr('class') %>" style="width: 800px; height: 600px; overflow: visible;" id="<%= this.data.attr('wid') %>">
 
         </div>
         <% vis.binds["pub_transDepTt"].createDepTt(this.data.wid, this.view, this.data, this.style); %>

@@ -1,0 +1,240 @@
+/* Abfahrtstafel - Bahnhofsanzeige Stil */
+
+/* Container für die gesamte Abfahrtstafel */
+.pub-trans-deptt-container {
+    background-color: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Header der Abfahrtstafel */
+.pub-trans-deptt-header {
+    background: linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%);
+    color: #ffffff;
+    padding: 10px 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 3px solid #ffcc00;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Zeile mit Spaltenüberschriften */
+.pub-trans-deptt-column-header {
+    background-color: #2c2c2c;
+    color: #ffcc00;
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: 80px 1fr 100px 100px 120px;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    border-bottom: 2px solid #444;
+}
+
+.pub-trans-deptt-column-header > div {
+    text-align: left;
+}
+
+.pub-trans-deptt-column-header .col-time {
+    text-align: center;
+}
+
+.pub-trans-deptt-column-header .col-delay {
+    text-align: center;
+}
+
+.pub-trans-deptt-column-header .col-platform {
+    text-align: center;
+}
+
+/* Container für die Abfahrtszeilen */
+.pub-trans-deptt-content {
+    background-color: #000000;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+/* Einzelne Abfahrtszeile */
+.pub-trans-deptt-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 100px 100px 120px;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    color: #ffcc00;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.pub-trans-deptt-row:hover {
+    background-color: #1a1a1a;
+}
+
+/* Alternative Zeilenfarbe für bessere Lesbarkeit */
+.pub-trans-deptt-row:nth-child(even) {
+    background-color: #0a0a0a;
+}
+
+/* Spalten in der Abfahrtszeile */
+.pub-trans-deptt-time {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #00ff00;
+}
+
+.pub-trans-deptt-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pub-trans-deptt-line-icon {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+    min-width: 40px;
+    background-color: #ffcc00;
+    color: #000000;
+}
+
+/* Verschiedene Verkehrsmittel-Farben */
+.pub-trans-deptt-line-icon.bus {
+    background-color: #9d1b4c;
+    color: #ffffff;
+}
+
+.pub-trans-deptt-line-icon.tram {
+    background-color: #d4000b;
+    color: #ffffff;
+}
+
+.pub-trans-deptt-line-icon.subway {
+    background-color: #0066b3;
+    color: #ffffff;
+}
+
+.pub-trans-deptt-line-icon.train {
+    background-color: #ffffff;
+    color: #d4000b;
+    border: 2px solid #d4000b;
+}
+
+.pub-trans-deptt-line-icon.sbahn {
+    background-color: #006e34;
+    color: #ffffff;
+}
+
+.pub-trans-deptt-direction {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.pub-trans-deptt-delay {
+    text-align: center;
+    font-weight: bold;
+}
+
+.pub-trans-deptt-delay.ontime {
+    color: #00ff00;
+}
+
+.pub-trans-deptt-delay.delayed {
+    color: #ff0000;
+}
+
+.pub-trans-deptt-delay.cancelled {
+    color: #ff0000;
+    text-decoration: line-through;
+}
+
+.pub-trans-deptt-platform {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffcc00;
+}
+
+.pub-trans-deptt-platform.changed {
+    color: #ff0000;
+    animation: blink 1s infinite;
+}
+
+/* Blinken für geänderte Bahnsteige */
+@keyframes blink {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0.3;
+    }
+}
+
+/* Keine Daten Nachricht */
+.pub-trans-deptt-no-data {
+    padding: 30px;
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+}
+
+/* Uhrzeit-Anzeige */
+.pub-trans-deptt-clock {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    color: #00ff00;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Ladeindikator */
+.pub-trans-deptt-loading {
+    padding: 20px;
+    text-align: center;
+    color: #ffcc00;
+    font-size: 14px;
+}
+
+.pub-trans-deptt-loading::after {
+    content: '...';
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        content: '.';
+    }
+    33% {
+        content: '..';
+    }
+    66% {
+        content: '...';
+    }
+}
+
+/* Scrollbar Styling */
+.pub-trans-deptt-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pub-trans-deptt-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.pub-trans-deptt-content::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.pub-trans-deptt-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
