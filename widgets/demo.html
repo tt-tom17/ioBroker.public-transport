@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Transport - Abfahrtstafel Widget Test</title>
+    <link rel="stylesheet" href="pub_trans/css/style-deptt.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .demo-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .widget-demo {
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .info {
+            background: white;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>Abfahrtstafel Widget - Demo</h1>
+        
+        <div class="info">
+            <h2>Beispieldaten</h2>
+            <p>Diese Demo zeigt das Widget mit verschiedenen Verkehrsmitteln und Verspätungen.</p>
+        </div>
+
+        <div class="widget-demo">
+            <div class="pub-trans-deptt-container" style="width: 100%; height: auto;">
+                <!-- Header -->
+                <div class="pub-trans-deptt-header">
+                    Hauptbahnhof - Abfahrten
+                    <div class="pub-trans-deptt-clock" id="demo-clock">--:--</div>
+                </div>
+
+                <!-- Spaltenüberschriften -->
+                <div class="pub-trans-deptt-column-header">
+                    <div class="col-time">Zeit</div>
+                    <div class="col-line">Linie / Ziel</div>
+                    <div class="col-delay">Verspätung</div>
+                    <div class="col-platform">Gleis</div>
+                    <div class="col-info">Info</div>
+                </div>
+
+                <!-- Content mit Beispieldaten -->
+                <div class="pub-trans-deptt-content" style="max-height: 500px;">
+                    
+                    <!-- S-Bahn -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:32</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon sbahn">S1</span>
+                            <span class="pub-trans-deptt-direction">Flughafen</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay ontime">pünktlich</span></div>
+                        <div class="pub-trans-deptt-platform">3</div>
+                        <div></div>
+                    </div>
+
+                    <!-- U-Bahn mit Verspätung -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:35</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon subway">U2</span>
+                            <span class="pub-trans-deptt-direction">Messegelände</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay delayed">+3 min</span></div>
+                        <div class="pub-trans-deptt-platform">2</div>
+                        <div></div>
+                    </div>
+
+                    <!-- Straßenbahn -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:38</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon tram">6</span>
+                            <span class="pub-trans-deptt-direction">Stadtpark</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay ontime">pünktlich</span></div>
+                        <div class="pub-trans-deptt-platform">12</div>
+                        <div></div>
+                    </div>
+
+                    <!-- ICE -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:42</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon train">ICE 1234</span>
+                            <span class="pub-trans-deptt-direction">Berlin Hbf</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay delayed">+7 min</span></div>
+                        <div class="pub-trans-deptt-platform">8</div>
+                        <div></div>
+                    </div>
+
+                    <!-- Bus -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:45</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon bus">142</span>
+                            <span class="pub-trans-deptt-direction">Bahnhof Nord</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay ontime">pünktlich</span></div>
+                        <div class="pub-trans-deptt-platform">A</div>
+                        <div></div>
+                    </div>
+
+                    <!-- S-Bahn -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:47</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon sbahn">S3</span>
+                            <span class="pub-trans-deptt-direction">Ostbahnhof</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay ontime">pünktlich</span></div>
+                        <div class="pub-trans-deptt-platform">5</div>
+                        <div></div>
+                    </div>
+
+                    <!-- Zug mit Ausfall -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:52</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon train">RE 5</span>
+                            <span class="pub-trans-deptt-direction">Leipzig</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay cancelled">Ausfall</span></div>
+                        <div class="pub-trans-deptt-platform">11</div>
+                        <div>Fällt aus</div>
+                    </div>
+
+                    <!-- Straßenbahn mit hoher Verspätung -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:55</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon tram">9</span>
+                            <span class="pub-trans-deptt-direction">Neustadt</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay delayed">+12 min</span></div>
+                        <div class="pub-trans-deptt-platform">14</div>
+                        <div></div>
+                    </div>
+
+                    <!-- Bus -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">15:58</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon bus">N7</span>
+                            <span class="pub-trans-deptt-direction">Industriegebiet</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay delayed">+2 min</span></div>
+                        <div class="pub-trans-deptt-platform">B</div>
+                        <div></div>
+                    </div>
+
+                    <!-- U-Bahn -->
+                    <div class="pub-trans-deptt-row">
+                        <div class="pub-trans-deptt-time">16:02</div>
+                        <div class="pub-trans-deptt-line">
+                            <span class="pub-trans-deptt-line-icon subway">U4</span>
+                            <span class="pub-trans-deptt-direction">Westend</span>
+                        </div>
+                        <div><span class="pub-trans-deptt-delay ontime">pünktlich</span></div>
+                        <div class="pub-trans-deptt-platform">1</div>
+                        <div></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="info">
+            <h2>Widget-Features</h2>
+            <ul>
+                <li><strong>Echtzeit-Uhr:</strong> Wird automatisch aktualisiert</li>
+                <li><strong>Farbcodierung:</strong> 
+                    <ul>
+                        <li>S-Bahn: Grün</li>
+                        <li>U-Bahn: Blau</li>
+                        <li>Straßenbahn: Rot</li>
+                        <li>Bus: Magenta</li>
+                        <li>Zug: Weiß mit rotem Rand</li>
+                    </ul>
+                </li>
+                <li><strong>Verspätungsanzeige:</strong> Grün für pünktlich, Rot für verspätet</li>
+                <li><strong>Ausfälle:</strong> Deutlich gekennzeichnet</li>
+                <li><strong>Responsive Design:</strong> Passt sich an Bildschirmgröße an</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Uhr aktualisieren
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('demo-clock').textContent = hours + ':' + minutes;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

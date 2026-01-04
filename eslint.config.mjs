@@ -24,6 +24,7 @@ export default [
             'script/**/*.ts',
             'admin/custom/',
             'src-admin/',
+            'widgets/**/*.js', // Keep ignoring VIS widget files for official config
         ]
     },
 
