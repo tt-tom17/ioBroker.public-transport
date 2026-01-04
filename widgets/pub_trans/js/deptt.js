@@ -3,29 +3,29 @@
 
     Copyright 2026 tt-tom17 tgb@kabelmail.de
 */
-"use strict";
+'use strict';
 
 // Übersetzungen für den Edit-Modus
-$.extend(
-    true,
-    systemDictionary,
-    {
-        "headerText": { "en": "Headline", "de": "Überschrift", "ru": "Заголовок" },
-        "oidDepartures": { "en": "Departures Object ID", "de": "Abfahrten Objekt ID", "ru": "ID объекта отправлений" },
-        "maxDepartures": { "en": "Max. Departures", "de": "Max. Abfahrten", "ru": "Макс. отправлений" },
-        "showClock": { "en": "Show Clock", "de": "Uhr anzeigen", "ru": "Показать часы" },
-        "updateInterval": { "en": "Update Interval (seconds)", "de": "Aktualisierungsintervall (Sekunden)", "ru": "Интервал обновления (секунды)" }
-    }
-);
+$.extend(true, systemDictionary, {
+    headerText: { en: 'Headline', de: 'Überschrift', ru: 'Заголовок' },
+    oidDepartures: { en: 'Departures Object ID', de: 'Abfahrten Objekt ID', ru: 'ID объекта отправлений' },
+    maxDepartures: { en: 'Max. Departures', de: 'Max. Abfahrten', ru: 'Макс. отправлений' },
+    showClock: { en: 'Show Clock', de: 'Uhr anzeigen', ru: 'Показать часы' },
+    updateInterval: {
+        en: 'Update Interval (seconds)',
+        de: 'Aktualisierungsintervall (Sekunden)',
+        ru: 'Интервал обновления (секунды)',
+    },
+});
 
 // Widget Binding
-vis.binds["pub_transDepTt"] = {
-    version: "0.0.1",
-    
+vis.binds['pub_transDepTt'] = {
+    version: '0.0.1',
+
     showVersion: function () {
-        if (vis.binds["pub_transDepTt"].version) {
-            console.log('Version pub_transDepTt: ' + vis.binds["pub_transDepTt"].version);
-            vis.binds["pub_transDepTt"].version = null;
+        if (vis.binds['pub_transDepTt'].version) {
+            console.log('Version pub_transDepTt: ' + vis.binds['pub_transDepTt'].version);
+            vis.binds['pub_transDepTt'].version = null;
         }
     },
 
@@ -34,11 +34,11 @@ vis.binds["pub_transDepTt"] = {
      */
     createDepTt: function (widgetID, view, data, style) {
         const $div = $('#' + widgetID);
-        
+
         // Falls Element nicht gefunden => warten
         if (!$div.length) {
             return setTimeout(function () {
-                vis.binds["pub_transDepTt"].createDepTt(widgetID, view, data, style);
+                vis.binds['pub_transDepTt'].createDepTt(widgetID, view, data, style);
             }, 100);
         }
 
@@ -51,7 +51,7 @@ vis.binds["pub_transDepTt"] = {
         // HTML-Struktur erstellen
         let html = '';
         html += '<div class="pub-trans-deptt-container ' + data.class + '" style="width: 100%; height: 100%;">';
-        
+
         // Header
         html += '<div class="pub-trans-deptt-header">';
         html += headerText;
@@ -81,7 +81,7 @@ vis.binds["pub_transDepTt"] = {
         // Funktionen zum Aktualisieren der Anzeige
         function updateClock() {
             if (!showClock) return;
-            
+
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -90,7 +90,7 @@ vis.binds["pub_transDepTt"] = {
 
         function getProductClass(productName) {
             if (!productName) return 'train';
-            
+
             const product = productName.toLowerCase();
             if (product.includes('bus')) return 'bus';
             if (product.includes('tram') || product.includes('straßenbahn')) return 'tram';
@@ -111,7 +111,7 @@ vis.binds["pub_transDepTt"] = {
 
         function updateDepartures(e, newVal, oldVal) {
             let departures = [];
-            
+
             try {
                 if (typeof newVal === 'string') {
                     departures = JSON.parse(newVal);
@@ -122,12 +122,14 @@ vis.binds["pub_transDepTt"] = {
                 }
             } catch (err) {
                 console.error('Error parsing departures data:', err);
-                $('#content-' + widgetID).html('<div class="pub-trans-deptt-no-data">Fehler beim Laden der Daten</div>');
+                $('#content-' + widgetID).html(
+                    '<div class="pub-trans-deptt-no-data">Fehler beim Laden der Daten</div>',
+                );
                 return;
             }
 
             const $content = $('#content-' + widgetID);
-            
+
             if (!departures || departures.length === 0) {
                 $content.html('<div class="pub-trans-deptt-no-data">Keine Abfahrten verfügbar</div>');
                 return;
@@ -135,9 +137,9 @@ vis.binds["pub_transDepTt"] = {
 
             // Begrenze auf maxDepartures
             const displayDepartures = departures.slice(0, maxDepartures);
-            
+
             let html = '';
-            displayDepartures.forEach(function(dep) {
+            displayDepartures.forEach(function (dep) {
                 const time = dep.when || dep.time || dep.scheduledWhen || '--:--';
                 const line = dep.line || dep.lineName || dep.number || '?';
                 const direction = dep.direction || dep.destination || '';
@@ -145,26 +147,31 @@ vis.binds["pub_transDepTt"] = {
                 const platform = dep.platform || dep.track || '--';
                 const cancelled = dep.cancelled || false;
                 const product = dep.product || dep.productName || 'train';
-                
+
                 // Zeit formatieren
                 let displayTime = time;
                 if (time !== '--:--' && typeof time === 'string') {
                     const timeObj = new Date(time);
                     if (!isNaN(timeObj.getTime())) {
-                        displayTime = String(timeObj.getHours()).padStart(2, '0') + ':' + 
-                                    String(timeObj.getMinutes()).padStart(2, '0');
+                        displayTime =
+                            String(timeObj.getHours()).padStart(2, '0') +
+                            ':' +
+                            String(timeObj.getMinutes()).padStart(2, '0');
                     }
                 }
 
                 html += '<div class="pub-trans-deptt-row">';
                 html += '<div class="pub-trans-deptt-time">' + displayTime + '</div>';
-                
+
                 html += '<div class="pub-trans-deptt-line">';
                 html += '<span class="pub-trans-deptt-line-icon ' + getProductClass(product) + '">' + line + '</span>';
                 html += '<span class="pub-trans-deptt-direction">' + direction + '</span>';
                 html += '</div>';
-                
-                html += '<div>' + (cancelled ? '<span class="pub-trans-deptt-delay cancelled">Ausfall</span>' : formatDelay(delay)) + '</div>';
+
+                html +=
+                    '<div>' +
+                    (cancelled ? '<span class="pub-trans-deptt-delay cancelled">Ausfall</span>' : formatDelay(delay)) +
+                    '</div>';
                 html += '<div class="pub-trans-deptt-platform">' + platform + '</div>';
                 html += '<div>' + (cancelled ? 'Fällt aus' : '') + '</div>';
                 html += '</div>';
@@ -178,7 +185,7 @@ vis.binds["pub_transDepTt"] = {
             vis.states.bind(data.oidDepartures + '.val', updateDepartures);
             $div.data('bound', [data.oidDepartures + '.val']);
             $div.data('bindHandler', updateDepartures);
-            
+
             // Initiale Aktualisierung
             if (vis.states[data.oidDepartures + '.val']) {
                 updateDepartures(null, vis.states[data.oidDepartures + '.val'], null);
@@ -193,13 +200,13 @@ vis.binds["pub_transDepTt"] = {
 
         // Periodische Aktualisierung
         if (updateInterval > 0) {
-            setInterval(function() {
+            setInterval(function () {
                 if (data.oidDepartures && vis.states[data.oidDepartures + '.val']) {
                     updateDepartures(null, vis.states[data.oidDepartures + '.val'], null);
                 }
             }, updateInterval * 1000);
         }
-    }
+    },
 };
 
-vis.binds["pub_transDepTt"].showVersion();
+vis.binds['pub_transDepTt'].showVersion();
