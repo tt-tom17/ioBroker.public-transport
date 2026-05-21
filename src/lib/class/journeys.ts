@@ -4,16 +4,19 @@ import { StationRequest } from '../class/station';
 import { BaseClass } from '../tools/library';
 import { groupRemarksByType } from '../tools/mapper';
 import { defaultJourneyOpt, type Products } from '../types/types';
+import { NsPanelTimetable } from './nsPanelTimetable';
 
 export class JourneysRequest extends BaseClass {
     private station: StationRequest;
     private service: any;
     private delayOffset: number = this.adapter.config.delayOffset || 2;
+    private nsPanelTimetable: NsPanelTimetable;
 
     constructor(adapter: PublicTransport) {
         super(adapter);
         this.log.setLogPrefix('journeyReq');
         this.station = new StationRequest(adapter);
+        this.nsPanelTimetable = new NsPanelTimetable(adapter);
     }
 
     /**
@@ -226,6 +229,7 @@ export class JourneysRequest extends BaseClass {
                 journeys,
                 countEntries,
                 client_profile,
+                journeyConfig.nspanel,
             );
         } catch (err) {
             this.log.error(`Error writing journeys. Error message: ${(err as Error).message}`);
@@ -239,12 +243,14 @@ export class JourneysRequest extends BaseClass {
      * @param journeys Verbindungsdaten als Array von Hafas.Journeys
      * @param countEntries Anzahl der definierten Verbindungen
      * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "vendo:db")
+     * @param nspanel Ob der NSPanel-Channel angelegt werden soll.
      */
     async writesBaseStates(
         basePath: string,
         journeys: Hafas.Journeys,
         countEntries: number,
         client_profile?: string,
+        nspanel?: boolean,
     ): Promise<void> {
         try {
             // Rohdaten der Verbindungen
@@ -276,7 +282,7 @@ export class JourneysRequest extends BaseClass {
                 await this.station.writeStationData(`${basePath}.StationTo`, stationTo);
             }
             // Verbindungen
-            await this.writeJourneyStates(basePath, journeys, countEntries);
+            await this.writeJourneyStates(basePath, journeys, countEntries, nspanel);
         } catch (err) {
             this.log.error(this.library.translate('msg_journeyBaseStateWriteError', (err as Error).message));
         }
@@ -287,8 +293,14 @@ export class JourneysRequest extends BaseClass {
      * @param basePath Basis-Pfad für die States
      * @param journeys Verbindungsdaten als Array von Hafas.Journeys
      * @param countEntries Anzahl der definierten Verbindungen
+     * @param nspanel Ob der NSPanel-Channel angelegt werden soll.
      */
-    async writeJourneyStates(basePath: string, journeys: Hafas.Journeys, countEntries: number): Promise<void> {
+    async writeJourneyStates(
+        basePath: string,
+        journeys: Hafas.Journeys,
+        countEntries: number,
+        nspanel?: boolean,
+    ): Promise<void> {
         try {
             if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
                 for (const [index, journey] of journeys.journeys.entries()) {
@@ -500,6 +512,10 @@ export class JourneysRequest extends BaseClass {
                     });
                     // Teilstrecken/Legs der Verbindung
                     await this.writeLegStates(journeyPath, journey.legs);
+                    // NSPanel Timetable Channel
+                    if (nspanel) {
+                        await this.nsPanelTimetable.writeJourneyNsPanel(journeyPath, journey);
+                    }
                     this.log.info2(`✓ Object ${index + 1} processed successfully`);
                     if (index === countEntries - 1) {
                         this.log.debug(

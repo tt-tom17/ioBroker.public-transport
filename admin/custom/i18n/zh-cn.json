@@ -178,6 +178,8 @@
     "nahv.": "当地交通",
     "no_journeys_hint": "未配置行程。单击“添加旅程”开始。",
     "no_stations_hint": "没有配置站。单击“添加电台”开始。",
+    "nspanel_channel": "NSPanel 的通道（适配器）",
+    "nspanel_channel_hint": "创建一个包含所有必需数据点的时间表类型的通道",
     "offset_time": "时间偏移",
     "offset_time_hint": "出发时间的时间偏移（以分钟为单位）",
     "on_call": "随叫随到/按需转运",

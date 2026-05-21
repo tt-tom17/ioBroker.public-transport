@@ -178,6 +178,8 @@
     "nahv.": "Transporte local",
     "no_journeys_hint": "Nenhuma jornada configurada. Clique em \"Adicionar jornada\" para começar.",
     "no_stations_hint": "Nenhuma estação configurada. Clique em \"Adicionar estação\" para começar.",
+    "nspanel_channel": "Canal para NSPanel (adaptador)",
+    "nspanel_channel_hint": "Cria um canal do tipo horário com todos os pontos de dados necessários",
     "offset_time": "Compensação de tempo",
     "offset_time_hint": "Diferença de tempo em minutos para horários de partida",
     "on_call": "Trânsito de plantão/demanda",

@@ -1,5 +1,5 @@
 import { I18n } from '@iobroker/adapter-react-v5';
-import { Box, Divider, FormControlLabel, Paper, Switch, TextField, Typography } from '@mui/material';
+import { Box, Divider, FormControlLabel, FormHelperText, Paper, Switch, TextField, Typography } from '@mui/material';
 import React from 'react';
 import ProductSelector from './ProductSelector';
 import { defaultProducts, type Products } from './Products';
@@ -15,6 +15,7 @@ interface Station {
     availableProducts?: Partial<Products>; // Produkte die von HAFAS für diese Station zurückgegeben wurden
     nativeProducts?: Partial<Products>; // Von HAFAS gemeldete Produkte der Station (unveränderlich)
     client_profile?: string;
+    nspanel?: boolean;
 }
 
 interface StationConfigProps {
@@ -33,6 +34,12 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate, alive 
     const handleEnabledChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         if (station && onUpdate) {
             onUpdate(station.id, { enabled: event.target.checked });
+        }
+    };
+
+    const handleNsPanelChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        if (station && onUpdate) {
+            onUpdate(station.id, { nspanel: event.target.checked });
         }
     };
 
@@ -120,6 +127,21 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate, alive 
                             }
                             label={I18n.t('enabled')}
                         />
+
+                        {/* NSPanel Channel Switch */}
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={station.nspanel === true}
+                                        onChange={handleNsPanelChange}
+                                        disabled={!alive}
+                                    />
+                                }
+                                label={I18n.t('nspanel_channel')}
+                            />
+                            <FormHelperText>{I18n.t('nspanel_channel_hint')}</FormHelperText>
+                        </Box>
 
                         {/* Count Departures */}
                         <TextField

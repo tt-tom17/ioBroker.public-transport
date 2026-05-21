@@ -3,13 +3,16 @@ import type { PublicTransport } from '../../main';
 import { BaseClass } from '../tools/library';
 import { mapDeparturesToDepartureStates } from '../tools/mapper';
 import { defaultDepartureOpt, type DepartureState, type Products } from '../types/types';
+import { NsPanelTimetable } from './nsPanelTimetable';
 
 export class DepartureRequest extends BaseClass {
     private delayOffset: number = this.adapter.config.delayOffset || 2;
+    private nsPanelTimetable: NsPanelTimetable;
 
     constructor(adapter: PublicTransport) {
         super(adapter);
         this.log.setLogPrefix('depReq');
+        this.nsPanelTimetable = new NsPanelTimetable(adapter);
     }
 
     /**
@@ -240,7 +243,7 @@ export class DepartureRequest extends BaseClass {
             // Konvertiere zu reduzierten States
             const departureStates: DepartureState[] = mapDeparturesToDepartureStates(departures);
             // JSON in die States schreiben
-            await this.writeBaseStates(departureStates, stationId, countEntries);
+            await this.writeBaseStates(departureStates, stationId, countEntries, stationConfig.nspanel);
         } catch (err) {
             this.log.error(`Error writing departures: ${(err as Error).message}`);
         }
@@ -252,8 +255,14 @@ export class DepartureRequest extends BaseClass {
      * @param response  Die Abfahrts-States, die geschrieben werden sollen.
      * @param stationId  Die ID der Station, für die die States geschrieben werden sollen.
      * @param countEntries  Die maximale Anzahl der Einträge, die geschrieben werden sollen.
+     * @param nspanel  Ob der NSPanel-Channel angelegt werden soll.
      */
-    async writeBaseStates(response: DepartureState[], stationId: string, countEntries: number): Promise<void> {
+    async writeBaseStates(
+        response: DepartureState[],
+        stationId: string,
+        countEntries: number,
+        nspanel?: boolean,
+    ): Promise<void> {
         for (const [index, obj] of response.entries()) {
             try {
                 this.log.info2(`=== Starting object ${index + 1} of ${response.length} ===`);
@@ -640,6 +649,13 @@ export class DepartureRequest extends BaseClass {
                     },
                     true,
                 );
+                // NSPanel Timetable Channel
+                if (nspanel) {
+                    await this.nsPanelTimetable.writeDepartureNsPanel(
+                        `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}`,
+                        obj,
+                    );
+                }
                 this.log.info2(`✓ Object ${index + 1} processed successfully`);
                 if (index === countEntries - 1) {
                     this.log.debug(

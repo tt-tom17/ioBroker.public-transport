@@ -178,6 +178,8 @@
     "nahv.": "Local Transport",
     "no_journeys_hint": "No journeys configured. Click \"Add Journey\" to begin.",
     "no_stations_hint": "No stations configured. Click \"Add Station\" to begin.",
+    "nspanel_channel": "Channel for NSPanel (Adapter)",
+    "nspanel_channel_hint": "Creates a channel of type timetable with all required data points",
     "offset_time": "Time Offset",
     "offset_time_hint": "Time offset in minutes for departure times",
     "on_call": "On-Call/Demand Transit",

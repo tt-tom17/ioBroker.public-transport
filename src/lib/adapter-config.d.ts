@@ -27,6 +27,7 @@ declare global {
 			products: Products;
 			availableProducts?: Products;
 			client_profile: string;
+			nspanel?: boolean;
 		}
 
 		interface Products {
@@ -61,6 +62,7 @@ declare global {
 			transferTime?: number;
 			accessibility?: 'partial' | 'complete';
 			bike?: boolean;
+			nspanel?: boolean;
 		}
 	}
 }

@@ -178,6 +178,8 @@
     "nahv.": "Lokaal vervoer",
     "no_journeys_hint": "Geen ritten geconfigureerd. Klik op 'Reis toevoegen' om te beginnen.",
     "no_stations_hint": "Geen stations geconfigureerd. Klik op \"Station toevoegen\" om te beginnen.",
+    "nspanel_channel": "Kanaal voor NSPanel (adapter)",
+    "nspanel_channel_hint": "Creëert een kanaal van het type dienstregeling met alle vereiste datapunten",
     "offset_time": "Tijdverschuiving",
     "offset_time_hint": "Tijdsverschuiving in minuten voor vertrektijden",
     "on_call": "Transit op afroep/aanvraag",

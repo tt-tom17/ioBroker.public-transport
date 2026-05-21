@@ -178,6 +178,8 @@
     "nahv.": "Transports locaux",
     "no_journeys_hint": "Aucun trajet configuré. Cliquez sur « Ajouter un voyage » pour commencer.",
     "no_stations_hint": "Aucune station configurée. Cliquez sur « Ajouter une station » pour commencer.",
+    "nspanel_channel": "Canal pour NSPanel (adaptateur)",
+    "nspanel_channel_hint": "Crée un canal de type horaire avec tous les points de données requis",
     "offset_time": "Décalage horaire",
     "offset_time_hint": "Décalage horaire en minutes pour les heures de départ",
     "on_call": "Transit sur appel/à la demande",

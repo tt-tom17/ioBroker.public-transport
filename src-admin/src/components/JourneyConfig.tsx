@@ -1,6 +1,17 @@
 import { I18n } from '@iobroker/adapter-react-v5';
 import type { ConfigGenericProps } from '@iobroker/json-config';
-import { Box, Button, Dialog, Divider, FormControlLabel, Paper, Switch, TextField, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    Dialog,
+    Divider,
+    FormControlLabel,
+    FormHelperText,
+    Paper,
+    Switch,
+    TextField,
+    Typography,
+} from '@mui/material';
 import React, { useState } from 'react';
 import { defaultProducts, getProductsForProfile, type Products } from './Products';
 import ProductSelector from './ProductSelector';
@@ -18,6 +29,7 @@ interface Journey {
     products?: Products;
     availableProducts?: Partial<Products>; // Produkte die für diese Route verfügbar sind
     client_profile?: string;
+    nspanel?: boolean;
 }
 
 interface JourneyConfigProps {
@@ -43,6 +55,12 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
     const handleEnabledChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         if (journey && onUpdate) {
             onUpdate(journey.id, { enabled: event.target.checked });
+        }
+    };
+
+    const handleNsPanelChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        if (journey && onUpdate) {
+            onUpdate(journey.id, { nspanel: event.target.checked });
         }
     };
 
@@ -174,6 +192,21 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
                                 }
                                 label={I18n.t('enabled')}
                             />
+
+                            {/* NSPanel Channel Switch */}
+                            <Box>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={journey.nspanel === true}
+                                            onChange={handleNsPanelChange}
+                                            disabled={!alive}
+                                        />
+                                    }
+                                    label={I18n.t('nspanel_channel')}
+                                />
+                                <FormHelperText>{I18n.t('nspanel_channel_hint')}</FormHelperText>
+                            </Box>
 
                             {/* Number of Results */}
                             <TextField

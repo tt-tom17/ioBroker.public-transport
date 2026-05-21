@@ -178,6 +178,8 @@
     "nahv.": "Transporte local",
     "no_journeys_hint": "No hay viajes configurados. Haga clic en \"Agregar viaje\" para comenzar.",
     "no_stations_hint": "No hay estaciones configuradas. Haga clic en \"Agregar estación\" para comenzar.",
+    "nspanel_channel": "Canal para NSPanel (Adaptador)",
+    "nspanel_channel_hint": "Crea un canal de tipo horario con todos los puntos de datos requeridos.",
     "offset_time": "Compensación de tiempo",
     "offset_time_hint": "Desplazamiento de tiempo en minutos para los horarios de salida",
     "on_call": "Tránsito de guardia/demanda",

@@ -24,11 +24,14 @@ module.exports = __toCommonJS(departure_exports);
 var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
+var import_nsPanelTimetable = require("./nsPanelTimetable");
 class DepartureRequest extends import_library.BaseClass {
   delayOffset = this.adapter.config.delayOffset || 2;
+  nsPanelTimetable;
   constructor(adapter) {
     super(adapter);
     this.log.setLogPrefix("depReq");
+    this.nsPanelTimetable = new import_nsPanelTimetable.NsPanelTimetable(adapter);
   }
   /**
    * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
@@ -216,7 +219,7 @@ class DepartureRequest extends import_library.BaseClass {
         }
       );
       const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(departures);
-      await this.writeBaseStates(departureStates, stationId, countEntries);
+      await this.writeBaseStates(departureStates, stationId, countEntries, stationConfig.nspanel);
     } catch (err) {
       this.log.error(`Error writing departures: ${err.message}`);
     }
@@ -227,8 +230,9 @@ class DepartureRequest extends import_library.BaseClass {
    * @param response  Die Abfahrts-States, die geschrieben werden sollen.
    * @param stationId  Die ID der Station, für die die States geschrieben werden sollen.
    * @param countEntries  Die maximale Anzahl der Einträge, die geschrieben werden sollen.
+   * @param nspanel  Ob der NSPanel-Channel angelegt werden soll.
    */
-  async writeBaseStates(response, stationId, countEntries) {
+  async writeBaseStates(response, stationId, countEntries, nspanel) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
     for (const [index, obj] of response.entries()) {
       try {
@@ -594,6 +598,12 @@ class DepartureRequest extends import_library.BaseClass {
           },
           true
         );
+        if (nspanel) {
+          await this.nsPanelTimetable.writeDepartureNsPanel(
+            `${this.adapter.namespace}.Stations.${stationId}.${departureIndex}`,
+            obj
+          );
+        }
         this.log.info2(`\u2713 Object ${index + 1} processed successfully`);
         if (index === countEntries - 1) {
           this.log.debug(

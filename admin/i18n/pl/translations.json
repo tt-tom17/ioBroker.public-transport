@@ -178,6 +178,8 @@
     "nahv.": "Transport lokalny",
     "no_journeys_hint": "Nie skonfigurowano żadnych podróży. Aby rozpocząć, kliknij „Dodaj podróż”.",
     "no_stations_hint": "Nie skonfigurowano żadnych stacji. Aby rozpocząć, kliknij „Dodaj stację”.",
+    "nspanel_channel": "Kanał dla NSPanel (Adapter)",
+    "nspanel_channel_hint": "Tworzy kanał typu harmonogram ze wszystkimi wymaganymi punktami danych",
     "offset_time": "Przesunięcie czasu",
     "offset_time_hint": "Przesunięcie czasowe w minutach dla godzin odjazdu",
     "on_call": "Tranzyt na żądanie/na żądanie",

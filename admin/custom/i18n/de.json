@@ -178,6 +178,8 @@
     "nahv.": "Nahverkehr",
     "no_journeys_hint": "Keine Verbindungen konfiguriert. Klicken Sie auf \"Verbindung hinzufügen\" um zu beginnen.",
     "no_stations_hint": "Keine Stationen konfiguriert. Klicken Sie auf \"Station hinzufügen\" um zu beginnen.",
+    "nspanel_channel": "Channel für NSPanel (Adapter)",
+    "nspanel_channel_hint": "Legt ein Channel vom Type timetable mit allen benötigten Datenpunkten an",
     "offset_time": "Zeitversatz",
     "offset_time_hint": "Zeitversatz in Minuten für die Abfahrtszeiten",
     "on_call": "Anruf-/Bedarfsverkehr",

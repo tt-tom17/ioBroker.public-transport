@@ -25,14 +25,17 @@ var import_station = require("../class/station");
 var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
+var import_nsPanelTimetable = require("./nsPanelTimetable");
 class JourneysRequest extends import_library.BaseClass {
   station;
   service;
   delayOffset = this.adapter.config.delayOffset || 2;
+  nsPanelTimetable;
   constructor(adapter) {
     super(adapter);
     this.log.setLogPrefix("journeyReq");
     this.station = new import_station.StationRequest(adapter);
+    this.nsPanelTimetable = new import_nsPanelTimetable.NsPanelTimetable(adapter);
   }
   /**
    * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
@@ -200,7 +203,8 @@ class JourneysRequest extends import_library.BaseClass {
         `${this.adapter.namespace}.Journeys.${journeyId}`,
         journeys,
         countEntries,
-        client_profile
+        client_profile,
+        journeyConfig.nspanel
       );
     } catch (err) {
       this.log.error(`Error writing journeys. Error message: ${err.message}`);
@@ -213,8 +217,9 @@ class JourneysRequest extends import_library.BaseClass {
    * @param journeys Verbindungsdaten als Array von Hafas.Journeys
    * @param countEntries Anzahl der definierten Verbindungen
    * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "vendo:db")
+   * @param nspanel Ob der NSPanel-Channel angelegt werden soll.
    */
-  async writesBaseStates(basePath, journeys, countEntries, client_profile) {
+  async writesBaseStates(basePath, journeys, countEntries, client_profile, nspanel) {
     var _a, _b, _c, _d;
     try {
       await this.library.writedp(`${basePath}.json`, JSON.stringify(journeys), {
@@ -242,7 +247,7 @@ class JourneysRequest extends import_library.BaseClass {
         await this.station.writeStationData(`${basePath}.StationFrom`, stationFrom);
         await this.station.writeStationData(`${basePath}.StationTo`, stationTo);
       }
-      await this.writeJourneyStates(basePath, journeys, countEntries);
+      await this.writeJourneyStates(basePath, journeys, countEntries, nspanel);
     } catch (err) {
       this.log.error(this.library.translate("msg_journeyBaseStateWriteError", err.message));
     }
@@ -253,8 +258,9 @@ class JourneysRequest extends import_library.BaseClass {
    * @param basePath Basis-Pfad für die States
    * @param journeys Verbindungsdaten als Array von Hafas.Journeys
    * @param countEntries Anzahl der definierten Verbindungen
+   * @param nspanel Ob der NSPanel-Channel angelegt werden soll.
    */
-  async writeJourneyStates(basePath, journeys, countEntries) {
+  async writeJourneyStates(basePath, journeys, countEntries, nspanel) {
     try {
       if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
         for (const [index, journey] of journeys.journeys.entries()) {
@@ -449,6 +455,9 @@ class JourneysRequest extends import_library.BaseClass {
             native: {}
           });
           await this.writeLegStates(journeyPath, journey.legs);
+          if (nspanel) {
+            await this.nsPanelTimetable.writeJourneyNsPanel(journeyPath, journey);
+          }
           this.log.info2(`\u2713 Object ${index + 1} processed successfully`);
           if (index === countEntries - 1) {
             this.log.debug(
