@@ -10,8 +10,8 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 
 | Seite | Datei | Status | Hinweis |
 |-------|-------|--------|---------|
-| Startseite | `de/Home.md` | 🔲 Stub | |
-| Installation | `de/Installation.md` | 🔲 Stub | |
+| Startseite | `de/Home.md` | ✅ | |
+| Installation | `de/Installation.md` | ✅ | |
 | Konfiguration (Admin-Tab 1) | `de/Konfiguration.md` | 🔲 Stub | ClientConfig-Tab |
 | Abfahrten (Admin-Tab 2) | `de/Abfahrten.md` | 🔲 Stub | DepartureManager-Tab |
 | Verbindungen (Admin-Tab 3) | `de/Verbindungen.md` | 🔲 Stub | JourneyManager-Tab |
@@ -26,8 +26,8 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 
 | Seite | Datei | Status | Hinweis |
 |-------|-------|--------|---------|
-| Home | `en/Home.md` | 🔲 Stub | |
-| Installation | `en/Installation.md` | 🔲 Stub | |
+| Home | `en/Home.md` | ✅ | |
+| Installation | `en/Installation.md` | ✅ | |
 | Configuration (Admin Tab 1) | `en/Configuration.md` | 🔲 Stub | ClientConfig tab |
 | Departures (Admin Tab 2) | `en/Departures.md` | 🔲 Stub | DepartureManager tab |
 | Journeys (Admin Tab 3) | `en/Journeys.md` | 🔲 Stub | JourneyManager tab |
@@ -45,7 +45,7 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 | Phase | Commit | Inhalt | Status |
 |-------|--------|--------|--------|
 | 1 | `docs(phase 1)` | Infrastruktur (Ordner + STATUS.md) | ✅ |
-| 2.1 | `docs(phase 2.1)` | Home.md + Installation.md (DE+EN) | 🔲 |
+| 2.1 | `docs(phase 2.1)` | Home.md + Installation.md (DE+EN) | ✅ |
 | 2.2 | `docs(phase 2.2)` | Konfiguration.md (DE+EN) | 🔲 |
 | 2.3 | `docs(phase 2.3)` | Abfahrten.md + Verbindungen.md (DE+EN) | 🔲 |
 | 2.4 | `docs(phase 2.4)` | Datenpunkte.md (DE+EN) | 🔲 |
