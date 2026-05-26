@@ -216,6 +216,42 @@ Only for regular legs:
 
 ---
 
+## NSPanel Datapoints
+
+When **NSPanel Channel** is enabled in the stop or journey configuration, the adapter creates additional channels with role `timeTable`. These are optimised for the NSPanel Lovelace UI adapter.
+
+### Departures: `Departures_XX.nspanelDep{N}`
+
+Per `Departures_XX` channel, a channel `nspanelDep{N}` is created (N = numeric index, **without** leading zero: `nspanelDep0`, `nspanelDep1`, …).
+
+| Datapoint | Type | Role | Description |
+|----------|------|------|-------------|
+| `ACTUAL` | string | date | Actual (forecasted) departure time |
+| `VEHICLE` | string | state | Vehicle type (`line.mode`, e.g. `train`, `bus`) |
+| `DEPARTURE` | string | date | Planned departure time |
+| `DELAY` | number | state | Delay in seconds |
+| `DIRECTION` | string | state | Destination (direction) |
+
+> **Path:** `public-transport.0.Stations.{id}.Departures_00.nspanelDep0.ACTUAL`
+
+### Journeys: `Journey_XX.nspanelJourney{N}`
+
+Per `Journey_XX` channel, a channel `nspanelJourney{N}` is created (N = numeric index, **without** leading zero: `nspanelJourney0`, `nspanelJourney1`, …).
+
+| Datapoint | Type | Role | Description |
+|----------|------|------|-------------|
+| `ACTUAL` | string | date | Actual departure time of the first leg |
+| `VEHICLE` | string | state | Vehicle type of the first non-walking leg |
+| `DEPARTURE` | string | date | Planned departure time of the first leg |
+| `DELAY` | number | state | Departure delay of the first leg in seconds |
+| `DIRECTION` | string | state | Name of the destination stop (last leg) |
+
+> **Path:** `public-transport.0.Journeys.{id}.Journey_00.nspanelJourney0.ACTUAL`
+
+NSPanel channels are only created when **"NSPanel Channel"** is enabled for the respective stop/journey. See [NSPanel Integration](en-NSPanel).
+
+---
+
 ## Example Paths
 
 ```

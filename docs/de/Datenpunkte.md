@@ -216,6 +216,42 @@ Nur bei regulären Teilstrecken:
 
 ---
 
+## NSPanel-Datenpunkte
+
+Wenn der **Channel für NSPanel** in der Stationskonfiguration oder Verbindungskonfiguration aktiviert ist, legt der Adapter zusätzliche Channels im Format `timetable` (role: `timeTable`) an. Diese sind für den NSPanel Lovelace UI Adapter optimiert.
+
+### Abfahrten: `Departures_XX.nspanelDep{N}`
+
+Pro `Departures_XX` Channel wird ein Channel `nspanelDep{N}` angelegt (N = numerischer Index, **ohne** führende Null: `nspanelDep0`, `nspanelDep1`, …).
+
+| Datenpunkt | Typ | Rolle | Beschreibung |
+|-----------|-----|-------|--------------|
+| `ACTUAL` | string | date | Tatsächliche (prognostizierte) Abfahrtszeit |
+| `VEHICLE` | string | state | Fahrzeugtyp (`line.mode`, z.B. `train`, `bus`) |
+| `DEPARTURE` | string | date | Geplante Abfahrtszeit |
+| `DELAY` | number | state | Verspätung in Sekunden |
+| `DIRECTION` | string | state | Fahrtrichtung (Endstation) |
+
+> **Pfad:** `public-transport.0.Stations.{id}.Departures_00.nspanelDep0.ACTUAL`
+
+### Verbindungen: `Journey_XX.nspanelJourney{N}`
+
+Pro `Journey_XX` Channel wird ein Channel `nspanelJourney{N}` angelegt (N = numerischer Index, **ohne** führende Null: `nspanelJourney0`, `nspanelJourney1`, …).
+
+| Datenpunkt | Typ | Rolle | Beschreibung |
+|-----------|-----|-------|--------------|
+| `ACTUAL` | string | date | Ist-Abfahrtszeit des ersten Legs |
+| `VEHICLE` | string | state | Fahrzeugtyp des ersten Fahrzeug-Legs (nicht Fußweg) |
+| `DEPARTURE` | string | date | Geplante Abfahrtszeit des ersten Legs |
+| `DELAY` | number | state | Abfahrtsverspätung des ersten Legs in Sekunden |
+| `DIRECTION` | string | state | Name der Zielstation (letztes Leg) |
+
+> **Pfad:** `public-transport.0.Journeys.{id}.Journey_00.nspanelJourney0.ACTUAL`
+
+Die NSPanel-Channels werden nur angelegt, wenn in der jeweiligen Station/Verbindung **„Channel für NSPanel"** aktiviert ist. Siehe [NSPanel-Integration](NSPanel).
+
+---
+
 ## Datenpfade im Überblick
 
 ```
