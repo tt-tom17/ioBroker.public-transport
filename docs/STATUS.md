@@ -20,7 +20,7 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 | NSPanel-Integration | `de/NSPanel.md` | ✅ | |
 | Widgets | `de/Widgets.md` | ✅ | |
 | FAQ | `de/FAQ.md` | ✅ | |
-| Sidebar | `de/_Sidebar.md` | 🔲 Stub | Navigation |
+| Sidebar | `de/_Sidebar.md` | ✅ | Navigation |
 
 ## Englisch (`docs/en/`)
 
@@ -36,7 +36,7 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 | NSPanel Integration | `en/NSPanel.md` | ✅ | |
 | Widgets | `en/Widgets.md` | ✅ | |
 | FAQ | `en/FAQ.md` | ✅ | |
-| Sidebar | `en/_Sidebar.md` | 🔲 Stub | Navigation |
+| Sidebar | `en/_Sidebar.md` | ✅ | Navigation |
 
 ---
 
@@ -51,4 +51,4 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 | 2.4 | `docs(phase 2.4)` | Datenpunkte.md (DE+EN) | ✅ |
 | 2.5 | `docs(phase 2.5)` | Dienste.md + NSPanel.md (DE+EN) | ✅ |
 | 2.6 | `docs(phase 2.6)` | Widgets.md + FAQ.md (DE+EN) | ✅ |
-| 3 | `docs(phase 3)` | _Sidebar.md + Links-Check + PR ready | 🔲 |
+| 3 | `docs(phase 3)` | _Sidebar.md + Links-Check + PR ready | ✅ |
