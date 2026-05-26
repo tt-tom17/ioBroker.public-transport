@@ -1,13 +1,13 @@
 # NSPanel-Integration
 
-Der Adapter unterstützt eine direkte Integration mit dem [**ioBroker NSPanel Lovelace UI Adapter**](https://github.com/joBr99/nspanel-lovelace-ui). Wenn aktiviert, legt der public-transport-Adapter zusätzliche Datenpunkte in einem Format an, das der NSPanel-Adapter direkt als Fahrplananzeige lesen kann.
+Der Adapter unterstützt eine direkte Integration mit dem [**ioBroker NSPanel Lovelace UI Adapter**](https://github.com/ticaki/ioBroker.nspanel-lovelace-ui). Wenn aktiviert, legt der public-transport-Adapter zusätzliche Datenpunkte in einem Format an, das der NSPanel-Adapter direkt als Fahrplananzeige lesen kann.
 
 ---
 
 ## Voraussetzungen
 
-- [ioBroker NSPanel Lovelace UI Adapter](https://github.com/joBr99/nspanel-lovelace-ui) muss installiert und konfiguriert sein
-- NSPanel-Hardware (Sonoff NSPanel oder NSPanel Pro)
+- [ioBroker NSPanel Lovelace UI Adapter](https://github.com/ticaki/ioBroker.nspanel-lovelace-ui) muss installiert und konfiguriert sein
+- NSPanel-Hardware (Sonoff NSPanel)
 - Der **„Channel für NSPanel"**-Schalter muss in der jeweiligen Station oder Verbindung aktiviert sein
 
 ---

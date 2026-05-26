@@ -78,7 +78,7 @@ Schaltet die Abfrage dieser Verbindung ein oder aus. Deaktivierte Verbindungen w
 | Typ | Toggle (Ein/Aus) |
 | Standard | `aus` |
 
-Legt zusätzlich einen Channel vom Typ `timetable` mit allen für das NSPanel-Lovelace-UI benötigten Datenpunkten an. Erfordert den [NSPanel-Lovelace-UI-Adapter](NSPanel).
+Legt zusätzlich einen Channel vom Typ `timetable` mit allen für das NSPanel benötigten Datenpunkten an. Erfordert den [NSPanel Lovelace UI Adapter](NSPanel).
 
 #### Anzahl Verbindungen
 

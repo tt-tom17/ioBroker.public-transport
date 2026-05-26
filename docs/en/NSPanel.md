@@ -1,13 +1,13 @@
 # NSPanel Integration
 
-The adapter supports direct integration with the [**ioBroker NSPanel Lovelace UI Adapter**](https://github.com/joBr99/nspanel-lovelace-ui). When enabled, the public-transport adapter creates additional datapoints in a format that the NSPanel adapter can directly read as a timetable display.
+The adapter supports direct integration with the [**ioBroker NSPanel Lovelace UI Adapter**](https://github.com/ticaki/ioBroker.nspanel-lovelace-ui). When enabled, the public-transport adapter creates additional datapoints in a format that the NSPanel adapter can directly read as a timetable display.
 
 ---
 
 ## Prerequisites
 
-- [ioBroker NSPanel Lovelace UI Adapter](https://github.com/joBr99/nspanel-lovelace-ui) must be installed and configured
-- NSPanel hardware (Sonoff NSPanel or NSPanel Pro)
+- [ioBroker NSPanel Lovelace UI Adapter](https://github.com/ticaki/ioBroker.nspanel-lovelace-ui) must be installed and configured
+- NSPanel hardware (Sonoff NSPanel)
 - The **"NSPanel Channel"** toggle must be enabled for the respective stop or journey
 
 ---

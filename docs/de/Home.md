@@ -19,7 +19,7 @@ Der **public-transport** Adapter ermöglicht die Integration von Echtzeit-Fahrpl
 - **Verkehrsmittelfilter** — Auswahl aus 18 Verkehrsmitteltypen (Bus, Bahn, Tram, U-Bahn, Fähre u.a.)
 - **Zeitversatz** — Abfahrten erst ab einem zukünftigen Zeitpunkt anzeigen
 - **Eigene Namen** — Individuelle Bezeichnung für Haltestellen und Verbindungen
-- **NSPanel-Integration** — Optionaler Fahrplan-Kanal für NSPanel-Lovelace-UI
+- **NSPanel-Integration** — Optionaler Fahrplan-Kanal für NSPanel Lovelace UI Adapter
 
 ---
 
