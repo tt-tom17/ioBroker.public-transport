@@ -12,9 +12,9 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 |-------|-------|--------|---------|
 | Startseite | `de/Home.md` | ✅ | |
 | Installation | `de/Installation.md` | ✅ | |
-| Konfiguration (Admin-Tab 1) | `de/Konfiguration.md` | 🔲 Stub | ClientConfig-Tab |
-| Abfahrten (Admin-Tab 2) | `de/Abfahrten.md` | 🔲 Stub | DepartureManager-Tab |
-| Verbindungen (Admin-Tab 3) | `de/Verbindungen.md` | 🔲 Stub | JourneyManager-Tab |
+| Konfiguration (Admin-Tab 1) | `de/Konfiguration.md` | ✅ | ClientConfig-Tab |
+| Abfahrten (Admin-Tab 2) | `de/Abfahrten.md` | ✅ | DepartureManager-Tab |
+| Verbindungen (Admin-Tab 3) | `de/Verbindungen.md` | ✅ | JourneyManager-Tab |
 | Datenpunkte | `de/Datenpunkte.md` | 🔲 Stub | vollständige State-Hierarchie |
 | Transportdienste | `de/Dienste.md` | 🔲 Stub | HAFAS, Vendo, MOTIS |
 | NSPanel-Integration | `de/NSPanel.md` | 🔲 Stub | |
@@ -28,9 +28,9 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 |-------|-------|--------|---------|
 | Home | `en/Home.md` | ✅ | |
 | Installation | `en/Installation.md` | ✅ | |
-| Configuration (Admin Tab 1) | `en/Configuration.md` | 🔲 Stub | ClientConfig tab |
-| Departures (Admin Tab 2) | `en/Departures.md` | 🔲 Stub | DepartureManager tab |
-| Journeys (Admin Tab 3) | `en/Journeys.md` | 🔲 Stub | JourneyManager tab |
+| Configuration (Admin Tab 1) | `en/Configuration.md` | ✅ | ClientConfig tab |
+| Departures (Admin Tab 2) | `en/Departures.md` | ✅ | DepartureManager tab |
+| Journeys (Admin Tab 3) | `en/Journeys.md` | ✅ | JourneyManager tab |
 | Datapoints | `en/Datapoints.md` | 🔲 Stub | full state hierarchy |
 | Transport Services | `en/Services.md` | 🔲 Stub | HAFAS, Vendo, MOTIS |
 | NSPanel Integration | `en/NSPanel.md` | 🔲 Stub | |
@@ -46,8 +46,8 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 |-------|--------|--------|--------|
 | 1 | `docs(phase 1)` | Infrastruktur (Ordner + STATUS.md) | ✅ |
 | 2.1 | `docs(phase 2.1)` | Home.md + Installation.md (DE+EN) | ✅ |
-| 2.2 | `docs(phase 2.2)` | Konfiguration.md (DE+EN) | 🔲 |
-| 2.3 | `docs(phase 2.3)` | Abfahrten.md + Verbindungen.md (DE+EN) | 🔲 |
+| 2.2 | `docs(phase 2.2)` | Konfiguration.md (DE+EN) | ✅ |
+| 2.3 | `docs(phase 2.3)` | Abfahrten.md + Verbindungen.md (DE+EN) | ✅ |
 | 2.4 | `docs(phase 2.4)` | Datenpunkte.md (DE+EN) | 🔲 |
 | 2.5 | `docs(phase 2.5)` | Dienste.md + NSPanel.md (DE+EN) | 🔲 |
 | 2.6 | `docs(phase 2.6)` | Widgets.md + FAQ.md (DE+EN) | 🔲 |
