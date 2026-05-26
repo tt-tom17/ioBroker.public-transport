@@ -18,8 +18,8 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 | Datenpunkte | `de/Datenpunkte.md` | ✅ | vollständige State-Hierarchie |
 | Transportdienste | `de/Dienste.md` | ✅ | HAFAS, Vendo, MOTIS |
 | NSPanel-Integration | `de/NSPanel.md` | ✅ | |
-| Widgets | `de/Widgets.md` | 🔲 Stub | Vis/VIS2-Widgets |
-| FAQ | `de/FAQ.md` | 🔲 Stub | |
+| Widgets | `de/Widgets.md` | ✅ | |
+| FAQ | `de/FAQ.md` | ✅ | |
 | Sidebar | `de/_Sidebar.md` | 🔲 Stub | Navigation |
 
 ## Englisch (`docs/en/`)
@@ -34,8 +34,8 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 | Datapoints | `en/Datapoints.md` | ✅ | full state hierarchy |
 | Transport Services | `en/Services.md` | ✅ | HAFAS, Vendo, MOTIS |
 | NSPanel Integration | `en/NSPanel.md` | ✅ | |
-| Widgets | `en/Widgets.md` | 🔲 Stub | Vis/VIS2 widgets |
-| FAQ | `en/FAQ.md` | 🔲 Stub | |
+| Widgets | `en/Widgets.md` | ✅ | |
+| FAQ | `en/FAQ.md` | ✅ | |
 | Sidebar | `en/_Sidebar.md` | 🔲 Stub | Navigation |
 
 ---
@@ -50,5 +50,5 @@ Fortschrittstabelle für die Wiki-Dokumentation von ioBroker.public-transport.
 | 2.3 | `docs(phase 2.3)` | Abfahrten.md + Verbindungen.md (DE+EN) | ✅ |
 | 2.4 | `docs(phase 2.4)` | Datenpunkte.md (DE+EN) | ✅ |
 | 2.5 | `docs(phase 2.5)` | Dienste.md + NSPanel.md (DE+EN) | ✅ |
-| 2.6 | `docs(phase 2.6)` | Widgets.md + FAQ.md (DE+EN) | 🔲 |
+| 2.6 | `docs(phase 2.6)` | Widgets.md + FAQ.md (DE+EN) | ✅ |
 | 3 | `docs(phase 3)` | _Sidebar.md + Links-Check + PR ready | 🔲 |
