@@ -25,7 +25,10 @@ The public-transport adapter enables seamless integration of real-time public tr
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
-* (tt-tom17) fixed issue from repo checker
+* (tt-tom17) fixed issues detected by repository checker
+* (tt-tom17) updated documentation
+* (dependabot) bump @motis-project/motis-fptf-client from 6.4.0 to 6.5.0
+* (dependabot) bump db-vendo-client from 6.10.10 to 6.10.11
 
 ### 0.6.0 (2026-05-25)
 * (tt-tom17) add Motis service support
