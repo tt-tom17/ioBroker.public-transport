@@ -181,7 +181,7 @@ export class JourneyPolling extends PollingManager<JourneyConfig> {
      * @param pollIntervalMinutes Das Polling-Intervall in Minuten
      */
     public async startJourneys(pollIntervalMinutes: number): Promise<void> {
-        await this.start(this.adapter.config.journeyConfig as JourneyConfig[], pollIntervalMinutes, {
+        await this.start(this.adapter.config.journeyConfig, pollIntervalMinutes, {
             noConfig: 'No journeys found in configuration. Please configure in Admin UI.',
             noEnabled: 'No enabled journeys found. Please enable at least one journey.',
             count: n => `${n} active journey(s) found:`,

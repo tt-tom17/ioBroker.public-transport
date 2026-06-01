@@ -73,7 +73,6 @@ class PublicTransport extends utils.Adapter {
    * Gibt die Instanz des aktiven Transport-Service zurück.
    *
    * @returns Die Instanz des aktiven Transport-Service
-   * @throws Fehler, wenn der Service noch nicht initialisiert wurde
    */
   getActiveService() {
     if (!this.activeService) {

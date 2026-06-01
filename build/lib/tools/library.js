@@ -275,7 +275,6 @@ class Library extends BaseClass {
    * @param key Punkt-separierter Pfad zum gewünschten Wert (z.B. "level1.level2.property")
    * @param data JSON-Objekt, aus dem der Wert extrahiert werden soll
    * @returns Der Wert am angegebenen Pfad oder null wenn nicht gefunden
-   * @throws Error wenn key oder data fehlen oder falschen Typ haben
    */
   deepJsonValue(key, data) {
     if (!key || !data || typeof data !== "object" || typeof key !== "string") {
@@ -328,7 +327,6 @@ class Library extends BaseClass {
    * @param ack        Bestätigungs-Flag für State-Schreibvorgang.
    * @param forceWrite Erzwingt Schreibvorgang auch wenn `val` dem alten Wert entspricht.
    * @returns Promise<void>
-   * @throws Error wenn ein neuer State erstellt werden muss, aber `obj` fehlt.
    */
   async writedp(dp, val, obj = null, ack = true, forceWrite = false) {
     var _a, _b, _c;
@@ -348,7 +346,7 @@ class Library extends BaseClass {
           const existing = await this.adapter.getObjectAsync(dp);
           if (existing) {
             existing.common.states = obj.common.states;
-            await this.adapter.setObject(dp, existing);
+            await this.adapter.setObjectNotExists(dp, existing);
           }
         }
         await this.adapter.extendObject(dp, obj);
@@ -364,7 +362,7 @@ class Library extends BaseClass {
           const existing = await this.adapter.getObjectAsync(dp);
           if (existing) {
             existing.common.states = obj.common.states;
-            await this.adapter.setObject(dp, existing);
+            await this.adapter.setObjectNotExists(dp, existing);
           }
         }
         await this.adapter.extendObject(dp, obj);
@@ -503,7 +501,6 @@ class Library extends BaseClass {
    * @param value Eingabewert zum Konvertieren (kann Primitive, Array oder Objekt sein)
    * @param type  Zieltyp: 'string' | 'number' | 'boolean' | 'array' | 'json'
    * @returns Konvertierter Wert als ioBroker.StateValue (string | number | boolean | null)
-   * @throws Error wenn `type` 'undefined' ist
    */
   convertToType(value, type) {
     if (value === null) {
@@ -578,10 +575,8 @@ class Library extends BaseClass {
   }
   setdb(dp, type, val = void 0, stateType = void 0, ack = true, ts = Date.now(), obj = void 0, init = false) {
     if (typeof type == "object") {
-      type = type;
       this.stateDataBase[dp] = type;
     } else {
-      type = type;
       this.stateDataBase[dp] = {
         type,
         stateTyp: stateType !== void 0 ? stateType : this.stateDataBase[dp] !== void 0 && this.stateDataBase[dp].stateTyp !== void 0 ? this.stateDataBase[dp].stateTyp : void 0,

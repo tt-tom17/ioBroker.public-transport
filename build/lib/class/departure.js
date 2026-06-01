@@ -37,7 +37,6 @@ class DepartureRequest extends import_library.BaseClass {
    * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
    *
    * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-   * @throws Error wenn Client-Typ oder Profil nicht übereinstimmen
    */
   validateClientProfile(client_profile) {
     if (!client_profile) {

@@ -4,7 +4,7 @@ import type { PublicTransport } from '../types/Adapter';
 // only change this for other adapters
 export type AdapterClassDefinition = PublicTransport;
 
-export type LibraryStateVal = LibraryStateValJson | undefined;
+export type LibraryStateVal = LibraryStateValJson;
 type LibraryStateValJson = {
     type: ioBroker.ObjectType;
     stateTyp: string | undefined;
@@ -297,7 +297,6 @@ export class Library extends BaseClass {
      * @param key Punkt-separierter Pfad zum gewünschten Wert (z.B. "level1.level2.property")
      * @param data JSON-Objekt, aus dem der Wert extrahiert werden soll
      * @returns Der Wert am angegebenen Pfad oder null wenn nicht gefunden
-     * @throws Error wenn key oder data fehlen oder falschen Typ haben
      */
     deepJsonValue(key: string, data: any): any {
         if (!key || !data || typeof data !== 'object' || typeof key !== 'string') {
@@ -355,7 +354,6 @@ export class Library extends BaseClass {
      * @param ack        Bestätigungs-Flag für State-Schreibvorgang.
      * @param forceWrite Erzwingt Schreibvorgang auch wenn `val` dem alten Wert entspricht.
      * @returns Promise<void>
-     * @throws Error wenn ein neuer State erstellt werden muss, aber `obj` fehlt.
      */
     async writedp(
         dp: string,
@@ -573,7 +571,6 @@ export class Library extends BaseClass {
      * @param value Eingabewert zum Konvertieren (kann Primitive, Array oder Objekt sein)
      * @param type  Zieltyp: 'string' | 'number' | 'boolean' | 'array' | 'json'
      * @returns Konvertierter Wert als ioBroker.StateValue (string | number | boolean | null)
-     * @throws Error wenn `type` 'undefined' ist
      */
     convertToType(
         value: ioBroker.StateValue | unknown[] | Record<string, unknown> | null,
@@ -670,10 +667,10 @@ export class Library extends BaseClass {
         init: boolean = false,
     ): LibraryStateVal {
         if (typeof type == 'object') {
-            type = type as LibraryStateVal;
+            // type = type as LibraryStateVal;
             this.stateDataBase[dp] = type;
         } else {
-            type = type as ioBroker.ObjectType;
+            // type = type as ioBroker.ObjectType;
             this.stateDataBase[dp] = {
                 type: type,
                 stateTyp:
