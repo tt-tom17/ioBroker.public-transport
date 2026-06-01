@@ -24,7 +24,7 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.7.0 (2026-06-01)
 * (tt-tom17) fixed issues detected by repository checker
 * (tt-tom17) updated documentation
 * (dependabot) bump @motis-project/motis-fptf-client from 6.4.0 to 6.5.0

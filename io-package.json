@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "news": {
+      "0.7.0": {
+        "en": "fixed issues detected by repository checker\nupdated documentation\nbump @motis-project/motis-fptf-client from 6.4.0 to 6.5.0\nbump db-vendo-client from 6.10.10 to 6.10.11",
+        "de": "von repository checker erkannte probleme behoben\naktualisierung der dokumentation\nbump @motis-projekt/motis-fptf-client von 6.4.0 bis 6.5.0\nbump db-vendo-client von 6.10.10 bis 6.10.11",
+        "ru": "фиксированные проблемы, обнаруженные проверкой репозитория\nобновленная документация\nbump @motis-project/motis-fptf-клиент с 6.4.0 до 6.5.0\nbump db-vendo-клиент с 6.10.10 до 6.10.11",
+        "pt": "problemas fixos detectados pelo verificador de repositório\ndocumentação atualizada\nbump @motis-project/motis-fptf-client de 6.4.0 para 6.5.0\nblump db-vendo-cliente de 6.10.10 a 6.10.11",
+        "nl": "vaste problemen gedetecteerd door repository checker\nbijgewerkte documentatie\nbump @motis-project/motis-fptf-client van 6.4.0 tot 6.5.0\nbump db-vendo-client van 6.10.10 tot 6.10.11",
+        "fr": "problèmes corrigés détectés par le vérificateur du dépôt\ndocumentation actualisée\nbump @motis-project/motis-fptf-client de 6.4.0 à 6.5.0\nblock db-vendo-client du 6.10.10 au 6.10.11",
+        "it": "problemi fissi rilevati da repository checker\ndocumentazione aggiornata\nurto @motis-project/motis-fptf-client da 6.4.0 a 6.5.0\nda 6.10.10 a 6.10.11",
+        "es": "problemas fijos detectados por el repositorio\ndocumentación actualizada\ntope @motis-project/motis-fptf-client de 6.4.0 a 6.5.0\nde 6.10 a 6.10.11",
+        "pl": "stałe problemy wykryte przez kontroler repozytorium\nzaktualizowana dokumentacja\nbump @ motis- project / motis- fptf- client od 6.4.0 do 6.5.0\nbump db- vendo- client od 6.10.10 do 6.10.11",
+        "uk": "виправлені питання, виявлені репозиторійним чекером\nоновлена документація\nbump @motis-project/motis-fptf-client від 6.4.0 до 6.5.0\nbump db-vendo-client від 6.10.10 до 6.10.11",
+        "zh-cn": "仓库检查器检测到的固定问题\n更新的文件\n从6.4.0到6.5.0\n从6.10.10到6.10.11"
+      },
       "0.6.0": {
         "en": "add Motis service support\nadd nsPanelTimetable class for NSPanel integration\nconnections widget: fix walking detail info display\nconnections widget: add link styling for modal remarks",
         "de": "motis Service Support hinzufügen\nnsPanelTimetable Klasse für NSPanel Integration hinzufügen\nverbindungen widget: fix gehdetail-info-anzeige\nverbindungen widget: link-styling für modale bemerkungen hinzufügen",
