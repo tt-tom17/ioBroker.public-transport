@@ -76,6 +76,9 @@ class PollingManager extends import_library.BaseClass {
     let successCount = 0;
     let errorCount = 0;
     for (const config of configs) {
+      if (this.adapter.unload) {
+        break;
+      }
       if (!config.id) {
         this.log.warn(`Station "${config.customName || config.name || ""}" has no valid ID, skipping...`);
         continue;
@@ -128,16 +131,23 @@ class PollingManager extends import_library.BaseClass {
     this.log.info(messages.firstCompleted(successCount, errorCount));
     this.log.info(messages.waiting(pollIntervalMinutes));
     this.pollInterval = this.adapter.setInterval(async () => {
-      await this.handleDisabledConfigs(configs);
-      const { successCount: successCount2, errorCount: errorCount2 } = await this.queryConfigs(
-        enabledConfigs,
-        service,
-        messages.fetching,
-        messages.updated,
-        messages.failed
-      );
-      this.log.info(messages.queryCompleted(successCount2, errorCount2));
-      this.log.info(messages.waiting(pollIntervalMinutes));
+      if (this.adapter.unload) {
+        return;
+      }
+      try {
+        await this.handleDisabledConfigs(configs);
+        const { successCount: successCount2, errorCount: errorCount2 } = await this.queryConfigs(
+          enabledConfigs,
+          service,
+          messages.fetching,
+          messages.updated,
+          messages.failed
+        );
+        this.log.info(messages.queryCompleted(successCount2, errorCount2));
+        this.log.info(messages.waiting(pollIntervalMinutes));
+      } catch (err) {
+        this.log.error(`Polling cycle failed. Error message: ${err.message}`);
+      }
     }, pollInterval);
   }
   /**

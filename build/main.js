@@ -100,6 +100,9 @@ class PublicTransport extends utils.Adapter {
     }
     this.log.info(`${enabledStations.length} active station(s) found:`);
     for (const station of enabledStations) {
+      if (this.unload) {
+        return;
+      }
       if (station.id) {
         this.log.info(`Querying info for: ${station.customName || station.name} (${station.id})...`);
         const stationData = await this.stationRequest.getStation(
@@ -176,10 +179,12 @@ class PublicTransport extends utils.Adapter {
    * @param callback Function to be called when unload is complete
    */
   onUnload(callback) {
-    var _a, _b;
+    var _a, _b, _c;
     try {
+      this.unload = true;
       (_a = this.departurePolling) == null ? void 0 : _a.stop();
       (_b = this.journeyPolling) == null ? void 0 : _b.stop();
+      (_c = this.library) == null ? void 0 : _c.destroy();
       callback();
     } catch {
       callback();

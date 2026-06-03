@@ -78,6 +78,10 @@ export class PublicTransport extends utils.Adapter {
 
         this.log.info(`${enabledStations.length} active station(s) found:`);
         for (const station of enabledStations) {
+            // Adapter wird heruntergefahren -> keine weiteren Stationen mehr abfragen/schreiben
+            if (this.unload) {
+                return;
+            }
             if (station.id) {
                 this.log.info(`Querying info for: ${station.customName || station.name} (${station.id})...`);
                 const stationData = await this.stationRequest.getStation(
@@ -169,9 +173,14 @@ export class PublicTransport extends utils.Adapter {
      */
     private onUnload(callback: () => void): void {
         try {
+            // Signalisiere allen laufenden Abläufen, dass der Adapter heruntergefahren wird,
+            // damit keine States mehr in den gestoppten Adapter geschrieben werden.
+            this.unload = true;
+
             // Here you must clear all timeouts or intervals that may still be active
             this.departurePolling?.stop();
             this.journeyPolling?.stop();
+            this.library?.destroy();
 
             callback();
         } catch {

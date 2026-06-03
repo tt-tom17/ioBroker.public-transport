@@ -89,14 +89,19 @@ class DeparturePolling extends import_pollingManager.PollingManager {
              countEntries: ${countEntries},
              products: ${JSON.stringify(products)},
              client_profil: ${client_profile}`);
-    return await this.adapter.depRequest.getDepartures(
-      config.id,
-      service,
-      options,
-      countEntries,
-      products,
-      client_profile
-    );
+    try {
+      return await this.adapter.depRequest.getDepartures(
+        config.id,
+        service,
+        options,
+        countEntries,
+        products,
+        client_profile
+      );
+    } catch (error) {
+      this.log.error(`Error querying departures "${config.customName || ""}": ${error.message}`);
+      return false;
+    }
   }
   /**
    * Startet das Polling für Abfahrten.

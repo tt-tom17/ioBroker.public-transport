@@ -97,6 +97,16 @@ export class Library extends BaseClass {
     }
 
     /**
+     * Stoppt laufende Timer/Intervalle der Library. Muss in onUnload() aufgerufen werden.
+     */
+    destroy(): void {
+        if (this.unknownTokensInterval) {
+            this.adapter.clearInterval(this.unknownTokensInterval);
+            this.unknownTokensInterval = undefined;
+        }
+    }
+
+    /**
     /**
      * Write/create states and channels from a JSON subtree using a definition.
      *
