@@ -112,7 +112,7 @@ class StationRequest extends import_library.BaseClass {
         await this.library.writeFromJson(`${basePath}`, "station", import_definition.genericStateObjects, stationState, true);
       } else {
         const stopState = (0, import_mapper.mapStopToStopState)(stationData);
-        await this.library.writeFromJson(`${basePath}`, "station.stop", import_definition.genericStateObjects, stopState, true);
+        await this.library.writeFromJson(`${basePath}`, "station.stops", import_definition.genericStateObjects, stopState, true);
       }
       await this.library.garbageColleting(`${basePath}.`, 2e3);
     } catch (err) {

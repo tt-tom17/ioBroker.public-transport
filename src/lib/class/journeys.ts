@@ -267,10 +267,12 @@ export class JourneysRequest extends BaseClass {
                 },
                 native: {},
             });
-            // Station From/To ermitteln und schreiben
-            const stationFromId = journeys?.journeys?.[0].legs[0].origin?.id || undefined;
-            const stationToId =
-                journeys?.journeys?.[0].legs[journeys.journeys[0].legs.length - 1].destination?.id || undefined;
+            // Station From/To ermitteln und schreiben.
+            // Durchgaengiges Optional-Chaining: bei leerer journeys-Liste bleiben beide IDs
+            // undefined (kein TypeError), und der nachfolgende Block wird uebersprungen.
+            const firstLegs = journeys?.journeys?.[0]?.legs;
+            const stationFromId = firstLegs?.[0]?.origin?.id || undefined;
+            const stationToId = firstLegs?.[firstLegs.length - 1]?.destination?.id || undefined;
             if (stationFromId !== undefined && stationToId !== undefined) {
                 const stationFrom = await this.station.getStation(
                     stationFromId,

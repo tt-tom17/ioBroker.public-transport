@@ -220,7 +220,7 @@ class JourneysRequest extends import_library.BaseClass {
    * @param nspanel Ob der NSPanel-Channel angelegt werden soll.
    */
   async writesBaseStates(basePath, journeys, countEntries, client_profile, nspanel) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     try {
       await this.library.writedp(`${basePath}.json`, JSON.stringify(journeys), {
         _id: "nicht_definieren",
@@ -234,8 +234,9 @@ class JourneysRequest extends import_library.BaseClass {
         },
         native: {}
       });
-      const stationFromId = ((_b = (_a = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _a[0].legs[0].origin) == null ? void 0 : _b.id) || void 0;
-      const stationToId = ((_d = (_c = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _c[0].legs[journeys.journeys[0].legs.length - 1].destination) == null ? void 0 : _d.id) || void 0;
+      const firstLegs = (_b = (_a = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _a[0]) == null ? void 0 : _b.legs;
+      const stationFromId = ((_d = (_c = firstLegs == null ? void 0 : firstLegs[0]) == null ? void 0 : _c.origin) == null ? void 0 : _d.id) || void 0;
+      const stationToId = ((_f = (_e = firstLegs == null ? void 0 : firstLegs[firstLegs.length - 1]) == null ? void 0 : _e.destination) == null ? void 0 : _f.id) || void 0;
       if (stationFromId !== void 0 && stationToId !== void 0) {
         const stationFrom = await this.station.getStation(
           stationFromId,

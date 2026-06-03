@@ -112,7 +112,7 @@ export class StationRequest extends BaseClass {
                 await this.library.writeFromJson(`${basePath}`, 'station', genericStateObjects, stationState, true);
             } else {
                 const stopState: Stopstate = mapStopToStopState(stationData);
-                await this.library.writeFromJson(`${basePath}`, 'station.stop', genericStateObjects, stopState, true);
+                await this.library.writeFromJson(`${basePath}`, 'station.stops', genericStateObjects, stopState, true);
             }
             // Vor dem Schreiben alte States löschen
             await this.library.garbageColleting(`${basePath}.`, 2000);
