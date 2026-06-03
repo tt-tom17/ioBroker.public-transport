@@ -234,15 +234,21 @@ export class DepartureRequest extends BaseClass {
                 },
             );
 
-            // Garbage Collection (nur einmal!)
-            //await this.library.garbageColleting(`Stations.${stationConfig.id}.`);
-
             // Filtere nach Produkten, falls angegeben
             // const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
             // Konvertiere zu reduzierten States
             const departureStates: DepartureState[] = mapDeparturesToDepartureStates(departures);
             // JSON in die States schreiben
             await this.writeBaseStates(departureStates, stationId, countEntries, stationConfig.nspanel);
+
+            // Garbage Collection: Departure-Channels, die in diesem Poll nicht (mehr) geschrieben
+            // wurden (z.B. wenn jetzt weniger Abfahrten geliefert werden als zuvor), auf
+            // Standardwerte zuruecksetzen. Praeziser Prefix, damit Metadaten (name/enabled/
+            // countDepartures) und die nur beim Start geschriebenen Stationsinfos (.info) unberuehrt bleiben.
+            await this.library.garbageColleting(
+                `${this.adapter.namespace}.Stations.${stationConfig.id}.Departures_`,
+                2000,
+            );
         } catch (err) {
             this.log.error(`Error writing departures: ${(err as Error).message}`);
         }

@@ -219,6 +219,10 @@ class DepartureRequest extends import_library.BaseClass {
       );
       const departureStates = (0, import_mapper.mapDeparturesToDepartureStates)(departures);
       await this.writeBaseStates(departureStates, stationId, countEntries, stationConfig.nspanel);
+      await this.library.garbageColleting(
+        `${this.adapter.namespace}.Stations.${stationConfig.id}.Departures_`,
+        2e3
+      );
     } catch (err) {
       this.log.error(`Error writing departures: ${err.message}`);
     }

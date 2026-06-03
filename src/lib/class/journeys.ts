@@ -219,9 +219,6 @@ export class JourneysRequest extends BaseClass {
                 },
             );
 
-            // Garbage Collection (nur einmal!)
-            //await this.library.garbageColleting(`${this.adapter.namespace}.Routes.${journeyId}.`);
-
             // Schreibe die Journey-Daten
             await this.writesBaseStates(
                 `${this.adapter.namespace}.Journeys.${journeyId}`,
@@ -230,6 +227,11 @@ export class JourneysRequest extends BaseClass {
                 client_profile,
                 journeyConfig.nspanel,
             );
+
+            // Garbage Collection: Journey-Channels (inkl. variabler Leg_XX), die in diesem Poll
+            // nicht (mehr) geschrieben wurden, auf Standardwerte zuruecksetzen. Praeziser Prefix
+            // "Journey_", damit json/countJourneys/StationFrom/StationTo unberuehrt bleiben.
+            await this.library.garbageColleting(`${this.adapter.namespace}.Journeys.${journeyId}.Journey_`, 2000);
         } catch (err) {
             this.log.error(`Error writing journeys. Error message: ${(err as Error).message}`);
         }

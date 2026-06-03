@@ -205,6 +205,7 @@ class JourneysRequest extends import_library.BaseClass {
         client_profile,
         journeyConfig.nspanel
       );
+      await this.library.garbageColleting(`${this.adapter.namespace}.Journeys.${journeyId}.Journey_`, 2e3);
     } catch (err) {
       this.log.error(`Error writing journeys. Error message: ${err.message}`);
     }
