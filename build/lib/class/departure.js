@@ -21,6 +21,7 @@ __export(departure_exports, {
   DepartureRequest: () => DepartureRequest
 });
 module.exports = __toCommonJS(departure_exports);
+var import_clientProfile = require("../tools/clientProfile");
 var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
@@ -32,33 +33,6 @@ class DepartureRequest extends import_library.BaseClass {
     super(adapter);
     this.log.setLogPrefix("depReq");
     this.nsPanelTimetable = new import_nsPanelTimetable.NsPanelTimetable(adapter);
-  }
-  /**
-   * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
-   *
-   * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-   */
-  validateClientProfile(client_profile) {
-    if (!client_profile) {
-      return;
-    }
-    const parts = client_profile.split(":");
-    const expectedServiceType = parts[0];
-    const expectedProfile = parts[1] || "";
-    const currentServiceType = this.adapter.config.serviceType || "hafas";
-    if (currentServiceType !== expectedServiceType) {
-      throw new Error(
-        `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`
-      );
-    }
-    if (expectedServiceType === "hafas" && expectedProfile) {
-      const currentProfile = this.adapter.config.profile || "";
-      if (currentProfile !== expectedProfile) {
-        throw new Error(
-          `Wrong profile: Expected '${expectedProfile}', but '${currentProfile}' is configured (client_profile: ${client_profile})`
-        );
-      }
-    }
   }
   /**
    *  Ruft Abfahrten für eine gegebene stationId ab und schreibt sie in die States.
@@ -76,7 +50,7 @@ class DepartureRequest extends import_library.BaseClass {
       if (!stationId) {
         throw new Error("No stationId provided");
       }
-      this.validateClientProfile(client_profile);
+      (0, import_clientProfile.validateClientProfile)(this.adapter.config.serviceType, this.adapter.config.profile, client_profile);
       const mergedOptions = { ...import_types.defaultDepartureOpt, ...options };
       this.log.debug(
         `Querying departures for station ${stationId} with options: ${JSON.stringify(mergedOptions)}, client_profile: ${client_profile || "kein Profil angegeben"}`

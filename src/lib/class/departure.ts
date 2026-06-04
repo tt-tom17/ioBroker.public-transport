@@ -1,7 +1,9 @@
 import type * as Hafas from 'hafas-client';
 import type { PublicTransport } from '../../main';
+import { validateClientProfile } from '../tools/clientProfile';
 import { BaseClass } from '../tools/library';
 import { mapDeparturesToDepartureStates } from '../tools/mapper';
+import type { ITransportService } from '../types/transportService';
 import { defaultDepartureOpt, type DepartureState, type Products } from '../types/types';
 import { NsPanelTimetable } from './nsPanelTimetable';
 
@@ -13,40 +15,6 @@ export class DepartureRequest extends BaseClass {
         super(adapter);
         this.log.setLogPrefix('depReq');
         this.nsPanelTimetable = new NsPanelTimetable(adapter);
-    }
-
-    /**
-     * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
-     *
-     * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-     */
-    private validateClientProfile(client_profile?: string): void {
-        if (!client_profile) {
-            return; // Keine Validierung wenn nicht angegeben
-        }
-
-        // Parse client_profile (z.B. "hafas:vbb" -> serviceType: "hafas", profile: "vbb")
-        const parts = client_profile.split(':');
-        const expectedServiceType = parts[0]; // 'hafas' oder 'vendo'
-        const expectedProfile = parts[1] || ''; // z.B. 'vbb', 'oebb', 'db'
-
-        // Prüfe, ob der richtige Service-Typ initialisiert ist
-        const currentServiceType = this.adapter.config.serviceType || 'hafas';
-        if (currentServiceType !== expectedServiceType) {
-            throw new Error(
-                `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`,
-            );
-        }
-
-        // Prüfe das Profil (nur relevant bei HAFAS)
-        if (expectedServiceType === 'hafas' && expectedProfile) {
-            const currentProfile = this.adapter.config.profile || '';
-            if (currentProfile !== expectedProfile) {
-                throw new Error(
-                    `Wrong profile: Expected '${expectedProfile}', but '${currentProfile}' is configured (client_profile: ${client_profile})`,
-                );
-            }
-        }
     }
 
     /**
@@ -62,7 +30,7 @@ export class DepartureRequest extends BaseClass {
      */
     public async getDepartures(
         stationId: string,
-        service: any,
+        service: ITransportService,
         options: Hafas.DeparturesArrivalsOptions = {},
         countEntries: number = 10,
         products?: Partial<Products>,
@@ -74,7 +42,7 @@ export class DepartureRequest extends BaseClass {
             }
 
             // Validiere Client und Profil
-            this.validateClientProfile(client_profile);
+            validateClientProfile(this.adapter.config.serviceType, this.adapter.config.profile, client_profile);
             const mergedOptions = { ...defaultDepartureOpt, ...options };
             // Antwort vom Transport-Client als vollständiger Typ
             this.log.debug(
@@ -151,7 +119,7 @@ export class DepartureRequest extends BaseClass {
      */
     async writeDepartureStates(
         stationId: string,
-        departures: Hafas.Alternative[],
+        departures: readonly Hafas.Alternative[],
         countEntries: number,
         // products?: Partial<Products>,
     ): Promise<void> {

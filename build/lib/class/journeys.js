@@ -22,12 +22,14 @@ __export(journeys_exports, {
 });
 module.exports = __toCommonJS(journeys_exports);
 var import_station = require("../class/station");
+var import_clientProfile = require("../tools/clientProfile");
 var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
 var import_nsPanelTimetable = require("./nsPanelTimetable");
 class JourneysRequest extends import_library.BaseClass {
   station;
+  // Wird in getJourneys() vor jeder Nutzung gesetzt (daher definite assignment).
   service;
   delayOffset = this.adapter.config.delayOffset || 2;
   nsPanelTimetable;
@@ -36,33 +38,6 @@ class JourneysRequest extends import_library.BaseClass {
     this.log.setLogPrefix("journeyReq");
     this.station = new import_station.StationRequest(adapter);
     this.nsPanelTimetable = new import_nsPanelTimetable.NsPanelTimetable(adapter);
-  }
-  /**
-   * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
-   *
-   * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-   */
-  validateClientProfile(client_profile) {
-    if (!client_profile) {
-      return;
-    }
-    const parts = client_profile.split(":");
-    const expectedServiceType = parts[0];
-    const expectedProfile = parts[1] || "";
-    const currentServiceType = this.adapter.config.serviceType || "hafas";
-    if (currentServiceType !== expectedServiceType) {
-      throw new Error(
-        `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`
-      );
-    }
-    if (expectedServiceType === "hafas" && expectedProfile) {
-      const currentProfile = this.adapter.config.profile || "";
-      if (currentProfile !== expectedProfile) {
-        throw new Error(
-          `Wrong profile: Expected '${expectedProfile}', but '${currentProfile}' is configured (client_profile: ${client_profile})`
-        );
-      }
-    }
   }
   /**
    *  Ruft Abfahrten für eine gegebene stationId ab und schreibt sie in die States.
@@ -82,7 +57,7 @@ class JourneysRequest extends import_library.BaseClass {
       if (!from || !to) {
         throw new Error("No start or destination station provided");
       }
-      this.validateClientProfile(client_profile);
+      (0, import_clientProfile.validateClientProfile)(this.adapter.config.serviceType, this.adapter.config.profile, client_profile);
       this.service = service;
       const mergedOptions = { ...import_types.defaultJourneyOpt, ...options };
       const response = await this.service.getJourneys(from, to, mergedOptions);

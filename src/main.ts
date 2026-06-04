@@ -86,7 +86,7 @@ export class PublicTransport extends utils.Adapter {
                 this.log.info(`Querying info for: ${station.customName || station.name} (${station.id})...`);
                 const stationData = await this.stationRequest.getStation(
                     station.id,
-                    this.activeService,
+                    this.getActiveService(),
                     undefined,
                     station.client_profile,
                 );
