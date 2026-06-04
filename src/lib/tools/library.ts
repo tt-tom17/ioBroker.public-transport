@@ -396,16 +396,10 @@ export class Library extends BaseClass {
                 obj.common.name = await this.getTranslationObj(obj.common.name);
             }
 
-            // Persist object unless path is disallowed
+            // Persist object unless path is disallowed.
+            // Hinweis: extendObject merged common (inkl. states) bereits; ein separates
+            // Vorab-Schreiben von common.states ist daher nicht nötig.
             if (!disallowed) {
-                // Preserve/merge `states` explicitly if provided
-                if (obj.type === 'state' && obj.common.states) {
-                    const existing = await this.adapter.getObjectAsync(dp);
-                    if (existing) {
-                        existing.common.states = obj.common.states;
-                        await this.adapter.setObjectNotExists(dp, existing);
-                    }
-                }
                 await this.adapter.extendObject(dp, obj);
             }
 
@@ -418,13 +412,6 @@ export class Library extends BaseClass {
             }
 
             if (!disallowed) {
-                if (obj.type === 'state' && obj.common.states) {
-                    const existing = await this.adapter.getObjectAsync(dp);
-                    if (existing) {
-                        existing.common.states = obj.common.states;
-                        await this.adapter.setObjectNotExists(dp, existing);
-                    }
-                }
                 await this.adapter.extendObject(dp, obj);
                 node.init = false;
             }

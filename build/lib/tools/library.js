@@ -351,13 +351,6 @@ class Library extends BaseClass {
         obj.common.name = await this.getTranslationObj(obj.common.name);
       }
       if (!disallowed) {
-        if (obj.type === "state" && obj.common.states) {
-          const existing = await this.adapter.getObjectAsync(dp);
-          if (existing) {
-            existing.common.states = obj.common.states;
-            await this.adapter.setObjectNotExists(dp, existing);
-          }
-        }
         await this.adapter.extendObject(dp, obj);
       }
       const stateType = obj.type !== "state" ? void 0 : (_a = obj == null ? void 0 : obj.common) == null ? void 0 : _a.type;
@@ -367,13 +360,6 @@ class Library extends BaseClass {
         obj.common.name = await this.getTranslationObj(obj.common.name);
       }
       if (!disallowed) {
-        if (obj.type === "state" && obj.common.states) {
-          const existing = await this.adapter.getObjectAsync(dp);
-          if (existing) {
-            existing.common.states = obj.common.states;
-            await this.adapter.setObjectNotExists(dp, existing);
-          }
-        }
         await this.adapter.extendObject(dp, obj);
         node.init = false;
       }

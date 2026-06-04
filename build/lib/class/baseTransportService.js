@@ -49,12 +49,6 @@ class BaseTransportService {
     }
   }
   /**
-   * Prüft, ob der Client initialisiert wurde.
-   */
-  isInitialized() {
-    return this.client !== null;
-  }
-  /**
    * Gibt den initialisierten Client zurück oder wirft einen Fehler.
    */
   getClient() {

@@ -77,13 +77,6 @@ export abstract class BaseTransportService implements ITransportService {
     }
 
     /**
-     * Prüft, ob der Client initialisiert wurde.
-     */
-    public isInitialized(): boolean {
-        return this.client !== null;
-    }
-
-    /**
      * Gibt den initialisierten Client zurück oder wirft einen Fehler.
      */
     protected getClient(): Hafas.HafasClient {
