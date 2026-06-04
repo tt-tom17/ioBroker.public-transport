@@ -473,7 +473,7 @@ class Library extends BaseClass {
    * @returns void
    */
   cleandp(string, lowerCase = false, removePoints = false) {
-    if (!string && typeof string != "string") {
+    if (!string || typeof string != "string") {
       return string;
     }
     string = string.replace(this.adapter.FORBIDDEN_CHARS, "_");

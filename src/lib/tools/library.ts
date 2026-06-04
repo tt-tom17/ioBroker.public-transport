@@ -542,7 +542,13 @@ export class Library extends BaseClass {
      * @returns void
      */
     cleandp(string: string, lowerCase: boolean = false, removePoints: boolean = false): string {
-        if (!string && typeof string != 'string') {
+        // Guard gegen Nicht-String-Eingaben: .replace() existiert nur auf echten
+        // Strings. Mit && griff der Guard nur bei falsy UND Nicht-String (null,
+        // undefined, 0, false) – eine truthy Nicht-String (Zahl != 0, Objekt,
+        // Array) rutschte durch und ließ .replace() mit TypeError crashen.
+        // || fängt alles falsy ODER Nicht-String ab, sodass .replace() garantiert
+        // nur auf echten Strings läuft.
+        if (!string || typeof string != 'string') {
             return string;
         }
 
