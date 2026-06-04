@@ -286,7 +286,12 @@ export class JourneysRequest extends BaseClass {
                         journey.legs[0].departureDelay,
                         this.delayOffset,
                     );
-                    const changes = journey.legs.filter((leg: { walking: boolean }) => leg.walking === true).length;
+                    // Umstiege = Übergänge zwischen Fahrten. Ein Walking-Leg zwischen zwei
+                    // Fahrten IST der Umstieg (zeigt die Laufdistanz); ein direkter Fahrt-zu-Fahrt-
+                    // Übergang ohne Walking zählt ebenso. Walking-Legs am Anfang/Ende (Zu-/Abgang
+                    // zu Fuß) liegen nicht zwischen zwei Fahrten und zählen daher nicht.
+                    const rideLegs = journey.legs.filter((leg: Hafas.Leg) => leg.walking !== true).length;
+                    const changes = Math.max(0, rideLegs - 1);
                     const durationMinutes = Math.round(
                         (new Date(journey.legs[journey.legs.length - 1].arrival).getTime() -
                             new Date(journey.legs[0].departure).getTime()) /
