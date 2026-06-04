@@ -252,9 +252,9 @@ class JourneysRequest extends import_library.BaseClass {
           );
           const rideLegs = journey.legs.filter((leg) => leg.walking !== true).length;
           const changes = Math.max(0, rideLegs - 1);
-          const durationMinutes = Math.round(
-            (new Date(journey.legs[journey.legs.length - 1].arrival).getTime() - new Date(journey.legs[0].departure).getTime()) / 6e4
-          );
+          const arrivalTime = new Date(journey.legs[journey.legs.length - 1].arrival).getTime();
+          const departureTime = new Date(journey.legs[0].departure).getTime();
+          const durationMinutes = Number.isFinite(arrivalTime) && Number.isFinite(departureTime) ? Math.round((arrivalTime - departureTime) / 6e4) : -1;
           await this.library.writedp(`${journeyPath}`, void 0, {
             _id: "nicht_definieren",
             type: "channel",

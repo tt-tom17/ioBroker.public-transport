@@ -292,11 +292,15 @@ export class JourneysRequest extends BaseClass {
                     // zu Fuß) liegen nicht zwischen zwei Fahrten und zählen daher nicht.
                     const rideLegs = journey.legs.filter((leg: Hafas.Leg) => leg.walking !== true).length;
                     const changes = Math.max(0, rideLegs - 1);
-                    const durationMinutes = Math.round(
-                        (new Date(journey.legs[journey.legs.length - 1].arrival).getTime() -
-                            new Date(journey.legs[0].departure).getTime()) /
-                            60_000,
-                    );
+                    // Dauer nur berechnen, wenn beide Zeitpunkte vorhanden/parsebar sind.
+                    // Fehlt arrival/departure (z.B. bei reinen Vorschau-Verbindungen), liefert
+                    // new Date(undefined).getTime() NaN -> sonst landet NaN im State. Fallback: -1.
+                    const arrivalTime = new Date(journey.legs[journey.legs.length - 1].arrival).getTime();
+                    const departureTime = new Date(journey.legs[0].departure).getTime();
+                    const durationMinutes =
+                        Number.isFinite(arrivalTime) && Number.isFinite(departureTime)
+                            ? Math.round((arrivalTime - departureTime) / 60_000)
+                            : -1;
                     // Channel
                     await this.library.writedp(`${journeyPath}`, undefined, {
                         _id: 'nicht_definieren',
