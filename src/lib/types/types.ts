@@ -76,6 +76,15 @@ export type Products = {
     watercraft?: boolean; // Wasserfahrzeuge (Standard: true)
 };
 
+/**
+ * Produkt-Verfügbarkeit, wie sie aus den Client-Antworten in die States geschrieben wird.
+ * Dynamische Keys (camelCase, via kebabToCamel normalisiert), da jedes Profil andere
+ * Produkte mit anderen IDs liefert – siehe mapProducts() in mapper.ts. Im Unterschied zur
+ * Config-`Products`-Liste sind die Keys hier bewusst offen, damit auch Produkte künftiger
+ * Profile ohne Code-Änderung erfasst werden.
+ */
+export type ProductAvailability = Record<string, boolean>;
+
 type Location = {
     latitude: number | undefined;
     longitude: number | undefined;
@@ -92,7 +101,7 @@ export type StationState = {
               id: string | undefined;
               type: string | undefined;
               location?: Location | undefined;
-              products?: Products | undefined;
+              products?: ProductAvailability | undefined;
           }[]
         | undefined;
 };
@@ -102,7 +111,7 @@ export type Stopstate = {
     id: string | undefined;
     type: string | undefined;
     location?: Location | undefined;
-    products?: Products | undefined;
+    products?: ProductAvailability | undefined;
     station?: {
         name: string | undefined;
         id: string | undefined;
