@@ -26,50 +26,26 @@ var import_oebb = require("hafas-client/p/oebb/index.js");
 var import_vbb = require("hafas-client/p/vbb/index.js");
 var import_vbn = require("hafas-client/p/vbn/index.js");
 var import_throttle = require("hafas-client/throttle.js");
-class HafasService {
-  client = null;
-  clientName;
+var import_baseTransportService = require("./baseTransportService");
+class HafasService extends import_baseTransportService.BaseTransportService {
   profileName;
   /**
    * Erzeugt eine neue Instanz des HafasService.
    * Der Client wird erst durch Aufruf von `init()` erstellt.
    *
+   * @param adapter Die Adapter-Instanz (für die ioBroker-Timer)
    * @param clientName Name, der an den Client übergeben wird
-   * @param profileName Name des HAFAS-Profils ('vbb', 'db', etc.)
+   * @param profileName Name des HAFAS-Profils ('vbb', 'oebb', 'vbn')
    */
-  constructor(clientName, profileName) {
-    this.clientName = clientName;
+  constructor(adapter, clientName, profileName) {
+    super(adapter, clientName);
     this.profileName = profileName;
   }
-  /**
-   * Initialisiert den HAFAS-Client.
-   * Muss vor der Nutzung der anderen Methoden aufgerufen werden.
-   *
-   * @returns true bei Erfolg, false bei Fehler
-   */
-  init() {
-    try {
-      const profile = this.resolveProfile(this.profileName);
-      this.client = (0, import_hafas_client.createClient)((0, import_throttle.withThrottling)(profile), this.clientName);
-      return true;
-    } catch (error) {
-      throw new Error(`The HAFAS client could not be initialized: ${error.message}`);
-    }
+  get serviceName() {
+    return "HAFAS";
   }
-  /**
-   * Prüft ob der Client initialisiert wurde.
-   */
-  isInitialized() {
-    return this.client !== null;
-  }
-  /**
-   * Gibt den initialisierten Client zurück oder wirft einen Fehler.
-   */
-  getClient() {
-    if (!this.client) {
-      throw new Error("HafasService has not been initialized yet. Please call init() first.");
-    }
-    return this.client;
+  createClient() {
+    return (0, import_hafas_client.createClient)((0, import_throttle.withThrottling)(this.resolveProfile(this.profileName)), this.clientName);
   }
   /**
    * Resolve a profile given either a ProfileName or a profile object.
@@ -96,47 +72,6 @@ class HafasService {
         throw new Error(`unknown profile: ${String(profile)}. available profiles: 'vbb', 'oebb', 'vbn'.`);
       }
     }
-  }
-  /**
-   * Suche nach Orten/Stationen.
-   *
-   * @param query Suchbegriff für Orte/Stationen
-   * @param options optionale Suchoptionen
-   * @returns Promise mit Suchergebnissen (typisiert als any)
-   */
-  async getLocations(query, options) {
-    return this.getClient().locations(query, options);
-  }
-  /**
-   * Liefert Abfahrten für eine gegebene Stations-ID.
-   *
-   * @param stationId ID der Station
-   * @param options optionale Abfrage-Optionen
-   * @returns Promise mit Abfahrtsinformationen (typisiert als any)
-   */
-  async getDepartures(stationId, options) {
-    return this.getClient().departures(stationId, options);
-  }
-  /**
-   * Liefert Routeninformationen zwischen zwei Stationen.
-   *
-   * @param fromId ID der Startstation
-   * @param toId ID der Zielstation
-   * @param options optionale Routen-Optionen
-   * @returns Promise mit Routeninformationen (typisiert als any)
-   */
-  async getJourneys(fromId, toId, options) {
-    return this.getClient().journeys(fromId, toId, options);
-  }
-  /**
-   * Holt Details zu einer Station/einem Haltpunkt.
-   *
-   * @param stationId ID der Station/des Haltpunkts
-   * @param options optionale Abfrageoptionen
-   * @returns Promise mit Stations-/Haltpunktdetails
-   */
-  async getStop(stationId, options) {
-    return this.getClient().stop(stationId, options);
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

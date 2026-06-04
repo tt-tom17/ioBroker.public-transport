@@ -129,18 +129,18 @@ class PublicTransport extends utils.Adapter {
     const clientName = `${this.config.clientName || "iobroker-public-transport"}-${Math.floor(Math.random() * 1001)}`;
     try {
       if (serviceType === "vendo") {
-        this.vService = new import_dbVendoService.VendoService(clientName);
+        this.vService = new import_dbVendoService.VendoService(this, clientName);
         this.vService.init();
         this.activeService = this.vService;
         this.log.info(`VendoService initialized with ClientName: ${clientName}`);
       } else if (serviceType === "motis") {
-        this.mService = new import_motisService.MotisService(clientName);
+        this.mService = new import_motisService.MotisService(this, clientName);
         this.mService.init();
         this.activeService = this.mService;
         this.log.info(`MOTIS client (Transitous) initialized with ClientName: ${clientName}`);
       } else {
         const profileName = this.config.profile || "unknown";
-        this.hService = new import_hafasService.HafasService(clientName, profileName);
+        this.hService = new import_hafasService.HafasService(this, clientName, profileName);
         this.hService.init();
         this.activeService = this.hService;
         this.log.info(`HAFAS client initialized with profile: ${profileName}`);

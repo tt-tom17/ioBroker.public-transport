@@ -114,20 +114,20 @@ export class PublicTransport extends utils.Adapter {
         try {
             if (serviceType === 'vendo') {
                 // VendoService initialisieren
-                this.vService = new VendoService(clientName);
+                this.vService = new VendoService(this, clientName);
                 this.vService.init();
                 this.activeService = this.vService;
                 this.log.info(`VendoService initialized with ClientName: ${clientName}`);
             } else if (serviceType === 'motis') {
                 // MotisService (Transitous) initialisieren
-                this.mService = new MotisService(clientName);
+                this.mService = new MotisService(this, clientName);
                 this.mService.init();
                 this.activeService = this.mService;
                 this.log.info(`MOTIS client (Transitous) initialized with ClientName: ${clientName}`);
             } else {
                 // HafasService initialisieren (Standard)
                 const profileName = this.config.profile || 'unknown';
-                this.hService = new HafasService(clientName, profileName);
+                this.hService = new HafasService(this, clientName, profileName);
                 this.hService.init();
                 this.activeService = this.hService;
                 this.log.info(`HAFAS client initialized with profile: ${profileName}`);
