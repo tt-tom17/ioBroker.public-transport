@@ -126,7 +126,10 @@ export class PublicTransport extends utils.Adapter {
                 this.log.info(`MOTIS client (Transitous) initialized with ClientName: ${clientName}`);
             } else {
                 // HafasService initialisieren (Standard)
-                const profileName = this.config.profile || 'unknown';
+                // Leeres Profil bewusst durchreichen (nicht auf 'unknown' mappen):
+                // resolveProfile() schlägt dann mit klarer Meldung fehl (fail-fast),
+                // statt einen irreführenden Default zu wählen.
+                const profileName = this.config.profile || '';
                 this.hService = new HafasService(this, clientName, profileName);
                 this.hService.init();
                 this.activeService = this.hService;

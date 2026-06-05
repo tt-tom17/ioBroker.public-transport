@@ -39,15 +39,19 @@ export class HafasService extends BaseTransportService {
     }
 
     /**
-     * Resolve a profile given either a ProfileName or a profile object.
-     * Falls `profile` leer ist, wird `vbbProfile` verwendet.
+     * Löst einen Profilnamen ('vbb', 'oebb', 'vbn') in das zugehörige HAFAS-Profil auf.
+     * Fail-fast: Ist kein Profil konfiguriert oder unbekannt, wird geworfen – der Adapter
+     * startet bewusst NICHT mit einem stillschweigenden Default (z.B. vbb/Berlin für jemanden,
+     * der ein anderes Verkehrsgebiet möchte). Die Fehler werden in main.ts geloggt.
      *
-     * @param profile entweder ein Eintrag aus `ProfileName` oder ein Profil-Objekt
+     * @param profile Profilname aus der Adapter-Konfiguration
      * @returns das aufgelöste Profil-Objekt
      */
     private resolveProfile(profile?: string): any {
         if (!profile) {
-            return vbbProfile;
+            throw new Error(
+                `No HAFAS profile configured. Please select a profile ('vbb', 'oebb' or 'vbn') in the adapter settings.`,
+            );
         }
 
         switch (profile) {

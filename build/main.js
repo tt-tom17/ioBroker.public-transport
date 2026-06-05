@@ -139,7 +139,7 @@ class PublicTransport extends utils.Adapter {
         this.activeService = this.mService;
         this.log.info(`MOTIS client (Transitous) initialized with ClientName: ${clientName}`);
       } else {
-        const profileName = this.config.profile || "unknown";
+        const profileName = this.config.profile || "";
         this.hService = new import_hafasService.HafasService(this, clientName, profileName);
         this.hService.init();
         this.activeService = this.hService;
