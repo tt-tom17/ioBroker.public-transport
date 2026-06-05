@@ -101,6 +101,9 @@ class Library extends BaseClass {
   translation = { custom: {}, standard: {} };
   unknownTokens = {};
   unknownTokensInterval;
+  // Cache aller Sprach-Übersetzungen für getTranslationObj(): einmal laden,
+  // dann synchron nachschlagen statt pro Key 11x zu importieren. undefined = noch nicht geladen.
+  allTranslations;
   defaults = {
     updateStateOnChangeOnly: true
   };
@@ -727,20 +730,56 @@ class Library extends BaseClass {
     }
     return false;
   }
-  async getTranslationObj(key) {
-    const language = ["en", "de", "ru", "pt", "nl", "fr", "it", "es", "pl", "uk", "zh-cn"];
-    const result = {};
-    for (const l of language) {
+  // === i18n: einzige Quelle für unterstützte Sprachen & Dateipfade. ===
+  // Ändern sich Verzeichnis oder Dateiname der Übersetzungen, NUR hier anpassen.
+  static SUPPORTED_LANGUAGES = [
+    "en",
+    "de",
+    "ru",
+    "pt",
+    "nl",
+    "fr",
+    "it",
+    "es",
+    "pl",
+    "uk",
+    "zh-cn"
+  ];
+  standardTranslationPath(language) {
+    return `../../../admin/i18n/${language}/translations.json`;
+  }
+  customTranslationPath(language) {
+    return `../../../admin/custom/i18n/${language}.json`;
+  }
+  /**
+   * Lädt die Übersetzungen aller unterstützten Sprachen einmalig in den Cache.
+   * Folgeaufrufe sind No-Ops. try/catch pro Datei: eine fehlende Sprachdatei lässt
+   * nur diese Sprache fehlen, statt die gesamte Übersetzung abzubrechen.
+   */
+  async loadAllTranslations() {
+    var _a;
+    if (this.allTranslations) {
+      return;
+    }
+    const cache = {};
+    for (const l of Library.SUPPORTED_LANGUAGES) {
       try {
-        const i = await Promise.resolve().then(() => __toESM(require(`../../../admin/i18n/${l}/translations.json`)));
-        if (i[key] !== void 0) {
-          result[l] = i[key];
-        }
+        const i = await Promise.resolve().then(() => __toESM(require(this.standardTranslationPath(l))));
+        cache[l] = (_a = i.default) != null ? _a : i;
       } catch {
-        if (this.adapter.config.logUnknownTokens) {
-          this.unknownTokens[key] = "";
-        }
-        return key;
+        this.log.warn(`Translations for language '${l}' not found`);
+      }
+    }
+    this.allTranslations = cache;
+  }
+  async getTranslationObj(key) {
+    var _a;
+    await this.loadAllTranslations();
+    const result = {};
+    for (const l of Library.SUPPORTED_LANGUAGES) {
+      const dict = (_a = this.allTranslations) == null ? void 0 : _a[l];
+      if (dict && dict[key] !== void 0) {
+        result[l] = dict[key];
       }
     }
     if (result.en == void 0) {
@@ -754,13 +793,13 @@ class Library extends BaseClass {
   async checkLanguage() {
     try {
       this.log.debug(`Load language ${this.adapter.language}`);
-      this.translation.standard = await Promise.resolve().then(() => __toESM(require(`../../../admin/i18n/${this.adapter.language}/translations.json`)));
+      this.translation.standard = await Promise.resolve().then(() => __toESM(require(this.standardTranslationPath(this.adapter.language))));
     } catch {
       this.log.warn(`Standard: Language ${this.adapter.language} not exist!`);
     }
     try {
       this.log.debug(`Load language ${this.adapter.language} from custom`);
-      this.translation.custom = await Promise.resolve().then(() => __toESM(require(`../../../admin/custom/i18n/${this.adapter.language}.json`)));
+      this.translation.custom = await Promise.resolve().then(() => __toESM(require(this.customTranslationPath(this.adapter.language))));
     } catch {
       this.log.warn(`Custom: Language ${this.adapter.language} not exist!`);
     }

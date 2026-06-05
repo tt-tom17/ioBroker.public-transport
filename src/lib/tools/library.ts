@@ -78,6 +78,9 @@ export class Library extends BaseClass {
     private translation: Record<'custom' | 'standard', { [key: string]: string }> = { custom: {}, standard: {} };
     private unknownTokens: Record<string, string> = {};
     private unknownTokensInterval: ioBroker.Interval | undefined;
+    // Cache aller Sprach-Übersetzungen für getTranslationObj(): einmal laden,
+    // dann synchron nachschlagen statt pro Key 11x zu importieren. undefined = noch nicht geladen.
+    private allTranslations: Partial<Record<ioBroker.Languages, Record<string, string>>> | undefined;
     defaults = {
         updateStateOnChangeOnly: true,
     };
@@ -846,20 +849,56 @@ export class Library extends BaseClass {
         return false;
     }
 
-    async getTranslationObj(key: string): Promise<ioBroker.StringOrTranslated> {
-        const language: ioBroker.Languages[] = ['en', 'de', 'ru', 'pt', 'nl', 'fr', 'it', 'es', 'pl', 'uk', 'zh-cn'];
-        const result: Partial<Record<ioBroker.Languages, string>> = {};
-        for (const l of language) {
+    // === i18n: einzige Quelle für unterstützte Sprachen & Dateipfade. ===
+    // Ändern sich Verzeichnis oder Dateiname der Übersetzungen, NUR hier anpassen.
+    private static readonly SUPPORTED_LANGUAGES: ioBroker.Languages[] = [
+        'en',
+        'de',
+        'ru',
+        'pt',
+        'nl',
+        'fr',
+        'it',
+        'es',
+        'pl',
+        'uk',
+        'zh-cn',
+    ];
+    private standardTranslationPath(language: ioBroker.Languages | undefined): string {
+        return `../../../admin/i18n/${language}/translations.json`;
+    }
+    private customTranslationPath(language: ioBroker.Languages | undefined): string {
+        return `../../../admin/custom/i18n/${language}.json`;
+    }
+
+    /**
+     * Lädt die Übersetzungen aller unterstützten Sprachen einmalig in den Cache.
+     * Folgeaufrufe sind No-Ops. try/catch pro Datei: eine fehlende Sprachdatei lässt
+     * nur diese Sprache fehlen, statt die gesamte Übersetzung abzubrechen.
+     */
+    private async loadAllTranslations(): Promise<void> {
+        if (this.allTranslations) {
+            return;
+        }
+        const cache: Partial<Record<ioBroker.Languages, Record<string, string>>> = {};
+        for (const l of Library.SUPPORTED_LANGUAGES) {
             try {
-                const i = await import(`../../../admin/i18n/${l}/translations.json`);
-                if (i[key] !== undefined) {
-                    result[l] = i[key];
-                }
+                const i = await import(this.standardTranslationPath(l));
+                cache[l] = (i.default ?? i) as Record<string, string>;
             } catch {
-                if (this.adapter.config.logUnknownTokens) {
-                    this.unknownTokens[key] = '';
-                }
-                return key;
+                this.log.warn(`Translations for language '${l}' not found`);
+            }
+        }
+        this.allTranslations = cache;
+    }
+
+    async getTranslationObj(key: string): Promise<ioBroker.StringOrTranslated> {
+        await this.loadAllTranslations();
+        const result: Partial<Record<ioBroker.Languages, string>> = {};
+        for (const l of Library.SUPPORTED_LANGUAGES) {
+            const dict = this.allTranslations?.[l];
+            if (dict && dict[key] !== undefined) {
+                result[l] = dict[key];
             }
         }
         if (result.en == undefined) {
@@ -874,13 +913,13 @@ export class Library extends BaseClass {
     async checkLanguage(): Promise<void> {
         try {
             this.log.debug(`Load language ${this.adapter.language}`);
-            this.translation.standard = await import(`../../../admin/i18n/${this.adapter.language}/translations.json`);
+            this.translation.standard = await import(this.standardTranslationPath(this.adapter.language));
         } catch {
             this.log.warn(`Standard: Language ${this.adapter.language} not exist!`);
         }
         try {
             this.log.debug(`Load language ${this.adapter.language} from custom`);
-            this.translation.custom = await import(`../../../admin/custom/i18n/${this.adapter.language}.json`);
+            this.translation.custom = await import(this.customTranslationPath(this.adapter.language));
         } catch {
             this.log.warn(`Custom: Language ${this.adapter.language} not exist!`);
         }
