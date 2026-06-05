@@ -276,6 +276,15 @@ export class JourneysRequest extends BaseClass {
         try {
             if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
                 for (const [index, journey] of journeys.journeys.entries()) {
+                    // Schleifengrenze statt "verarbeiten-dann-break": robust gegen countEntries <= 0
+                    // (z.B. per Skript gesetzt, UI-Schranke umgangen) -> dann wird korrekt nichts
+                    // geschrieben, statt bei index === countEntries-1 (== -1) nie abzubrechen.
+                    if (index >= countEntries) {
+                        this.log.debug(
+                            `=== Maximum number of journeys reached (${countEntries}), further journeys will not be processed ===`,
+                        );
+                        break;
+                    }
                     this.log.info2(`=== Starting object ${index + 1} of ${journeys.journeys.length} ===`);
                     const journeyPath = `${basePath}.Journey_${`00${index}`.slice(-2)}`;
                     const [arrivalDelayed, arrivalOnTime] = await this.library.getDelayStatus(
@@ -498,12 +507,6 @@ export class JourneysRequest extends BaseClass {
                         await this.nsPanelTimetable.writeJourneyNsPanel(journeyPath, journey, index);
                     }
                     this.log.info2(`✓ Object ${index + 1} processed successfully`);
-                    if (index === countEntries - 1) {
-                        this.log.debug(
-                            `=== Maximum number of journeys reached (${countEntries}), further journeys will not be processed ===`,
-                        );
-                        break; // Schleife verlassen, wenn die gewünschte Anzahl an Verbindungen erreicht ist
-                    }
                 }
             }
         } catch (err) {

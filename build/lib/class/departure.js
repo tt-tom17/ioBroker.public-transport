@@ -212,6 +212,12 @@ class DepartureRequest extends import_library.BaseClass {
   async writeBaseStates(response, stationId, countEntries, nspanel) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
     for (const [index, obj] of response.entries()) {
+      if (index >= countEntries) {
+        this.log.debug(
+          `=== Maximum number of entries reached (${countEntries}), further departures will not be processed ===`
+        );
+        break;
+      }
       try {
         this.log.info2(`=== Starting object ${index + 1} of ${response.length} ===`);
         const departureIndex = `Departures_${`00${index}`.slice(-2)}`;
@@ -583,12 +589,6 @@ class DepartureRequest extends import_library.BaseClass {
           );
         }
         this.log.info2(`\u2713 Object ${index + 1} processed successfully`);
-        if (index === countEntries - 1) {
-          this.log.debug(
-            `=== Maximum number of entries reached (${countEntries}), further departures will not be processed ===`
-          );
-          break;
-        }
       } catch (err) {
         this.log.error(`\u2717 Error processing object ${index + 1}: ${err.message}`);
       }

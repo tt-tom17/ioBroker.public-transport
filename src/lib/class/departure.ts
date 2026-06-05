@@ -237,6 +237,15 @@ export class DepartureRequest extends BaseClass {
         nspanel?: boolean,
     ): Promise<void> {
         for (const [index, obj] of response.entries()) {
+            // Schleifengrenze statt "verarbeiten-dann-break": robust gegen countEntries <= 0
+            // (z.B. per Skript gesetzt, UI-Schranke umgangen) -> dann wird korrekt nichts
+            // geschrieben, statt bei index === countEntries-1 (== -1) nie abzubrechen.
+            if (index >= countEntries) {
+                this.log.debug(
+                    `=== Maximum number of entries reached (${countEntries}), further departures will not be processed ===`,
+                );
+                break;
+            }
             try {
                 this.log.info2(`=== Starting object ${index + 1} of ${response.length} ===`);
                 const departureIndex = `Departures_${`00${index}`.slice(-2)}`;
@@ -631,12 +640,6 @@ export class DepartureRequest extends BaseClass {
                     );
                 }
                 this.log.info2(`✓ Object ${index + 1} processed successfully`);
-                if (index === countEntries - 1) {
-                    this.log.debug(
-                        `=== Maximum number of entries reached (${countEntries}), further departures will not be processed ===`,
-                    );
-                    break;
-                }
             } catch (err) {
                 this.log.error(`✗ Error processing object ${index + 1}: ${(err as Error).message}`);
                 // Ohne throw: weiter zur nächsten Abfahrt ✅ (empfohlen)

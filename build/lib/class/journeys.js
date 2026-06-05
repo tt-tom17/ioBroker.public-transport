@@ -240,6 +240,12 @@ class JourneysRequest extends import_library.BaseClass {
     try {
       if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
         for (const [index, journey] of journeys.journeys.entries()) {
+          if (index >= countEntries) {
+            this.log.debug(
+              `=== Maximum number of journeys reached (${countEntries}), further journeys will not be processed ===`
+            );
+            break;
+          }
           this.log.info2(`=== Starting object ${index + 1} of ${journeys.journeys.length} ===`);
           const journeyPath = `${basePath}.Journey_${`00${index}`.slice(-2)}`;
           const [arrivalDelayed, arrivalOnTime] = await this.library.getDelayStatus(
@@ -436,12 +442,6 @@ class JourneysRequest extends import_library.BaseClass {
             await this.nsPanelTimetable.writeJourneyNsPanel(journeyPath, journey, index);
           }
           this.log.info2(`\u2713 Object ${index + 1} processed successfully`);
-          if (index === countEntries - 1) {
-            this.log.debug(
-              `=== Maximum number of journeys reached (${countEntries}), further journeys will not be processed ===`
-            );
-            break;
-          }
         }
       }
     } catch (err) {
