@@ -138,7 +138,15 @@ const Products = {
   regional: stateObj("Regional", "boolean", "indicator", "Is Regional transport included"),
   regionalExpress: stateObj("Regional Express", "boolean", "indicator", "Is Regional Express transport included"),
   national: stateObj("National", "boolean", "indicator", "Is National transport included"),
-  nationalExpress: stateObj("National Express", "boolean", "indicator", "Is National Express transport included")
+  nationalExpress: stateObj("National Express", "boolean", "indicator", "Is National Express transport included"),
+  dialARide: stateObj("Dial-a-Ride", "boolean", "indicator", "Is Dial-a-Ride (AST) transport included"),
+  localTrain: stateObj("Local Train", "boolean", "indicator", "Is Local Train transport included"),
+  expressTrain: stateObj("Express Train", "boolean", "indicator", "Is Express Train (ICE) transport included"),
+  nationalTrain: stateObj("National Train", "boolean", "indicator", "Is National Train (IC/EC) transport included"),
+  watercraft: stateObj("Watercraft", "boolean", "indicator", "Is Watercraft transport included"),
+  interregional: stateObj("Interregional", "boolean", "indicator", "Is Interregional (IR) transport included"),
+  onCall: stateObj("On-Call", "boolean", "indicator", "Is On-Call transport included"),
+  taxi: stateObj("Taxi", "boolean", "indicator", "Is (shared) Taxi transport included")
 };
 const genericStateObjects = {
   default: {
