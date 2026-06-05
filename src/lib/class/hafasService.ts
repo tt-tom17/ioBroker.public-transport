@@ -5,7 +5,7 @@
  * gemeinsame Code (Client-Lebenszyklus, Abfrage-Methoden, Retry/Timeout) steckt in
  * {@link BaseTransportService}.
  */
-import type { HafasClient } from 'hafas-client';
+import type { HafasClient, Profile } from 'hafas-client';
 import { createClient as hafasClient } from 'hafas-client';
 import { profile as oebbProfile } from 'hafas-client/p/oebb/index.js';
 import { profile as vbbProfile } from 'hafas-client/p/vbb/index.js';
@@ -47,7 +47,7 @@ export class HafasService extends BaseTransportService {
      * @param profile Profilname aus der Adapter-Konfiguration
      * @returns das aufgelöste Profil-Objekt
      */
-    private resolveProfile(profile?: string): any {
+    private resolveProfile(profile?: string): Profile {
         if (!profile) {
             throw new Error(
                 `No HAFAS profile configured. Please select a profile ('vbb', 'oebb' or 'vbn') in the adapter settings.`,
