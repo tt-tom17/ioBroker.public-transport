@@ -152,7 +152,7 @@ export class JourneyPolling extends PollingManager<JourneyConfig> {
              id: ${config.id},
              fromId: ${config.fromStationId},
              toId: ${config.toStationId},
-             service: ${JSON.stringify(service)},
+             service: ${service.constructor?.name ?? 'unknown'},
              option: ${JSON.stringify(options)},
              countEntires: ${countEntries},
              products: ${JSON.stringify(products)},

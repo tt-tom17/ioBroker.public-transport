@@ -90,7 +90,7 @@ export class DeparturePolling extends PollingManager<DepartureConfig> {
         const client_profile = config.client_profile ?? undefined;
         this.log.debug(`QueryConfig parameters:
              id: ${config.id},
-             service: ${JSON.stringify(service)},
+             service: ${service.constructor?.name ?? 'unknown'},
              option: ${JSON.stringify(options)},
              countEntries: ${countEntries},
              products: ${JSON.stringify(products)},

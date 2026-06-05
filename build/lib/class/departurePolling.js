@@ -77,14 +77,14 @@ class DeparturePolling extends import_pollingManager.PollingManager {
    * @returns true wenn erfolgreich, false sonst
    */
   async queryConfig(config, service) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e;
     const options = this.createDepartureOptions(config);
     const products = (_a = config.products) != null ? _a : void 0;
     const countEntries = (_b = config.numDepartures) != null ? _b : 10;
     const client_profile = (_c = config.client_profile) != null ? _c : void 0;
     this.log.debug(`QueryConfig parameters:
              id: ${config.id},
-             service: ${JSON.stringify(service)},
+             service: ${(_e = (_d = service.constructor) == null ? void 0 : _d.name) != null ? _e : "unknown"},
              option: ${JSON.stringify(options)},
              countEntries: ${countEntries},
              products: ${JSON.stringify(products)},
