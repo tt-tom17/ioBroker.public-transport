@@ -1,5 +1,5 @@
 import _fs from 'node:fs';
-import { genericStateObjects } from '../const/definition';
+import { genericStateObjects, type ObjectDefinitionTree } from '../const/definition';
 import type { PublicTransport } from '../types/Adapter';
 // only change this for other adapters
 export type AdapterClassDefinition = PublicTransport;
@@ -85,7 +85,7 @@ export class Library extends BaseClass {
         updateStateOnChangeOnly: true,
     };
 
-    constructor(adapter: AdapterClassDefinition, _options: any = null) {
+    constructor(adapter: AdapterClassDefinition, _options: unknown = null) {
         super(adapter, 'library');
         this.stateDataBase = {};
     }
@@ -128,7 +128,7 @@ export class Library extends BaseClass {
     async writeFromJson(
         prefix: string,
         objNode: string,
-        def: any, // keep as-is if your defs are large/complex; can be tightened later
+        def: ObjectDefinitionTree,
         data: unknown,
         expandTree: boolean = false,
         concurrency: number = 8,
@@ -143,7 +143,7 @@ export class Library extends BaseClass {
         }
 
         // Resolve object definition for the current node
-        const objectDefinition = objNode ? await this.getObjectDefFromJson(`${objNode}`, def, data as any) : null;
+        const objectDefinition = objNode ? await this.getObjectDefFromJson(`${objNode}`, def, data) : null;
 
         if (objectDefinition) {
             objectDefinition.native = {
@@ -250,11 +250,18 @@ export class Library extends BaseClass {
      */
     async getObjectDefFromJson(
         key: string,
-        def: any,
-        data: any,
+        def: ObjectDefinitionTree,
+        data: unknown,
     ): Promise<ioBroker.StateObject | ioBroker.ChannelObject | ioBroker.DeviceObject | ioBroker.FolderObject | null> {
         //let result = await jsonata(`${key}`).evaluate(data);
-        let result = this.deepJsonValue(key, def);
+        // Ein gefundener Knoten wird als konkrete Objektdefinition interpretiert (so nutzt ihn
+        // der restliche Code); deepJsonValue liefert generisch Baum-Knoten.
+        let result = this.deepJsonValue(key, def) as
+            | ioBroker.StateObject
+            | ioBroker.ChannelObject
+            | ioBroker.DeviceObject
+            | ioBroker.FolderObject
+            | null;
         if (result === null || result === undefined) {
             const k = key.split('.');
             if (k && k[k.length - 1].startsWith('_')) {
@@ -311,20 +318,23 @@ export class Library extends BaseClass {
      * @param data JSON-Objekt, aus dem der Wert extrahiert werden soll
      * @returns Der Wert am angegebenen Pfad oder null wenn nicht gefunden
      */
-    deepJsonValue(key: string, data: any): any {
+    deepJsonValue(key: string, data: ObjectDefinitionTree): ObjectDefinitionTree | ioBroker.Object | null {
         if (!key || !data || typeof data !== 'object' || typeof key !== 'string') {
             throw new Error(`Error(222) data or key are missing/wrong type!`);
         }
         const k = key.split(`.`);
-        let c = 0,
-            s = data;
+        let c = 0;
+        // Navigation durch beliebig tiefe Knoten: jeder Zwischenschritt ist wieder ein
+        // ObjectDefinitionTree (Blätter sind ioBroker.Object). Cast nötig, da ioBroker.Object
+        // selbst keine Index-Signatur hat.
+        let s: ObjectDefinitionTree | ioBroker.Object | undefined = data;
         while (c < k.length) {
-            s = s[k[c++]];
+            s = (s as ObjectDefinitionTree)[k[c++]];
             if (s === undefined) {
                 return null;
             }
         }
-        return s;
+        return s ?? null;
     }
 
     /**
@@ -460,7 +470,7 @@ export class Library extends BaseClass {
      *
      * @param dirs Array von Verzeichnis-Mustern, die zur Verbotsliste hinzugefügt werden sollen
      */
-    setForbiddenDirs(dirs: any[]): void {
+    setForbiddenDirs(dirs: string[]): void {
         this.forbiddenDirs = this.forbiddenDirs.concat(dirs);
     }
 
@@ -700,7 +710,7 @@ export class Library extends BaseClass {
         return this.stateDataBase[dp];
     }
 
-    async memberDeleteAsync(data: any[]): Promise<void> {
+    async memberDeleteAsync(data: { delete: () => Promise<void> }[]): Promise<void> {
         if (this.unknownTokensInterval) {
             this.adapter.clearInterval(this.unknownTokensInterval);
         }

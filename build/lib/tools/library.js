@@ -293,14 +293,15 @@ class Library extends BaseClass {
       throw new Error(`Error(222) data or key are missing/wrong type!`);
     }
     const k = key.split(`.`);
-    let c = 0, s = data;
+    let c = 0;
+    let s = data;
     while (c < k.length) {
       s = s[k[c++]];
       if (s === void 0) {
         return null;
       }
     }
-    return s;
+    return s != null ? s : null;
   }
   /**
    * Gibt eine Channel/Device-Definition aus der _channel-Eigenschaft eines getObjectDefFromJson()-Ergebnisses

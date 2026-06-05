@@ -16,5 +16,6 @@ declare module 'db-vendo-client/p/db/index.js' {
 }
 
 declare module 'db-vendo-client/throttle.js' {
-    export function withThrottling(profile: any): ReturnType<typeof withThrottlingBase>;
+    import type { Profile } from 'hafas-client';
+    export function withThrottling(profile: Profile, limit?: number, interval?: number): Profile;
 }

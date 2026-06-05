@@ -15,5 +15,6 @@ declare module '@motis-project/motis-fptf-client/p/compat/index.js' {
 }
 
 declare module '@motis-project/motis-fptf-client/throttle.js' {
-    export function withThrottling(profile: any): any;
+    import type { Profile } from 'hafas-client';
+    export function withThrottling(profile: Profile, limit?: number, interval?: number): Profile;
 }

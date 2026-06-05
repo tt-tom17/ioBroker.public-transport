@@ -18,6 +18,15 @@ export type customChannelType = {
     _array?: ioBroker.ChannelObject | ioBroker.DeviceObject | ioBroker.FolderObject;
 };
 
+/**
+ * Verschachtelte Objektdefinition wie {@link genericStateObjects}: eine beliebig tief
+ * geschachtelte Map, deren Blätter ioBroker-Objektdefinitionen (State/Channel/Device/Folder)
+ * sind. Ersetzt das frühere `any` für die `def`-Parameter in der Library (writeFromJson etc.).
+ */
+export type ObjectDefinitionTree = {
+    [key: string]: ioBroker.Object | ObjectDefinitionTree | undefined;
+};
+
 export const defaultChannel: ioBroker.ChannelObject = {
     _id: '',
     type: 'channel',
