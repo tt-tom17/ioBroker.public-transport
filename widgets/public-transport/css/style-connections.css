@@ -203,24 +203,35 @@
     border: 2px solid #333;
     border-radius: 4px;
     margin: 5% auto;
-    padding: 20px;
+    padding: 0;
     width: 80%;
     max-width: 900px;
     max-height: 80%;
-    overflow-y: auto;
+    overflow: hidden;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
 }
 
+/* Überschrift bleibt oben fix stehen, nur der Body scrollt */
 .pub-trans-conn-modal-header {
     background: linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%);
     color: #ffffff;
     padding: 15px;
-    margin: -20px -20px 20px -20px;
+    margin: 0;
     border-radius: 4px 4px 0 0;
     font-size: 18px;
     font-weight: bold;
     text-align: center;
     border-bottom: 3px solid #ffcc00;
+    flex-shrink: 0;
+}
+
+.pub-trans-conn-modal [id^='modal-body-'] {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 .pub-trans-conn-modal-close {
@@ -352,20 +363,20 @@
 }
 
 /* Scrollbar für Modal */
-.pub-trans-conn-modal-content::-webkit-scrollbar {
+.pub-trans-conn-modal [id^='modal-body-']::-webkit-scrollbar {
     width: 8px;
 }
 
-.pub-trans-conn-modal-content::-webkit-scrollbar-track {
+.pub-trans-conn-modal [id^='modal-body-']::-webkit-scrollbar-track {
     background: #1a1a1a;
 }
 
-.pub-trans-conn-modal-content::-webkit-scrollbar-thumb {
+.pub-trans-conn-modal [id^='modal-body-']::-webkit-scrollbar-thumb {
     background: #444;
     border-radius: 4px;
 }
 
-.pub-trans-conn-modal-content::-webkit-scrollbar-thumb:hover {
+.pub-trans-conn-modal [id^='modal-body-']::-webkit-scrollbar-thumb:hover {
     background: #a2a2a2;
 }
 
