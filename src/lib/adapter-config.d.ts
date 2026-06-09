@@ -12,6 +12,7 @@ declare global {
 			pollInterval?: number;
 			suppressInfoLogs?: boolean;
 			delayOffset?: number;
+			objectsWarnLimit?: number;
 			logUnknownTokens?: boolean;
 			logCompletelyJSON?: boolean;
 		}
