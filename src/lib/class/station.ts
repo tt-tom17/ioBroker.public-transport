@@ -1,8 +1,10 @@
 import type * as Hafas from 'hafas-client';
 import type { PublicTransport } from '../../main';
 import { genericStateObjects } from '../const/definition';
+import { validateClientProfile } from '../tools/clientProfile';
 import { BaseClass } from '../tools/library';
 import { mapStationToStationState, mapStopToStopState } from '../tools/mapper';
+import type { ITransportService } from '../types/transportService';
 import type { StationState, Stopstate } from '../types/types';
 
 export class StationRequest extends BaseClass {
@@ -16,40 +18,6 @@ export class StationRequest extends BaseClass {
     }
 
     /**
-     * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
-     *
-     * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-     */
-    private validateClientProfile(client_profile?: string): void {
-        if (!client_profile) {
-            return; // Keine Validierung wenn nicht angegeben
-        }
-
-        // Parse client_profile (z.B. "hafas:vbb" -> serviceType: "hafas", profile: "vbb")
-        const parts = client_profile.split(':');
-        const expectedServiceType = parts[0]; // 'hafas' oder 'vendo'
-        const expectedProfile = parts[1] || ''; // z.B. 'vbb', 'oebb', 'db'
-
-        // Prüfe, ob der richtige Service-Typ initialisiert ist
-        const currentServiceType = this.adapter.config.serviceType || 'hafas';
-        if (currentServiceType !== expectedServiceType) {
-            throw new Error(
-                `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`,
-            );
-        }
-
-        // Prüfe das Profil (nur relevant bei HAFAS)
-        if (expectedServiceType === 'hafas' && expectedProfile) {
-            const currentProfile = this.adapter.config.profile || '';
-            if (currentProfile !== expectedProfile) {
-                throw new Error(
-                    `Wrong profile: Expected '${expectedProfile}', but '${currentProfile}' is configured (client_profile: ${client_profile})`,
-                );
-            }
-        }
-    }
-
-    /**
      * Ruft Informationen einer Station anhand der stationId ab.
      *
      * @param stationId     Die ID der Station.
@@ -60,7 +28,7 @@ export class StationRequest extends BaseClass {
      */
     public async getStation(
         stationId: string,
-        service: any,
+        service: ITransportService,
         options?: Hafas.StopOptions,
         client_profile?: string,
     ): Promise<Hafas.Station | Hafas.Stop> {
@@ -73,8 +41,10 @@ export class StationRequest extends BaseClass {
             }
 
             // Validiere Client und Profil
-            this.validateClientProfile(client_profile);
-            const station: Hafas.Station | Hafas.Stop = await service.getStop(stationId, options);
+            validateClientProfile(this.adapter.config.serviceType, this.adapter.config.profile, client_profile);
+            // getStop() kann lt. Typ auch eine Location liefern; für eine Stations-ID kommt jedoch
+            // immer eine Station/Stop zurück (Location wird vom Aufrufer nicht verarbeitet).
+            const station = (await service.getStop(stationId, options)) as Hafas.Station | Hafas.Stop;
             // Vollständiges JSON für Debugging
             if (this.adapter.config.logCompletelyJSON) {
                 this.log.debug(JSON.stringify(station, null, 1));
@@ -112,7 +82,7 @@ export class StationRequest extends BaseClass {
                 await this.library.writeFromJson(`${basePath}`, 'station', genericStateObjects, stationState, true);
             } else {
                 const stopState: Stopstate = mapStopToStopState(stationData);
-                await this.library.writeFromJson(`${basePath}`, 'station.stop', genericStateObjects, stopState, true);
+                await this.library.writeFromJson(`${basePath}`, 'station.stops', genericStateObjects, stopState, true);
             }
             // Vor dem Schreiben alte States löschen
             await this.library.garbageColleting(`${basePath}.`, 2000);

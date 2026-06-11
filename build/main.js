@@ -100,11 +100,14 @@ class PublicTransport extends utils.Adapter {
     }
     this.log.info(`${enabledStations.length} active station(s) found:`);
     for (const station of enabledStations) {
+      if (this.unload) {
+        return;
+      }
       if (station.id) {
         this.log.info(`Querying info for: ${station.customName || station.name} (${station.id})...`);
         const stationData = await this.stationRequest.getStation(
           station.id,
-          this.activeService,
+          this.getActiveService(),
           void 0,
           station.client_profile
         );
@@ -126,18 +129,18 @@ class PublicTransport extends utils.Adapter {
     const clientName = `${this.config.clientName || "iobroker-public-transport"}-${Math.floor(Math.random() * 1001)}`;
     try {
       if (serviceType === "vendo") {
-        this.vService = new import_dbVendoService.VendoService(clientName);
+        this.vService = new import_dbVendoService.VendoService(this, clientName);
         this.vService.init();
         this.activeService = this.vService;
         this.log.info(`VendoService initialized with ClientName: ${clientName}`);
       } else if (serviceType === "motis") {
-        this.mService = new import_motisService.MotisService(clientName);
+        this.mService = new import_motisService.MotisService(this, clientName);
         this.mService.init();
         this.activeService = this.mService;
         this.log.info(`MOTIS client (Transitous) initialized with ClientName: ${clientName}`);
       } else {
-        const profileName = this.config.profile || "unknown";
-        this.hService = new import_hafasService.HafasService(clientName, profileName);
+        const profileName = this.config.profile || "";
+        this.hService = new import_hafasService.HafasService(this, clientName, profileName);
         this.hService.init();
         this.activeService = this.hService;
         this.log.info(`HAFAS client initialized with profile: ${profileName}`);
@@ -176,10 +179,12 @@ class PublicTransport extends utils.Adapter {
    * @param callback Function to be called when unload is complete
    */
   onUnload(callback) {
-    var _a, _b;
+    var _a, _b, _c;
     try {
+      this.unload = true;
       (_a = this.departurePolling) == null ? void 0 : _a.stop();
       (_b = this.journeyPolling) == null ? void 0 : _b.stop();
+      (_c = this.library) == null ? void 0 : _c.destroy();
       callback();
     } catch {
       callback();

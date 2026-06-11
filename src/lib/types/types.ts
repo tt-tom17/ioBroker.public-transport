@@ -74,7 +74,19 @@ export type Products = {
     expressTrain?: boolean; // ICE (Standard: true)
     nationalTrain?: boolean; // InterCity, EuroCity, CityNightLine, InterRegio', (Standard: true)
     watercraft?: boolean; // Wasserfahrzeuge (Standard: true)
+    interregional?: boolean; // Interregio (Standard: true)
+    onCall?: boolean; // Rufverkehr/On-Call (Standard: true)
+    taxi?: boolean; // (Anruf-)Sammeltaxi (Standard: true)
 };
+
+/**
+ * Produkt-Verfügbarkeit, wie sie aus den Client-Antworten in die States geschrieben wird.
+ * Dynamische Keys (camelCase, via kebabToCamel normalisiert), da jedes Profil andere
+ * Produkte mit anderen IDs liefert – siehe mapProducts() in mapper.ts. Im Unterschied zur
+ * Config-`Products`-Liste sind die Keys hier bewusst offen, damit auch Produkte künftiger
+ * Profile ohne Code-Änderung erfasst werden.
+ */
+export type ProductAvailability = Record<string, boolean>;
 
 type Location = {
     latitude: number | undefined;
@@ -92,7 +104,7 @@ export type StationState = {
               id: string | undefined;
               type: string | undefined;
               location?: Location | undefined;
-              products?: Products | undefined;
+              products?: ProductAvailability | undefined;
           }[]
         | undefined;
 };
@@ -102,34 +114,7 @@ export type Stopstate = {
     id: string | undefined;
     type: string | undefined;
     location?: Location | undefined;
-    products?: Products | undefined;
-    station?: {
-        name: string | undefined;
-        id: string | undefined;
-        type: string | undefined;
-        location?: Location | undefined;
-        products?: Products | undefined;
-        transitAuthority?: string | undefined;
-        facilities?:
-            | {
-                  Zentrale?: string | undefined;
-                  parkingLots?: boolean | undefined;
-                  bicycleParkingRacks?: boolean | undefined;
-                  localPublicTransport?: boolean | undefined;
-                  toilets?: boolean | undefined;
-                  lockers?: boolean | undefined;
-                  travelShop?: boolean | undefined;
-                  stepFreeAccess?: string | undefined;
-                  boardingAid?: string | undefined;
-                  taxis?: boolean | undefined;
-                  travelCenter?: boolean | undefined;
-                  railwayMission?: boolean | undefined;
-                  dbLounge?: boolean | undefined;
-                  lostAndFound?: boolean | undefined;
-                  carRental?: boolean | undefined;
-              }
-            | undefined;
-    };
+    products?: ProductAvailability | undefined;
 };
 
 type Line = {

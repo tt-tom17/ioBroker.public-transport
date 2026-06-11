@@ -90,20 +90,25 @@ export class DeparturePolling extends PollingManager<DepartureConfig> {
         const client_profile = config.client_profile ?? undefined;
         this.log.debug(`QueryConfig parameters:
              id: ${config.id},
-             service: ${JSON.stringify(service)},
+             service: ${service.constructor?.name ?? 'unknown'},
              option: ${JSON.stringify(options)},
              countEntries: ${countEntries},
              products: ${JSON.stringify(products)},
              client_profil: ${client_profile}`);
 
-        return await this.adapter.depRequest.getDepartures(
-            config.id,
-            service,
-            options,
-            countEntries,
-            products,
-            client_profile,
-        );
+        try {
+            return await this.adapter.depRequest.getDepartures(
+                config.id,
+                service,
+                options,
+                countEntries,
+                products,
+                client_profile,
+            );
+        } catch (error) {
+            this.log.error(`Error querying departures "${config.customName || ''}": ${(error as Error).message}`);
+            return false;
+        }
     }
 
     /**

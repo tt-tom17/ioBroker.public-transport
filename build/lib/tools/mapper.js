@@ -28,6 +28,17 @@ __export(mapper_exports, {
   mapStopToStopState: () => mapStopToStopState
 });
 module.exports = __toCommonJS(mapper_exports);
+var import_library = require("./library");
+function mapProducts(products) {
+  if (!products) {
+    return void 0;
+  }
+  const result = {};
+  for (const [key, value] of Object.entries(products)) {
+    result[(0, import_library.kebabToCamel)(key)] = value;
+  }
+  return result;
+}
 function groupRemarksByType(remarks) {
   var _a, _b, _c;
   const hints = [];
@@ -98,7 +109,7 @@ function mapStationToStationState(station) {
       longitude: station.location.longitude
     } : void 0,
     stops: station.type === "station" ? (_b = (_a = station.stops) == null ? void 0 : _a.filter((stop) => stop.type === "stop").map((stop) => {
-      var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
+      var _a2, _b2, _c, _d, _e;
       return {
         name: (_a2 = stop.name) != null ? _a2 : void 0,
         id: (_b2 = stop.id) != null ? _b2 : void 0,
@@ -107,24 +118,13 @@ function mapStationToStationState(station) {
           latitude: (_d = stop.location.latitude) != null ? _d : void 0,
           longitude: (_e = stop.location.longitude) != null ? _e : void 0
         } : void 0,
-        products: stop.products ? {
-          suburban: (_f = stop.products.suburban) != null ? _f : void 0,
-          subway: (_g = stop.products.subway) != null ? _g : void 0,
-          tram: (_h = stop.products.tram) != null ? _h : void 0,
-          bus: (_i = stop.products.bus) != null ? _i : void 0,
-          ferry: (_j = stop.products.ferry) != null ? _j : void 0,
-          express: (_k = stop.products.express) != null ? _k : void 0,
-          regional: (_l = stop.products.regional) != null ? _l : void 0,
-          regionalexpress: (_m = stop.products.regionalExpress) != null ? _m : void 0,
-          national: (_n = stop.products.national) != null ? _n : void 0,
-          nationalexpress: (_o = stop.products.nationalExpress) != null ? _o : void 0
-        } : void 0
+        products: mapProducts(stop.products)
       };
     })) != null ? _b : void 0 : void 0
   };
 }
 function mapStopToStopState(stop) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
+  var _a, _b, _c, _d, _e;
   return {
     name: (_a = stop.name) != null ? _a : void 0,
     id: (_b = stop.id) != null ? _b : void 0,
@@ -133,18 +133,7 @@ function mapStopToStopState(stop) {
       latitude: (_d = stop.location.latitude) != null ? _d : void 0,
       longitude: (_e = stop.location.longitude) != null ? _e : void 0
     } : void 0,
-    products: stop.products ? {
-      suburban: (_f = stop.products.suburban) != null ? _f : void 0,
-      subway: (_g = stop.products.subway) != null ? _g : void 0,
-      tram: (_h = stop.products.tram) != null ? _h : void 0,
-      bus: (_i = stop.products.bus) != null ? _i : void 0,
-      ferry: (_j = stop.products.ferry) != null ? _j : void 0,
-      express: (_k = stop.products.express) != null ? _k : void 0,
-      regional: (_l = stop.products.regional) != null ? _l : void 0,
-      regionalExpress: (_m = stop.products.regionalExpress) != null ? _m : void 0,
-      national: (_n = stop.products.national) != null ? _n : void 0,
-      nationalExpress: (_o = stop.products.nationalExpress) != null ? _o : void 0
-    } : void 0
+    products: mapProducts(stop.products)
   };
 }
 function mapJourneyToJourneyState(journey) {

@@ -78,11 +78,15 @@ export class PublicTransport extends utils.Adapter {
 
         this.log.info(`${enabledStations.length} active station(s) found:`);
         for (const station of enabledStations) {
+            // Adapter wird heruntergefahren -> keine weiteren Stationen mehr abfragen/schreiben
+            if (this.unload) {
+                return;
+            }
             if (station.id) {
                 this.log.info(`Querying info for: ${station.customName || station.name} (${station.id})...`);
                 const stationData = await this.stationRequest.getStation(
                     station.id,
-                    this.activeService,
+                    this.getActiveService(),
                     undefined,
                     station.client_profile,
                 );
@@ -110,20 +114,23 @@ export class PublicTransport extends utils.Adapter {
         try {
             if (serviceType === 'vendo') {
                 // VendoService initialisieren
-                this.vService = new VendoService(clientName);
+                this.vService = new VendoService(this, clientName);
                 this.vService.init();
                 this.activeService = this.vService;
                 this.log.info(`VendoService initialized with ClientName: ${clientName}`);
             } else if (serviceType === 'motis') {
                 // MotisService (Transitous) initialisieren
-                this.mService = new MotisService(clientName);
+                this.mService = new MotisService(this, clientName);
                 this.mService.init();
                 this.activeService = this.mService;
                 this.log.info(`MOTIS client (Transitous) initialized with ClientName: ${clientName}`);
             } else {
                 // HafasService initialisieren (Standard)
-                const profileName = this.config.profile || 'unknown';
-                this.hService = new HafasService(clientName, profileName);
+                // Leeres Profil bewusst durchreichen (nicht auf 'unknown' mappen):
+                // resolveProfile() schlägt dann mit klarer Meldung fehl (fail-fast),
+                // statt einen irreführenden Default zu wählen.
+                const profileName = this.config.profile || '';
+                this.hService = new HafasService(this, clientName, profileName);
                 this.hService.init();
                 this.activeService = this.hService;
                 this.log.info(`HAFAS client initialized with profile: ${profileName}`);
@@ -169,9 +176,14 @@ export class PublicTransport extends utils.Adapter {
      */
     private onUnload(callback: () => void): void {
         try {
+            // Signalisiere allen laufenden Abläufen, dass der Adapter heruntergefahren wird,
+            // damit keine States mehr in den gestoppten Adapter geschrieben werden.
+            this.unload = true;
+
             // Here you must clear all timeouts or intervals that may still be active
             this.departurePolling?.stop();
             this.journeyPolling?.stop();
+            this.library?.destroy();
 
             callback();
         } catch {

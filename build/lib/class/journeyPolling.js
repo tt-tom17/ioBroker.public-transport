@@ -115,7 +115,7 @@ class JourneyPolling extends import_pollingManager.PollingManager {
    * @returns true wenn erfolgreich, false sonst
    */
   async queryConfig(config, service) {
-    var _a, _b;
+    var _a, _b, _c, _d;
     if (!config.fromStationId || !config.toStationId) {
       this.log.warn("No start or destination station provided");
       return false;
@@ -128,7 +128,7 @@ class JourneyPolling extends import_pollingManager.PollingManager {
              id: ${config.id},
              fromId: ${config.fromStationId},
              toId: ${config.toStationId},
-             service: ${JSON.stringify(service)},
+             service: ${(_d = (_c = service.constructor) == null ? void 0 : _c.name) != null ? _d : "unknown"},
              option: ${JSON.stringify(options)},
              countEntires: ${countEntries},
              products: ${JSON.stringify(products)},

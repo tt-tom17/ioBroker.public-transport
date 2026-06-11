@@ -1,77 +1,57 @@
 /**
- * HafasService - kleiner Wrapper um `hafas-client`.
+ * HafasService - Backend-Service für `hafas-client`.
  *
- * Kapselt die Client-Erzeugung und bietet einfache asynchrone Methoden
- * für `locations` und `departures` an.
+ * Legt nur fest, wie der HAFAS-Client erzeugt wird (inkl. Profil-Auswahl). Der gesamte
+ * gemeinsame Code (Client-Lebenszyklus, Abfrage-Methoden, Retry/Timeout) steckt in
+ * {@link BaseTransportService}.
  */
-import type * as Hafas from 'hafas-client';
+import type { HafasClient, Profile } from 'hafas-client';
 import { createClient as hafasClient } from 'hafas-client';
 import { profile as oebbProfile } from 'hafas-client/p/oebb/index.js';
 import { profile as vbbProfile } from 'hafas-client/p/vbb/index.js';
 import { profile as vbnProfile } from 'hafas-client/p/vbn/index.js';
 import { withThrottling } from 'hafas-client/throttle.js';
-import type { ITransportService } from '../types/transportService';
+import type { PublicTransport } from '../../main';
+import { BaseTransportService } from './baseTransportService';
 
-export class HafasService implements ITransportService {
-    private client: ReturnType<typeof hafasClient> | null = null;
-    private clientName: string;
-    private profileName: string;
+export class HafasService extends BaseTransportService {
+    private readonly profileName: string;
 
     /**
      * Erzeugt eine neue Instanz des HafasService.
      * Der Client wird erst durch Aufruf von `init()` erstellt.
      *
+     * @param adapter Die Adapter-Instanz (für die ioBroker-Timer)
      * @param clientName Name, der an den Client übergeben wird
-     * @param profileName Name des HAFAS-Profils ('vbb', 'db', etc.)
+     * @param profileName Name des HAFAS-Profils ('vbb', 'oebb', 'vbn')
      */
-    constructor(clientName: string, profileName: string) {
-        this.clientName = clientName;
+    constructor(adapter: PublicTransport, clientName: string, profileName: string) {
+        super(adapter, clientName);
         this.profileName = profileName;
     }
 
+    protected get serviceName(): string {
+        return 'HAFAS';
+    }
+
+    protected createClient(): HafasClient {
+        return hafasClient(withThrottling(this.resolveProfile(this.profileName)), this.clientName);
+    }
+
     /**
-     * Initialisiert den HAFAS-Client.
-     * Muss vor der Nutzung der anderen Methoden aufgerufen werden.
+     * Löst einen Profilnamen ('vbb', 'oebb', 'vbn') in das zugehörige HAFAS-Profil auf.
+     * Fail-fast: Ist kein Profil konfiguriert oder unbekannt, wird geworfen – der Adapter
+     * startet bewusst NICHT mit einem stillschweigenden Default (z.B. vbb/Berlin für jemanden,
+     * der ein anderes Verkehrsgebiet möchte). Die Fehler werden in main.ts geloggt.
      *
-     * @returns true bei Erfolg, false bei Fehler
-     */
-    public init(): boolean {
-        try {
-            const profile = this.resolveProfile(this.profileName);
-            this.client = hafasClient(withThrottling(profile), this.clientName);
-            return true;
-        } catch (error) {
-            throw new Error(`The HAFAS client could not be initialized: ${(error as Error).message}`);
-        }
-    }
-
-    /**
-     * Prüft ob der Client initialisiert wurde.
-     */
-    public isInitialized(): boolean {
-        return this.client !== null;
-    }
-
-    /**
-     * Gibt den initialisierten Client zurück oder wirft einen Fehler.
-     */
-    private getClient(): ReturnType<typeof hafasClient> {
-        if (!this.client) {
-            throw new Error('HafasService has not been initialized yet. Please call init() first.');
-        }
-        return this.client;
-    }
-
-    /**
-     * Resolve a profile given either a ProfileName or a profile object.
-     * Falls `profile` leer ist, wird `vbbProfile` verwendet.
-     *
-     * @param profile entweder ein Eintrag aus `ProfileName` oder ein Profil-Objekt
+     * @param profile Profilname aus der Adapter-Konfiguration
      * @returns das aufgelöste Profil-Objekt
      */
-    private resolveProfile(profile?: string): any {
+    private resolveProfile(profile?: string): Profile {
         if (!profile) {
-            return vbbProfile;
+            throw new Error(
+                `No HAFAS profile configured. Please select a profile ('vbb', 'oebb' or 'vbn') in the adapter settings.`,
+            );
         }
 
         switch (profile) {
@@ -88,56 +68,5 @@ export class HafasService implements ITransportService {
                 throw new Error(`unknown profile: ${String(profile)}. available profiles: 'vbb', 'oebb', 'vbn'.`);
             }
         }
-    }
-
-    /**
-     * Suche nach Orten/Stationen.
-     *
-     * @param query Suchbegriff für Orte/Stationen
-     * @param options optionale Suchoptionen
-     * @returns Promise mit Suchergebnissen (typisiert als any)
-     */
-    async getLocations(
-        query: string,
-        options?: Hafas.LocationsOptions,
-    ): Promise<ReadonlyArray<Hafas.Station | Hafas.Stop | Hafas.Location>> {
-        return this.getClient().locations(query, options);
-    }
-
-    /**
-     * Liefert Abfahrten für eine gegebene Stations-ID.
-     *
-     * @param stationId ID der Station
-     * @param options optionale Abfrage-Optionen
-     * @returns Promise mit Abfahrtsinformationen (typisiert als any)
-     */
-    async getDepartures(stationId: string, options?: Hafas.DeparturesArrivalsOptions): Promise<Hafas.Departures> {
-        return this.getClient().departures(stationId, options);
-    }
-
-    /**
-     * Liefert Routeninformationen zwischen zwei Stationen.
-     *
-     * @param fromId ID der Startstation
-     * @param toId ID der Zielstation
-     * @param options optionale Routen-Optionen
-     * @returns Promise mit Routeninformationen (typisiert als any)
-     */
-    async getJourneys(fromId: string, toId: string, options?: Hafas.JourneysOptions): Promise<Hafas.Journeys> {
-        return this.getClient().journeys(fromId, toId, options);
-    }
-
-    /**
-     * Holt Details zu einer Station/einem Haltpunkt.
-     *
-     * @param stationId ID der Station/des Haltpunkts
-     * @param options optionale Abfrageoptionen
-     * @returns Promise mit Stations-/Haltpunktdetails
-     */
-    async getStop(
-        stationId: string,
-        options?: Hafas.StopOptions,
-    ): Promise<Hafas.Station | Hafas.Stop | Hafas.Location> {
-        return this.getClient().stop(stationId, options);
     }
 }

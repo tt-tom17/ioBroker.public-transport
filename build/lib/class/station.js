@@ -22,6 +22,7 @@ __export(station_exports, {
 });
 module.exports = __toCommonJS(station_exports);
 var import_definition = require("../const/definition");
+var import_clientProfile = require("../tools/clientProfile");
 var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 class StationRequest extends import_library.BaseClass {
@@ -31,33 +32,6 @@ class StationRequest extends import_library.BaseClass {
   }
   isStation(station) {
     return station.type === "station";
-  }
-  /**
-   * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
-   *
-   * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-   */
-  validateClientProfile(client_profile) {
-    if (!client_profile) {
-      return;
-    }
-    const parts = client_profile.split(":");
-    const expectedServiceType = parts[0];
-    const expectedProfile = parts[1] || "";
-    const currentServiceType = this.adapter.config.serviceType || "hafas";
-    if (currentServiceType !== expectedServiceType) {
-      throw new Error(
-        `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`
-      );
-    }
-    if (expectedServiceType === "hafas" && expectedProfile) {
-      const currentProfile = this.adapter.config.profile || "";
-      if (currentProfile !== expectedProfile) {
-        throw new Error(
-          `Wrong profile: Expected '${expectedProfile}', but '${currentProfile}' is configured (client_profile: ${client_profile})`
-        );
-      }
-    }
   }
   /**
    * Ruft Informationen einer Station anhand der stationId ab.
@@ -76,7 +50,7 @@ class StationRequest extends import_library.BaseClass {
       if (!service) {
         throw new Error("No service provided");
       }
-      this.validateClientProfile(client_profile);
+      (0, import_clientProfile.validateClientProfile)(this.adapter.config.serviceType, this.adapter.config.profile, client_profile);
       const station = await service.getStop(stationId, options);
       if (this.adapter.config.logCompletelyJSON) {
         this.log.debug(JSON.stringify(station, null, 1));
@@ -112,7 +86,7 @@ class StationRequest extends import_library.BaseClass {
         await this.library.writeFromJson(`${basePath}`, "station", import_definition.genericStateObjects, stationState, true);
       } else {
         const stopState = (0, import_mapper.mapStopToStopState)(stationData);
-        await this.library.writeFromJson(`${basePath}`, "station.stop", import_definition.genericStateObjects, stopState, true);
+        await this.library.writeFromJson(`${basePath}`, "station.stops", import_definition.genericStateObjects, stopState, true);
       }
       await this.library.garbageColleting(`${basePath}.`, 2e3);
     } catch (err) {

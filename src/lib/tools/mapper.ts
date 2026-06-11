@@ -1,5 +1,29 @@
 import type * as Hafas from 'hafas-client';
-import type { DepartureState, JourneyState, StationState, Stopstate } from '../types/types';
+import type { DepartureState, JourneyState, ProductAvailability, StationState, Stopstate } from '../types/types';
+import { kebabToCamel } from './library';
+
+/**
+ * Normalisiert die von einem Client/Profil gelieferten Produkte zu einheitlichen camelCase-Keys.
+ *
+ * Die Produkt-IDs unterscheiden sich je Profil: HAFAS vbn liefert kebab-case
+ * ("express-train", "dial-a-ride"), oebb/db-vendo/MOTIS camelCase ("nationalExpress"),
+ * vbb einfaches lowercase. Statt feste Keys zu lesen, werden hier ALLE gelieferten Produkte
+ * übernommen und ihre Keys per kebabToCamel vereinheitlicht. Dadurch werden auch Produkte
+ * neuer/weiterer Profile automatisch erfasst (Gegenstück zum outbound-`camelToKebab`).
+ *
+ * @param products Das von der Client-Antwort gelieferte Produkt-Objekt ({ [id]: boolean })
+ * @returns Produkt-Verfügbarkeit mit normalisierten Keys, oder undefined wenn nicht vorhanden
+ */
+function mapProducts(products: Hafas.Products | undefined): ProductAvailability | undefined {
+    if (!products) {
+        return undefined;
+    }
+    const result: ProductAvailability = {};
+    for (const [key, value] of Object.entries(products)) {
+        result[kebabToCamel(key)] = value;
+    }
+    return result;
+}
 /**
  * Gruppiert Remarks nach Typ und fasst deren Texte zusammen
  *
@@ -114,20 +138,7 @@ export function mapStationToStationState(station: Hafas.Station): StationState {
                                     longitude: stop.location.longitude ?? undefined,
                                 }
                               : undefined,
-                          products: stop.products
-                              ? {
-                                    suburban: stop.products.suburban ?? undefined,
-                                    subway: stop.products.subway ?? undefined,
-                                    tram: stop.products.tram ?? undefined,
-                                    bus: stop.products.bus ?? undefined,
-                                    ferry: stop.products.ferry ?? undefined,
-                                    express: stop.products.express ?? undefined,
-                                    regional: stop.products.regional ?? undefined,
-                                    regionalexpress: stop.products.regionalExpress ?? undefined,
-                                    national: stop.products.national ?? undefined,
-                                    nationalexpress: stop.products.nationalExpress ?? undefined,
-                                }
-                              : undefined,
+                          products: mapProducts(stop.products),
                       })) ?? undefined)
                 : undefined,
     };
@@ -144,20 +155,7 @@ export function mapStopToStopState(stop: Hafas.Stop): Stopstate {
                   longitude: stop.location.longitude ?? undefined,
               }
             : undefined,
-        products: stop.products
-            ? {
-                  suburban: stop.products.suburban ?? undefined,
-                  subway: stop.products.subway ?? undefined,
-                  tram: stop.products.tram ?? undefined,
-                  bus: stop.products.bus ?? undefined,
-                  ferry: stop.products.ferry ?? undefined,
-                  express: stop.products.express ?? undefined,
-                  regional: stop.products.regional ?? undefined,
-                  regionalExpress: stop.products.regionalExpress ?? undefined,
-                  national: stop.products.national ?? undefined,
-                  nationalExpress: stop.products.nationalExpress ?? undefined,
-              }
-            : undefined,
+        products: mapProducts(stop.products),
     };
 }
 

@@ -22,12 +22,14 @@ __export(journeys_exports, {
 });
 module.exports = __toCommonJS(journeys_exports);
 var import_station = require("../class/station");
+var import_clientProfile = require("../tools/clientProfile");
 var import_library = require("../tools/library");
 var import_mapper = require("../tools/mapper");
 var import_types = require("../types/types");
 var import_nsPanelTimetable = require("./nsPanelTimetable");
 class JourneysRequest extends import_library.BaseClass {
   station;
+  // Wird in getJourneys() vor jeder Nutzung gesetzt (daher definite assignment).
   service;
   delayOffset = this.adapter.config.delayOffset || 2;
   nsPanelTimetable;
@@ -36,33 +38,6 @@ class JourneysRequest extends import_library.BaseClass {
     this.log.setLogPrefix("journeyReq");
     this.station = new import_station.StationRequest(adapter);
     this.nsPanelTimetable = new import_nsPanelTimetable.NsPanelTimetable(adapter);
-  }
-  /**
-   * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
-   *
-   * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-   */
-  validateClientProfile(client_profile) {
-    if (!client_profile) {
-      return;
-    }
-    const parts = client_profile.split(":");
-    const expectedServiceType = parts[0];
-    const expectedProfile = parts[1] || "";
-    const currentServiceType = this.adapter.config.serviceType || "hafas";
-    if (currentServiceType !== expectedServiceType) {
-      throw new Error(
-        `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`
-      );
-    }
-    if (expectedServiceType === "hafas" && expectedProfile) {
-      const currentProfile = this.adapter.config.profile || "";
-      if (currentProfile !== expectedProfile) {
-        throw new Error(
-          `Wrong profile: Expected '${expectedProfile}', but '${currentProfile}' is configured (client_profile: ${client_profile})`
-        );
-      }
-    }
   }
   /**
    *  Ruft Abfahrten für eine gegebene stationId ab und schreibt sie in die States.
@@ -82,7 +57,7 @@ class JourneysRequest extends import_library.BaseClass {
       if (!from || !to) {
         throw new Error("No start or destination station provided");
       }
-      this.validateClientProfile(client_profile);
+      (0, import_clientProfile.validateClientProfile)(this.adapter.config.serviceType, this.adapter.config.profile, client_profile);
       this.service = service;
       const mergedOptions = { ...import_types.defaultJourneyOpt, ...options };
       const response = await this.service.getJourneys(from, to, mergedOptions);
@@ -205,6 +180,7 @@ class JourneysRequest extends import_library.BaseClass {
         client_profile,
         journeyConfig.nspanel
       );
+      await this.library.garbageColleting(`${this.adapter.namespace}.Journeys.${journeyId}.Journey_`, 2e3);
     } catch (err) {
       this.log.error(`Error writing journeys. Error message: ${err.message}`);
     }
@@ -219,7 +195,7 @@ class JourneysRequest extends import_library.BaseClass {
    * @param nspanel Ob der NSPanel-Channel angelegt werden soll.
    */
   async writesBaseStates(basePath, journeys, countEntries, client_profile, nspanel) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     try {
       await this.library.writedp(`${basePath}.json`, JSON.stringify(journeys), {
         _id: "nicht_definieren",
@@ -233,8 +209,9 @@ class JourneysRequest extends import_library.BaseClass {
         },
         native: {}
       });
-      const stationFromId = ((_b = (_a = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _a[0].legs[0].origin) == null ? void 0 : _b.id) || void 0;
-      const stationToId = ((_d = (_c = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _c[0].legs[journeys.journeys[0].legs.length - 1].destination) == null ? void 0 : _d.id) || void 0;
+      const firstLegs = (_b = (_a = journeys == null ? void 0 : journeys.journeys) == null ? void 0 : _a[0]) == null ? void 0 : _b.legs;
+      const stationFromId = ((_d = (_c = firstLegs == null ? void 0 : firstLegs[0]) == null ? void 0 : _c.origin) == null ? void 0 : _d.id) || void 0;
+      const stationToId = ((_f = (_e = firstLegs == null ? void 0 : firstLegs[firstLegs.length - 1]) == null ? void 0 : _e.destination) == null ? void 0 : _f.id) || void 0;
       if (stationFromId !== void 0 && stationToId !== void 0) {
         const stationFrom = await this.station.getStation(
           stationFromId,
@@ -263,6 +240,12 @@ class JourneysRequest extends import_library.BaseClass {
     try {
       if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
         for (const [index, journey] of journeys.journeys.entries()) {
+          if (index >= countEntries) {
+            this.log.debug(
+              `=== Maximum number of journeys reached (${countEntries}), further journeys will not be processed ===`
+            );
+            break;
+          }
           this.log.info2(`=== Starting object ${index + 1} of ${journeys.journeys.length} ===`);
           const journeyPath = `${basePath}.Journey_${`00${index}`.slice(-2)}`;
           const [arrivalDelayed, arrivalOnTime] = await this.library.getDelayStatus(
@@ -273,10 +256,11 @@ class JourneysRequest extends import_library.BaseClass {
             journey.legs[0].departureDelay,
             this.delayOffset
           );
-          const changes = journey.legs.filter((leg) => leg.walking === true).length;
-          const durationMinutes = Math.round(
-            (new Date(journey.legs[journey.legs.length - 1].arrival).getTime() - new Date(journey.legs[0].departure).getTime()) / 6e4
-          );
+          const rideLegs = journey.legs.filter((leg) => leg.walking !== true).length;
+          const changes = Math.max(0, rideLegs - 1);
+          const arrivalTime = new Date(journey.legs[journey.legs.length - 1].arrival).getTime();
+          const departureTime = new Date(journey.legs[0].departure).getTime();
+          const durationMinutes = Number.isFinite(arrivalTime) && Number.isFinite(departureTime) ? Math.round((arrivalTime - departureTime) / 6e4) : -1;
           await this.library.writedp(`${journeyPath}`, void 0, {
             _id: "nicht_definieren",
             type: "channel",
@@ -458,12 +442,6 @@ class JourneysRequest extends import_library.BaseClass {
             await this.nsPanelTimetable.writeJourneyNsPanel(journeyPath, journey, index);
           }
           this.log.info2(`\u2713 Object ${index + 1} processed successfully`);
-          if (index === countEntries - 1) {
-            this.log.debug(
-              `=== Maximum number of journeys reached (${countEntries}), further journeys will not be processed ===`
-            );
-            break;
-          }
         }
       }
     } catch (err) {

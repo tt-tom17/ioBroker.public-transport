@@ -1,7 +1,9 @@
 import type * as Hafas from 'hafas-client';
 import type { PublicTransport } from '../../main';
+import { validateClientProfile } from '../tools/clientProfile';
 import { BaseClass } from '../tools/library';
 import { mapDeparturesToDepartureStates } from '../tools/mapper';
+import type { ITransportService } from '../types/transportService';
 import { defaultDepartureOpt, type DepartureState, type Products } from '../types/types';
 import { NsPanelTimetable } from './nsPanelTimetable';
 
@@ -13,40 +15,6 @@ export class DepartureRequest extends BaseClass {
         super(adapter);
         this.log.setLogPrefix('depReq');
         this.nsPanelTimetable = new NsPanelTimetable(adapter);
-    }
-
-    /**
-     * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
-     *
-     * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-     */
-    private validateClientProfile(client_profile?: string): void {
-        if (!client_profile) {
-            return; // Keine Validierung wenn nicht angegeben
-        }
-
-        // Parse client_profile (z.B. "hafas:vbb" -> serviceType: "hafas", profile: "vbb")
-        const parts = client_profile.split(':');
-        const expectedServiceType = parts[0]; // 'hafas' oder 'vendo'
-        const expectedProfile = parts[1] || ''; // z.B. 'vbb', 'oebb', 'db'
-
-        // Prüfe, ob der richtige Service-Typ initialisiert ist
-        const currentServiceType = this.adapter.config.serviceType || 'hafas';
-        if (currentServiceType !== expectedServiceType) {
-            throw new Error(
-                `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`,
-            );
-        }
-
-        // Prüfe das Profil (nur relevant bei HAFAS)
-        if (expectedServiceType === 'hafas' && expectedProfile) {
-            const currentProfile = this.adapter.config.profile || '';
-            if (currentProfile !== expectedProfile) {
-                throw new Error(
-                    `Wrong profile: Expected '${expectedProfile}', but '${currentProfile}' is configured (client_profile: ${client_profile})`,
-                );
-            }
-        }
     }
 
     /**
@@ -62,7 +30,7 @@ export class DepartureRequest extends BaseClass {
      */
     public async getDepartures(
         stationId: string,
-        service: any,
+        service: ITransportService,
         options: Hafas.DeparturesArrivalsOptions = {},
         countEntries: number = 10,
         products?: Partial<Products>,
@@ -74,7 +42,7 @@ export class DepartureRequest extends BaseClass {
             }
 
             // Validiere Client und Profil
-            this.validateClientProfile(client_profile);
+            validateClientProfile(this.adapter.config.serviceType, this.adapter.config.profile, client_profile);
             const mergedOptions = { ...defaultDepartureOpt, ...options };
             // Antwort vom Transport-Client als vollständiger Typ
             this.log.debug(
@@ -151,7 +119,7 @@ export class DepartureRequest extends BaseClass {
      */
     async writeDepartureStates(
         stationId: string,
-        departures: Hafas.Alternative[],
+        departures: readonly Hafas.Alternative[],
         countEntries: number,
         // products?: Partial<Products>,
     ): Promise<void> {
@@ -234,15 +202,21 @@ export class DepartureRequest extends BaseClass {
                 },
             );
 
-            // Garbage Collection (nur einmal!)
-            //await this.library.garbageColleting(`Stations.${stationConfig.id}.`);
-
             // Filtere nach Produkten, falls angegeben
             // const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
             // Konvertiere zu reduzierten States
             const departureStates: DepartureState[] = mapDeparturesToDepartureStates(departures);
             // JSON in die States schreiben
             await this.writeBaseStates(departureStates, stationId, countEntries, stationConfig.nspanel);
+
+            // Garbage Collection: Departure-Channels, die in diesem Poll nicht (mehr) geschrieben
+            // wurden (z.B. wenn jetzt weniger Abfahrten geliefert werden als zuvor), auf
+            // Standardwerte zuruecksetzen. Praeziser Prefix, damit Metadaten (name/enabled/
+            // countDepartures) und die nur beim Start geschriebenen Stationsinfos (.info) unberuehrt bleiben.
+            await this.library.garbageColleting(
+                `${this.adapter.namespace}.Stations.${stationConfig.id}.Departures_`,
+                2000,
+            );
         } catch (err) {
             this.log.error(`Error writing departures: ${(err as Error).message}`);
         }
@@ -263,6 +237,15 @@ export class DepartureRequest extends BaseClass {
         nspanel?: boolean,
     ): Promise<void> {
         for (const [index, obj] of response.entries()) {
+            // Schleifengrenze statt "verarbeiten-dann-break": robust gegen countEntries <= 0
+            // (z.B. per Skript gesetzt, UI-Schranke umgangen) -> dann wird korrekt nichts
+            // geschrieben, statt bei index === countEntries-1 (== -1) nie abzubrechen.
+            if (index >= countEntries) {
+                this.log.debug(
+                    `=== Maximum number of entries reached (${countEntries}), further departures will not be processed ===`,
+                );
+                break;
+            }
             try {
                 this.log.info2(`=== Starting object ${index + 1} of ${response.length} ===`);
                 const departureIndex = `Departures_${`00${index}`.slice(-2)}`;
@@ -657,12 +640,6 @@ export class DepartureRequest extends BaseClass {
                     );
                 }
                 this.log.info2(`✓ Object ${index + 1} processed successfully`);
-                if (index === countEntries - 1) {
-                    this.log.debug(
-                        `=== Maximum number of entries reached (${countEntries}), further departures will not be processed ===`,
-                    );
-                    break;
-                }
             } catch (err) {
                 this.log.error(`✗ Error processing object ${index + 1}: ${(err as Error).message}`);
                 // Ohne throw: weiter zur nächsten Abfahrt ✅ (empfohlen)

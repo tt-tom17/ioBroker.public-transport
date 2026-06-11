@@ -24,41 +24,14 @@ module.exports = __toCommonJS(motisService_exports);
 var import_motis_fptf_client = require("@motis-project/motis-fptf-client");
 var import_compat = require("@motis-project/motis-fptf-client/p/compat/index.js");
 var import_throttle = require("@motis-project/motis-fptf-client/throttle.js");
-class MotisService {
-  client = null;
-  clientName;
-  constructor(clientName) {
-    this.clientName = clientName;
+var import_baseTransportService = require("./baseTransportService");
+class MotisService extends import_baseTransportService.BaseTransportService {
+  get serviceName() {
+    return "MOTIS";
   }
-  init() {
-    try {
-      const profile = { ...import_compat.profile, enrichStations: false };
-      this.client = (0, import_motis_fptf_client.createClient)((0, import_throttle.withThrottling)(profile), this.clientName);
-      return true;
-    } catch (error) {
-      throw new Error(`The MOTIS client could not be initialized: ${error.message}`);
-    }
-  }
-  isInitialized() {
-    return this.client !== null;
-  }
-  getClient() {
-    if (!this.client) {
-      throw new Error("MotisService has not been initialized yet. Please call init() first.");
-    }
-    return this.client;
-  }
-  async getLocations(query, options) {
-    return this.getClient().locations(query, options);
-  }
-  async getDepartures(stationId, options) {
-    return this.getClient().departures(stationId, options);
-  }
-  async getJourneys(fromId, toId, options) {
-    return this.getClient().journeys(fromId, toId, options);
-  }
-  async getStop(stationId, options) {
-    return this.getClient().stop(stationId, options);
+  createClient() {
+    const profile = { ...import_compat.profile, enrichStations: false };
+    return (0, import_motis_fptf_client.createClient)((0, import_throttle.withThrottling)(profile), this.clientName);
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

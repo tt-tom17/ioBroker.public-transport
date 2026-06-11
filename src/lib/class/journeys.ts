@@ -1,14 +1,17 @@
 import type * as Hafas from 'hafas-client';
 import type { PublicTransport } from '../../main';
 import { StationRequest } from '../class/station';
+import { validateClientProfile } from '../tools/clientProfile';
 import { BaseClass } from '../tools/library';
 import { groupRemarksByType } from '../tools/mapper';
+import type { ITransportService } from '../types/transportService';
 import { defaultJourneyOpt, type Products } from '../types/types';
 import { NsPanelTimetable } from './nsPanelTimetable';
 
 export class JourneysRequest extends BaseClass {
     private station: StationRequest;
-    private service: any;
+    // Wird in getJourneys() vor jeder Nutzung gesetzt (daher definite assignment).
+    private service!: ITransportService;
     private delayOffset: number = this.adapter.config.delayOffset || 2;
     private nsPanelTimetable: NsPanelTimetable;
 
@@ -17,40 +20,6 @@ export class JourneysRequest extends BaseClass {
         this.log.setLogPrefix('journeyReq');
         this.station = new StationRequest(adapter);
         this.nsPanelTimetable = new NsPanelTimetable(adapter);
-    }
-
-    /**
-     * Validiert, ob der initialisierte Client und das Profil mit dem angegebenen client_profile übereinstimmen.
-     *
-     * @param client_profile Das erwartete Client-Profil (z.B. "hafas:vbb", "vendo:db")
-     */
-    private validateClientProfile(client_profile?: string): void {
-        if (!client_profile) {
-            return; // Keine Validierung wenn nicht angegeben
-        }
-
-        // Parse client_profile (z.B. "hafas:vbb" -> serviceType: "hafas", profile: "vbb")
-        const parts = client_profile.split(':');
-        const expectedServiceType = parts[0]; // 'hafas' oder 'vendo'
-        const expectedProfile = parts[1] || ''; // z.B. 'vbb', 'oebb', 'db'
-
-        // Prüfe, ob der richtige Service-Typ initialisiert ist
-        const currentServiceType = this.adapter.config.serviceType || 'hafas';
-        if (currentServiceType !== expectedServiceType) {
-            throw new Error(
-                `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`,
-            );
-        }
-
-        // Prüfe das Profil (nur relevant bei HAFAS)
-        if (expectedServiceType === 'hafas' && expectedProfile) {
-            const currentProfile = this.adapter.config.profile || '';
-            if (currentProfile !== expectedProfile) {
-                throw new Error(
-                    `Wrong profile: Expected '${expectedProfile}', but '${currentProfile}' is configured (client_profile: ${client_profile})`,
-                );
-            }
-        }
     }
 
     /**
@@ -70,7 +39,7 @@ export class JourneysRequest extends BaseClass {
         journeyId: string,
         from: string,
         to: string,
-        service: any,
+        service: ITransportService,
         options: Hafas.JourneysOptions = {},
         countEntries: number = 5,
         products?: Partial<Products>,
@@ -82,7 +51,7 @@ export class JourneysRequest extends BaseClass {
             }
 
             // Validiere Client und Profil
-            this.validateClientProfile(client_profile);
+            validateClientProfile(this.adapter.config.serviceType, this.adapter.config.profile, client_profile);
 
             this.service = service;
             // Zusammenführen der Standardoptionen mit den übergebenen Optionen
@@ -219,9 +188,6 @@ export class JourneysRequest extends BaseClass {
                 },
             );
 
-            // Garbage Collection (nur einmal!)
-            //await this.library.garbageColleting(`${this.adapter.namespace}.Routes.${journeyId}.`);
-
             // Schreibe die Journey-Daten
             await this.writesBaseStates(
                 `${this.adapter.namespace}.Journeys.${journeyId}`,
@@ -230,6 +196,11 @@ export class JourneysRequest extends BaseClass {
                 client_profile,
                 journeyConfig.nspanel,
             );
+
+            // Garbage Collection: Journey-Channels (inkl. variabler Leg_XX), die in diesem Poll
+            // nicht (mehr) geschrieben wurden, auf Standardwerte zuruecksetzen. Praeziser Prefix
+            // "Journey_", damit json/countJourneys/StationFrom/StationTo unberuehrt bleiben.
+            await this.library.garbageColleting(`${this.adapter.namespace}.Journeys.${journeyId}.Journey_`, 2000);
         } catch (err) {
             this.log.error(`Error writing journeys. Error message: ${(err as Error).message}`);
         }
@@ -265,10 +236,12 @@ export class JourneysRequest extends BaseClass {
                 },
                 native: {},
             });
-            // Station From/To ermitteln und schreiben
-            const stationFromId = journeys?.journeys?.[0].legs[0].origin?.id || undefined;
-            const stationToId =
-                journeys?.journeys?.[0].legs[journeys.journeys[0].legs.length - 1].destination?.id || undefined;
+            // Station From/To ermitteln und schreiben.
+            // Durchgaengiges Optional-Chaining: bei leerer journeys-Liste bleiben beide IDs
+            // undefined (kein TypeError), und der nachfolgende Block wird uebersprungen.
+            const firstLegs = journeys?.journeys?.[0]?.legs;
+            const stationFromId = firstLegs?.[0]?.origin?.id || undefined;
+            const stationToId = firstLegs?.[firstLegs.length - 1]?.destination?.id || undefined;
             if (stationFromId !== undefined && stationToId !== undefined) {
                 const stationFrom = await this.station.getStation(
                     stationFromId,
@@ -303,6 +276,15 @@ export class JourneysRequest extends BaseClass {
         try {
             if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
                 for (const [index, journey] of journeys.journeys.entries()) {
+                    // Schleifengrenze statt "verarbeiten-dann-break": robust gegen countEntries <= 0
+                    // (z.B. per Skript gesetzt, UI-Schranke umgangen) -> dann wird korrekt nichts
+                    // geschrieben, statt bei index === countEntries-1 (== -1) nie abzubrechen.
+                    if (index >= countEntries) {
+                        this.log.debug(
+                            `=== Maximum number of journeys reached (${countEntries}), further journeys will not be processed ===`,
+                        );
+                        break;
+                    }
                     this.log.info2(`=== Starting object ${index + 1} of ${journeys.journeys.length} ===`);
                     const journeyPath = `${basePath}.Journey_${`00${index}`.slice(-2)}`;
                     const [arrivalDelayed, arrivalOnTime] = await this.library.getDelayStatus(
@@ -313,12 +295,21 @@ export class JourneysRequest extends BaseClass {
                         journey.legs[0].departureDelay,
                         this.delayOffset,
                     );
-                    const changes = journey.legs.filter((leg: { walking: boolean }) => leg.walking === true).length;
-                    const durationMinutes = Math.round(
-                        (new Date(journey.legs[journey.legs.length - 1].arrival).getTime() -
-                            new Date(journey.legs[0].departure).getTime()) /
-                            60_000,
-                    );
+                    // Umstiege = Übergänge zwischen Fahrten. Ein Walking-Leg zwischen zwei
+                    // Fahrten IST der Umstieg (zeigt die Laufdistanz); ein direkter Fahrt-zu-Fahrt-
+                    // Übergang ohne Walking zählt ebenso. Walking-Legs am Anfang/Ende (Zu-/Abgang
+                    // zu Fuß) liegen nicht zwischen zwei Fahrten und zählen daher nicht.
+                    const rideLegs = journey.legs.filter((leg: Hafas.Leg) => leg.walking !== true).length;
+                    const changes = Math.max(0, rideLegs - 1);
+                    // Dauer nur berechnen, wenn beide Zeitpunkte vorhanden/parsebar sind.
+                    // Fehlt arrival/departure (z.B. bei reinen Vorschau-Verbindungen), liefert
+                    // new Date(undefined).getTime() NaN -> sonst landet NaN im State. Fallback: -1.
+                    const arrivalTime = new Date(journey.legs[journey.legs.length - 1].arrival).getTime();
+                    const departureTime = new Date(journey.legs[0].departure).getTime();
+                    const durationMinutes =
+                        Number.isFinite(arrivalTime) && Number.isFinite(departureTime)
+                            ? Math.round((arrivalTime - departureTime) / 60_000)
+                            : -1;
                     // Channel
                     await this.library.writedp(`${journeyPath}`, undefined, {
                         _id: 'nicht_definieren',
@@ -516,12 +507,6 @@ export class JourneysRequest extends BaseClass {
                         await this.nsPanelTimetable.writeJourneyNsPanel(journeyPath, journey, index);
                     }
                     this.log.info2(`✓ Object ${index + 1} processed successfully`);
-                    if (index === countEntries - 1) {
-                        this.log.debug(
-                            `=== Maximum number of journeys reached (${countEntries}), further journeys will not be processed ===`,
-                        );
-                        break; // Schleife verlassen, wenn die gewünschte Anzahl an Verbindungen erreicht ist
-                    }
                 }
             }
         } catch (err) {

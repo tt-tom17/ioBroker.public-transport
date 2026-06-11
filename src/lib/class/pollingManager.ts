@@ -94,6 +94,11 @@ export abstract class PollingManager<T extends PollingConfig> extends BaseClass 
         let errorCount = 0;
 
         for (const config of configs) {
+            // Adapter wird heruntergefahren -> laufende Abfrage abbrechen, keine States mehr schreiben
+            if (this.adapter.unload) {
+                break;
+            }
+
             if (!config.id) {
                 this.log.warn(`Station "${config.customName || config.name || ''}" has no valid ID, skipping...`);
                 continue;
@@ -177,18 +182,29 @@ export abstract class PollingManager<T extends PollingConfig> extends BaseClass 
 
         // Starte Intervall für regelmäßige Abfragen
         this.pollInterval = this.adapter.setInterval(async () => {
-            // Behandle deaktivierte Stationen bei jedem Poll
-            await this.handleDisabledConfigs(configs);
+            // Adapter wird heruntergefahren -> diesen Poll-Durchlauf überspringen
+            if (this.adapter.unload) {
+                return;
+            }
 
-            const { successCount, errorCount } = await this.queryConfigs(
-                enabledConfigs,
-                service,
-                messages.fetching,
-                messages.updated,
-                messages.failed,
-            );
-            this.log.info(messages.queryCompleted(successCount, errorCount));
-            this.log.info(messages.waiting(pollIntervalMinutes));
+            // Fehler innerhalb des Timer-Callbacks müssen hier gefangen werden, sonst
+            // entsteht eine unhandled promise rejection, die den Adapter abstürzen lässt.
+            try {
+                // Behandle deaktivierte Stationen bei jedem Poll
+                await this.handleDisabledConfigs(configs);
+
+                const { successCount, errorCount } = await this.queryConfigs(
+                    enabledConfigs,
+                    service,
+                    messages.fetching,
+                    messages.updated,
+                    messages.failed,
+                );
+                this.log.info(messages.queryCompleted(successCount, errorCount));
+                this.log.info(messages.waiting(pollIntervalMinutes));
+            } catch (err) {
+                this.log.error(`Polling cycle failed. Error message: ${(err as Error).message}`);
+            }
         }, pollInterval);
     }
 

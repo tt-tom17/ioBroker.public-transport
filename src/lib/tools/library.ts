@@ -1,5 +1,5 @@
 import _fs from 'node:fs';
-import { genericStateObjects } from '../const/definition';
+import { genericStateObjects, type ObjectDefinitionTree } from '../const/definition';
 import type { PublicTransport } from '../types/Adapter';
 // only change this for other adapters
 export type AdapterClassDefinition = PublicTransport;
@@ -78,11 +78,14 @@ export class Library extends BaseClass {
     private translation: Record<'custom' | 'standard', { [key: string]: string }> = { custom: {}, standard: {} };
     private unknownTokens: Record<string, string> = {};
     private unknownTokensInterval: ioBroker.Interval | undefined;
+    // Cache aller Sprach-Übersetzungen für getTranslationObj(): einmal laden,
+    // dann synchron nachschlagen statt pro Key 11x zu importieren. undefined = noch nicht geladen.
+    private allTranslations: Partial<Record<ioBroker.Languages, Record<string, string>>> | undefined;
     defaults = {
         updateStateOnChangeOnly: true,
     };
 
-    constructor(adapter: AdapterClassDefinition, _options: any = null) {
+    constructor(adapter: AdapterClassDefinition, _options: unknown = null) {
         super(adapter, 'library');
         this.stateDataBase = {};
     }
@@ -93,6 +96,16 @@ export class Library extends BaseClass {
             this.unknownTokensInterval = this.adapter.setInterval(() => {
                 this.log.info(`Unknown tokens: ${JSON.stringify(this.unknownTokens)}`);
             }, 60_000);
+        }
+    }
+
+    /**
+     * Stoppt laufende Timer/Intervalle der Library. Muss in onUnload() aufgerufen werden.
+     */
+    destroy(): void {
+        if (this.unknownTokensInterval) {
+            this.adapter.clearInterval(this.unknownTokensInterval);
+            this.unknownTokensInterval = undefined;
         }
     }
 
@@ -115,7 +128,7 @@ export class Library extends BaseClass {
     async writeFromJson(
         prefix: string,
         objNode: string,
-        def: any, // keep as-is if your defs are large/complex; can be tightened later
+        def: ObjectDefinitionTree,
         data: unknown,
         expandTree: boolean = false,
         concurrency: number = 8,
@@ -130,7 +143,7 @@ export class Library extends BaseClass {
         }
 
         // Resolve object definition for the current node
-        const objectDefinition = objNode ? await this.getObjectDefFromJson(`${objNode}`, def, data as any) : null;
+        const objectDefinition = objNode ? await this.getObjectDefFromJson(`${objNode}`, def, data) : null;
 
         if (objectDefinition) {
             objectDefinition.native = {
@@ -237,11 +250,18 @@ export class Library extends BaseClass {
      */
     async getObjectDefFromJson(
         key: string,
-        def: any,
-        data: any,
+        def: ObjectDefinitionTree,
+        data: unknown,
     ): Promise<ioBroker.StateObject | ioBroker.ChannelObject | ioBroker.DeviceObject | ioBroker.FolderObject | null> {
         //let result = await jsonata(`${key}`).evaluate(data);
-        let result = this.deepJsonValue(key, def);
+        // Ein gefundener Knoten wird als konkrete Objektdefinition interpretiert (so nutzt ihn
+        // der restliche Code); deepJsonValue liefert generisch Baum-Knoten.
+        let result = this.deepJsonValue(key, def) as
+            | ioBroker.StateObject
+            | ioBroker.ChannelObject
+            | ioBroker.DeviceObject
+            | ioBroker.FolderObject
+            | null;
         if (result === null || result === undefined) {
             const k = key.split('.');
             if (k && k[k.length - 1].startsWith('_')) {
@@ -298,20 +318,23 @@ export class Library extends BaseClass {
      * @param data JSON-Objekt, aus dem der Wert extrahiert werden soll
      * @returns Der Wert am angegebenen Pfad oder null wenn nicht gefunden
      */
-    deepJsonValue(key: string, data: any): any {
+    deepJsonValue(key: string, data: ObjectDefinitionTree): ObjectDefinitionTree | ioBroker.Object | null {
         if (!key || !data || typeof data !== 'object' || typeof key !== 'string') {
             throw new Error(`Error(222) data or key are missing/wrong type!`);
         }
         const k = key.split(`.`);
-        let c = 0,
-            s = data;
+        let c = 0;
+        // Navigation durch beliebig tiefe Knoten: jeder Zwischenschritt ist wieder ein
+        // ObjectDefinitionTree (Blätter sind ioBroker.Object). Cast nötig, da ioBroker.Object
+        // selbst keine Index-Signatur hat.
+        let s: ObjectDefinitionTree | ioBroker.Object | undefined = data;
         while (c < k.length) {
-            s = s[k[c++]];
+            s = (s as ObjectDefinitionTree)[k[c++]];
             if (s === undefined) {
                 return null;
             }
         }
-        return s;
+        return s ?? null;
     }
 
     /**
@@ -386,16 +409,10 @@ export class Library extends BaseClass {
                 obj.common.name = await this.getTranslationObj(obj.common.name);
             }
 
-            // Persist object unless path is disallowed
+            // Persist object unless path is disallowed.
+            // Hinweis: extendObject merged common (inkl. states) bereits; ein separates
+            // Vorab-Schreiben von common.states ist daher nicht nötig.
             if (!disallowed) {
-                // Preserve/merge `states` explicitly if provided
-                if (obj.type === 'state' && obj.common.states) {
-                    const existing = await this.adapter.getObjectAsync(dp);
-                    if (existing) {
-                        existing.common.states = obj.common.states;
-                        await this.adapter.setObjectNotExists(dp, existing);
-                    }
-                }
                 await this.adapter.extendObject(dp, obj);
             }
 
@@ -408,13 +425,6 @@ export class Library extends BaseClass {
             }
 
             if (!disallowed) {
-                if (obj.type === 'state' && obj.common.states) {
-                    const existing = await this.adapter.getObjectAsync(dp);
-                    if (existing) {
-                        existing.common.states = obj.common.states;
-                        await this.adapter.setObjectNotExists(dp, existing);
-                    }
-                }
                 await this.adapter.extendObject(dp, obj);
                 node.init = false;
             }
@@ -460,7 +470,7 @@ export class Library extends BaseClass {
      *
      * @param dirs Array von Verzeichnis-Mustern, die zur Verbotsliste hinzugefügt werden sollen
      */
-    setForbiddenDirs(dirs: any[]): void {
+    setForbiddenDirs(dirs: string[]): void {
         this.forbiddenDirs = this.forbiddenDirs.concat(dirs);
     }
 
@@ -545,7 +555,13 @@ export class Library extends BaseClass {
      * @returns void
      */
     cleandp(string: string, lowerCase: boolean = false, removePoints: boolean = false): string {
-        if (!string && typeof string != 'string') {
+        // Guard gegen Nicht-String-Eingaben: .replace() existiert nur auf echten
+        // Strings. Mit && griff der Guard nur bei falsy UND Nicht-String (null,
+        // undefined, 0, false) – eine truthy Nicht-String (Zahl != 0, Objekt,
+        // Array) rutschte durch und ließ .replace() mit TypeError crashen.
+        // || fängt alles falsy ODER Nicht-String ab, sodass .replace() garantiert
+        // nur auf echten Strings läuft.
+        if (!string || typeof string != 'string') {
             return string;
         }
 
@@ -694,7 +710,7 @@ export class Library extends BaseClass {
         return this.stateDataBase[dp];
     }
 
-    async memberDeleteAsync(data: any[]): Promise<void> {
+    async memberDeleteAsync(data: { delete: () => Promise<void> }[]): Promise<void> {
         if (this.unknownTokensInterval) {
             this.adapter.clearInterval(this.unknownTokensInterval);
         }
@@ -843,20 +859,56 @@ export class Library extends BaseClass {
         return false;
     }
 
-    async getTranslationObj(key: string): Promise<ioBroker.StringOrTranslated> {
-        const language: ioBroker.Languages[] = ['en', 'de', 'ru', 'pt', 'nl', 'fr', 'it', 'es', 'pl', 'uk', 'zh-cn'];
-        const result: Partial<Record<ioBroker.Languages, string>> = {};
-        for (const l of language) {
+    // === i18n: einzige Quelle für unterstützte Sprachen & Dateipfade. ===
+    // Ändern sich Verzeichnis oder Dateiname der Übersetzungen, NUR hier anpassen.
+    private static readonly SUPPORTED_LANGUAGES: ioBroker.Languages[] = [
+        'en',
+        'de',
+        'ru',
+        'pt',
+        'nl',
+        'fr',
+        'it',
+        'es',
+        'pl',
+        'uk',
+        'zh-cn',
+    ];
+    private standardTranslationPath(language: ioBroker.Languages | undefined): string {
+        return `../../../admin/i18n/${language}/translations.json`;
+    }
+    private customTranslationPath(language: ioBroker.Languages | undefined): string {
+        return `../../../admin/custom/i18n/${language}.json`;
+    }
+
+    /**
+     * Lädt die Übersetzungen aller unterstützten Sprachen einmalig in den Cache.
+     * Folgeaufrufe sind No-Ops. try/catch pro Datei: eine fehlende Sprachdatei lässt
+     * nur diese Sprache fehlen, statt die gesamte Übersetzung abzubrechen.
+     */
+    private async loadAllTranslations(): Promise<void> {
+        if (this.allTranslations) {
+            return;
+        }
+        const cache: Partial<Record<ioBroker.Languages, Record<string, string>>> = {};
+        for (const l of Library.SUPPORTED_LANGUAGES) {
             try {
-                const i = await import(`../../../admin/i18n/${l}/translations.json`);
-                if (i[key] !== undefined) {
-                    result[l] = i[key];
-                }
+                const i = await import(this.standardTranslationPath(l));
+                cache[l] = (i.default ?? i) as Record<string, string>;
             } catch {
-                if (this.adapter.config.logUnknownTokens) {
-                    this.unknownTokens[key] = '';
-                }
-                return key;
+                this.log.warn(`Translations for language '${l}' not found`);
+            }
+        }
+        this.allTranslations = cache;
+    }
+
+    async getTranslationObj(key: string): Promise<ioBroker.StringOrTranslated> {
+        await this.loadAllTranslations();
+        const result: Partial<Record<ioBroker.Languages, string>> = {};
+        for (const l of Library.SUPPORTED_LANGUAGES) {
+            const dict = this.allTranslations?.[l];
+            if (dict && dict[key] !== undefined) {
+                result[l] = dict[key];
             }
         }
         if (result.en == undefined) {
@@ -871,13 +923,13 @@ export class Library extends BaseClass {
     async checkLanguage(): Promise<void> {
         try {
             this.log.debug(`Load language ${this.adapter.language}`);
-            this.translation.standard = await import(`../../../admin/i18n/${this.adapter.language}/translations.json`);
+            this.translation.standard = await import(this.standardTranslationPath(this.adapter.language));
         } catch {
             this.log.warn(`Standard: Language ${this.adapter.language} not exist!`);
         }
         try {
             this.log.debug(`Load language ${this.adapter.language} from custom`);
-            this.translation.custom = await import(`../../../admin/custom/i18n/${this.adapter.language}.json`);
+            this.translation.custom = await import(this.customTranslationPath(this.adapter.language));
         } catch {
             this.log.warn(`Custom: Language ${this.adapter.language} not exist!`);
         }
