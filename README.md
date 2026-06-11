@@ -24,6 +24,12 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) added configurable objectsWarnLimit to the admin UI
+* (tt-tom17) improved reliability of backend requests (retry/timeout handling)
+* (tt-tom17) fixed transfer count, NaN duration and crashes on empty results
+* (tt-tom17) connections widget: popup header now stays fixed while scrolling
+
 ### 0.7.0 (2026-06-01)
 * (tt-tom17) fixed issues detected by repository checker
 * (tt-tom17) updated documentation
