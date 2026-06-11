@@ -80,9 +80,6 @@ The public-transport adapter enables seamless integration of real-time public tr
 ### 0.0.4 (2026-02-16)
 * (tt-tom17)   optimization react pages
 
-### 0.0.1-preAlpha.0 (2025-12-01)
-* (tt-tom17) initial release
-
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
 ## License
