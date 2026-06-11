@@ -23,7 +23,7 @@ __export(baseTransportService_exports, {
 module.exports = __toCommonJS(baseTransportService_exports);
 const TRANSPORT_MAX_RETRIES = 2;
 const TRANSPORT_RETRY_DELAY_MS = 500;
-const TRANSPORT_REQUEST_TIMEOUT_MS = 15e3;
+const TRANSPORT_REQUEST_TIMEOUT_MS = 3e4;
 class BaseTransportService {
   client = null;
   adapter;

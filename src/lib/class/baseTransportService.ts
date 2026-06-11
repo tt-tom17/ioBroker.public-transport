@@ -36,7 +36,7 @@ const TRANSPORT_RETRY_DELAY_MS = 500;
  * ablaufenden) Poll-Durchlauf blockiert. Gilt pro Versuch – nicht über alle Wiederholungen
  * zusammengerechnet.
  */
-const TRANSPORT_REQUEST_TIMEOUT_MS = 15_000;
+const TRANSPORT_REQUEST_TIMEOUT_MS = 30_000;
 
 export abstract class BaseTransportService implements ITransportService {
     protected client: Hafas.HafasClient | null = null;
