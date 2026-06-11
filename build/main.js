@@ -41,6 +41,7 @@ var import_journeys = require("./lib/class/journeys");
 var import_motisService = require("./lib/class/motisService");
 var import_station = require("./lib/class/station");
 var import_library = require("./lib/tools/library");
+const OBJECTS_WARN_LIMIT_MIN = 5e3;
 class PublicTransport extends utils.Adapter {
   library;
   unload = false;
@@ -121,10 +122,33 @@ class PublicTransport extends utils.Adapter {
   /**
    * Is called when databases are connected and adapter received configuration.
    */
+  /**
+   * Übernimmt die in der Konfiguration (native.objectsWarnLimit) hinterlegte Warnschwelle
+   * in den vom js-controller ausgewerteten State `system.adapter.<namespace>.objectsWarnLimit`.
+   * Der js-controller liest diesen State, um bei zu vielen Objekten zu warnen. Der Save-Button
+   * der Admin-UI speichert nur nach `native`, daher wird der Wert hier beim Start angewendet.
+   */
+  async applyObjectsWarnLimit() {
+    const warnLimit = this.config.objectsWarnLimit;
+    if (typeof warnLimit !== "number" || warnLimit < OBJECTS_WARN_LIMIT_MIN) {
+      return;
+    }
+    const stateId = `system.adapter.${this.namespace}.objectsWarnLimit`;
+    try {
+      const current = await this.getForeignStateAsync(stateId);
+      if ((current == null ? void 0 : current.val) !== warnLimit) {
+        await this.setForeignStateAsync(stateId, warnLimit, true);
+        this.log.debug(`objectsWarnLimit applied to ${stateId}: ${warnLimit}`);
+      }
+    } catch (error) {
+      this.log.warn(`Could not apply objectsWarnLimit. Error message: ${error.message}`);
+    }
+  }
   async onReady() {
     await this.library.init();
     const states = await this.getStatesAsync("*");
     await this.library.initStates(states);
+    await this.applyObjectsWarnLimit();
     const serviceType = this.config.serviceType || "hafas";
     const clientName = `${this.config.clientName || "iobroker-public-transport"}-${Math.floor(Math.random() * 1001)}`;
     try {
@@ -213,7 +237,23 @@ class PublicTransport extends utils.Adapter {
    *  @param obj iobroker.message
    */
   async onMessage(obj) {
-    if (typeof obj === "object" && obj.message) {
+    if (typeof obj !== "object" || !obj.command) {
+      return;
+    }
+    if (obj.command === "getObjectsWarnLimit") {
+      let value = null;
+      try {
+        const state = await this.getForeignStateAsync(`system.adapter.${this.namespace}.objectsWarnLimit`);
+        value = typeof (state == null ? void 0 : state.val) === "number" ? state.val : null;
+      } catch (error) {
+        this.log.warn(`Could not read objectsWarnLimit. Error message: ${error.message}`);
+      }
+      if (obj.callback) {
+        this.sendTo(obj.from, obj.command, { objectsWarnLimit: value }, obj.callback);
+      }
+      return;
+    }
+    if (obj.message) {
       if (obj.command === "location") {
         try {
           const message = obj.message;

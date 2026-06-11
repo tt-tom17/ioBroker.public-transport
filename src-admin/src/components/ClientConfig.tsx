@@ -23,6 +23,9 @@ interface ServiceOption {
     profile: string;
 }
 
+/** Mindestwert für die Objektanzahl-Warnschwelle */
+const OBJECTS_WARN_LIMIT_MIN = 5000;
+
 const SERVICE_OPTIONS: ServiceOption[] = [
     { value: 'hafas:vbb', label: 'HAFAS - VBB (Berlin/Brandenburg)', serviceType: 'hafas', profile: 'vbb' },
     { value: 'hafas:oebb', label: 'HAFAS - ÖBB (Österreich)', serviceType: 'hafas', profile: 'oebb' },
@@ -31,7 +34,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     { value: 'motis:compat', label: 'MOTIS - Transitous (DE & Europa)', serviceType: 'motis', profile: 'compat' },
 ];
 
-const ClientConfigContent: React.FC<ConfigComponentProps> = ({ data, onChange, alive, disabled }) => {
+const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, onChange, alive, disabled }) => {
     const serviceType = ConfigGeneric.getValue(data, 'serviceType') as string;
     const profile = ConfigGeneric.getValue(data, 'profile') as string;
     const combinedValue = `${serviceType || 'hafas'}:${profile || 'vbb'}`;
@@ -40,8 +43,52 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ data, onChange, a
     const pollInterval = ConfigGeneric.getValue(data, 'pollInterval') as number;
     const suppressInfoLogs = ConfigGeneric.getValue(data, 'suppressInfoLogs') as boolean;
     const delayOffset = ConfigGeneric.getValue(data, 'delayOffset') as number;
+    const objectsWarnLimit = ConfigGeneric.getValue(data, 'objectsWarnLimit') as number | undefined;
 
     const isDisabled = disabled || !alive;
+
+    // Aktuelle Warnschwelle beim Öffnen der UI über onMessage vom laufenden Adapter laden.
+    // Dient als Anzeige-Vorgabe, solange in der Config (native) noch kein Wert gespeichert ist.
+    const [loadedWarnLimit, setLoadedWarnLimit] = React.useState<number | null>(null);
+
+    React.useEffect(() => {
+        if (!alive) {
+            setLoadedWarnLimit(null);
+            return;
+        }
+        let cancelled = false;
+        void (async (): Promise<void> => {
+            try {
+                const result = await oContext.socket.sendTo(
+                    `${oContext.adapterName}.${oContext.instance}`,
+                    'getObjectsWarnLimit',
+                    {},
+                );
+                if (!cancelled) {
+                    setLoadedWarnLimit(
+                        result && typeof result.objectsWarnLimit === 'number' ? result.objectsWarnLimit : null,
+                    );
+                }
+            } catch (err) {
+                console.error('Failed to load objectsWarnLimit', err);
+                if (!cancelled) {
+                    setLoadedWarnLimit(null);
+                }
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [alive, oContext]);
+
+    // Im Feld angezeigter Wert: gespeicherte Config bevorzugen, sonst der via onMessage geladene Wert
+    const warnLimitValue = objectsWarnLimit ?? loadedWarnLimit ?? '';
+    const warnLimitInvalid = objectsWarnLimit !== undefined && objectsWarnLimit < OBJECTS_WARN_LIMIT_MIN;
+
+    const handleObjectsWarnLimitChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+        const newValue = parseInt(event.target.value, 10);
+        await onChange('objectsWarnLimit', isNaN(newValue) ? null : newValue);
+    };
 
     const handlePollIntervalChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
         const newValue = parseInt(event.target.value, 10);
@@ -181,6 +228,32 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ data, onChange, a
                         size="small"
                         slotProps={{ htmlInput: { min: 2, step: 1, max: 60, disabled: isDisabled } }}
                         helperText={I18n.t('clientConfig_delayOffset_helper')}
+                    />
+                </FormControl>
+
+                {/* Objektanzahl-Warnschwelle (js-controller): beim Öffnen via onMessage geladen, über Save gespeichert */}
+                <FormControl
+                    sx={{ flex: { sm: '1 1 0' }, minWidth: { xs: '100%', sm: 200 } }}
+                    disabled={isDisabled}
+                    fullWidth
+                >
+                    <TextField
+                        label={I18n.t('clientConfig_objectsWarnLimit_label')}
+                        type="number"
+                        value={warnLimitValue}
+                        onChange={handleObjectsWarnLimitChange}
+                        fullWidth
+                        size="small"
+                        error={warnLimitInvalid}
+                        slotProps={{ htmlInput: { min: OBJECTS_WARN_LIMIT_MIN, step: 100, disabled: isDisabled } }}
+                        helperText={
+                            warnLimitInvalid
+                                ? I18n.t('clientConfig_objectsWarnLimit_min_error').replace(
+                                      '%s',
+                                      String(OBJECTS_WARN_LIMIT_MIN),
+                                  )
+                                : I18n.t('clientConfig_objectsWarnLimit_helper')
+                        }
                     />
                 </FormControl>
             </Box>

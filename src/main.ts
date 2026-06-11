@@ -10,6 +10,9 @@ import { StationRequest } from './lib/class/station';
 import { Library } from './lib/tools/library';
 import type { ITransportService } from './lib/types/transportService';
 
+/** Mindestwert für die Objektanzahl-Warnschwelle (objectsWarnLimit) */
+const OBJECTS_WARN_LIMIT_MIN = 5000;
+
 export class PublicTransport extends utils.Adapter {
     library: Library;
     unload: boolean = false;
@@ -101,11 +104,37 @@ export class PublicTransport extends utils.Adapter {
     /**
      * Is called when databases are connected and adapter received configuration.
      */
+    /**
+     * Übernimmt die in der Konfiguration (native.objectsWarnLimit) hinterlegte Warnschwelle
+     * in den vom js-controller ausgewerteten State `system.adapter.<namespace>.objectsWarnLimit`.
+     * Der js-controller liest diesen State, um bei zu vielen Objekten zu warnen. Der Save-Button
+     * der Admin-UI speichert nur nach `native`, daher wird der Wert hier beim Start angewendet.
+     */
+    private async applyObjectsWarnLimit(): Promise<void> {
+        const warnLimit = this.config.objectsWarnLimit;
+        if (typeof warnLimit !== 'number' || warnLimit < OBJECTS_WARN_LIMIT_MIN) {
+            return;
+        }
+        const stateId = `system.adapter.${this.namespace}.objectsWarnLimit`;
+        try {
+            const current = await this.getForeignStateAsync(stateId);
+            if (current?.val !== warnLimit) {
+                await this.setForeignStateAsync(stateId, warnLimit, true);
+                this.log.debug(`objectsWarnLimit applied to ${stateId}: ${warnLimit}`);
+            }
+        } catch (error) {
+            this.log.warn(`Could not apply objectsWarnLimit. Error message: ${(error as Error).message}`);
+        }
+    }
+
     private async onReady(): Promise<void> {
         // Initialize your adapter here
         await this.library.init();
         const states = await this.getStatesAsync('*');
         await this.library.initStates(states);
+
+        // Konfigurierte Objektanzahl-Warnschwelle in den vom js-controller gelesenen State übernehmen
+        await this.applyObjectsWarnLimit();
 
         // Service basierend auf Konfiguration auswählen
         const serviceType = this.config.serviceType || 'hafas'; // 'hafas' oder 'vendo'
@@ -215,7 +244,26 @@ export class PublicTransport extends utils.Adapter {
      *  @param obj iobroker.message
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
-        if (typeof obj === 'object' && obj.message) {
+        if (typeof obj !== 'object' || !obj.command) {
+            return;
+        }
+
+        // Aktuelle Objektanzahl-Warnschwelle für die Admin-UI liefern (beim Öffnen geladen)
+        if (obj.command === 'getObjectsWarnLimit') {
+            let value: number | null = null;
+            try {
+                const state = await this.getForeignStateAsync(`system.adapter.${this.namespace}.objectsWarnLimit`);
+                value = typeof state?.val === 'number' ? state.val : null;
+            } catch (error) {
+                this.log.warn(`Could not read objectsWarnLimit. Error message: ${(error as Error).message}`);
+            }
+            if (obj.callback) {
+                this.sendTo(obj.from, obj.command, { objectsWarnLimit: value }, obj.callback);
+            }
+            return;
+        }
+
+        if (obj.message) {
             if (obj.command === 'location') {
                 // Stationssuche für Admin-UI (nutzt VendoService für DB-kompatible IDs)
                 try {
