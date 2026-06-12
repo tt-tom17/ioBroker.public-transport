@@ -24,6 +24,30 @@ module.exports = __toCommonJS(baseTransportService_exports);
 const TRANSPORT_MAX_RETRIES = 2;
 const TRANSPORT_RETRY_DELAY_MS = 500;
 const TRANSPORT_REQUEST_TIMEOUT_MS = 3e4;
+const TRANSIENT_NETWORK_ERROR_CODES = /* @__PURE__ */ new Set([
+  "ECONNRESET",
+  // Verbindung vom Gegenüber/Netzwerk abrupt geschlossen (auch TLS-Handshake-Abbruch)
+  "ECONNREFUSED",
+  // Server hat die Verbindung (gerade) abgelehnt
+  "ECONNABORTED",
+  // Verbindung lokal abgebrochen
+  "ETIMEDOUT",
+  // TCP-/Socket-Timeout beim Verbindungsaufbau
+  "ESOCKETTIMEDOUT",
+  // Socket-Inaktivitäts-Timeout
+  "EPIPE",
+  // Schreiben auf bereits geschlossene Verbindung
+  "ENETUNREACH",
+  // Netzwerk vorübergehend nicht erreichbar
+  "EHOSTUNREACH",
+  // Host vorübergehend nicht erreichbar
+  "EAI_AGAIN",
+  // temporärer DNS-Auflösungsfehler
+  "UND_ERR_CONNECT_TIMEOUT",
+  // undici: Timeout beim Verbindungsaufbau
+  "UND_ERR_SOCKET"
+  // undici: Socket vorzeitig geschlossen
+]);
 class BaseTransportService {
   client = null;
   adapter;
@@ -88,12 +112,20 @@ class BaseTransportService {
    * Entscheidet, ob ein Fehler vorübergehend (transient) und damit wiederholbar ist.
    * `hafas-client` markiert solche Fehler mit `shouldRetry`; Server-5xx zusätzlich mit
    * `isCausedByServer`. Eigene Timeout-Fehler werden ebenfalls als wiederholbar gewertet.
+   * Zusätzlich werden reine Netzwerkfehler der fetch-/Node-Schicht (DNS/TCP/TLS) erkannt,
+   * die `hafas-client` ohne diese Markierungen durchreicht (siehe
+   * {@link TRANSIENT_NETWORK_ERROR_CODES}).
    *
    * @param error Der aufgetretene Fehler
    */
   isRetryable(error) {
     const e = error;
-    return (e == null ? void 0 : e.shouldRetry) === true || (e == null ? void 0 : e.isCausedByServer) === true || (e == null ? void 0 : e.isTimeout) === true;
+    if ((e == null ? void 0 : e.shouldRetry) === true || (e == null ? void 0 : e.isCausedByServer) === true || (e == null ? void 0 : e.isTimeout) === true) {
+      return true;
+    }
+    const code = typeof (e == null ? void 0 : e.code) === "string" ? e.code : void 0;
+    const causeCode = (e == null ? void 0 : e.cause) && typeof e.cause.code === "string" ? e.cause.code : void 0;
+    return code !== void 0 && TRANSIENT_NETWORK_ERROR_CODES.has(code) || causeCode !== void 0 && TRANSIENT_NETWORK_ERROR_CODES.has(causeCode);
   }
   /**
    * Begrenzt eine Promise zeitlich. Läuft sie länger als {@link TRANSPORT_REQUEST_TIMEOUT_MS},

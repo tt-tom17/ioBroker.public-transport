@@ -38,6 +38,27 @@ const TRANSPORT_RETRY_DELAY_MS = 500;
  */
 const TRANSPORT_REQUEST_TIMEOUT_MS = 30_000;
 
+/**
+ * Transiente Netzwerk-Fehlercodes der Node-/fetch-Schicht. Solche Fehler entstehen NICHT im
+ * Backend selbst, sondern beim Verbindungsaufbau (DNS, TCP, TLS) und werden von `hafas-client`
+ * unveraendert durchgereicht – ohne `shouldRetry`/`isCausedByServer`-Markierung. Sie sind fast
+ * immer voruebergehend (z.B. "Client network socket disconnected before secure TLS connection
+ * was established" => ECONNRESET) und daher gefahrlos wiederholbar.
+ */
+const TRANSIENT_NETWORK_ERROR_CODES: ReadonlySet<string> = new Set([
+    'ECONNRESET', // Verbindung vom Gegenüber/Netzwerk abrupt geschlossen (auch TLS-Handshake-Abbruch)
+    'ECONNREFUSED', // Server hat die Verbindung (gerade) abgelehnt
+    'ECONNABORTED', // Verbindung lokal abgebrochen
+    'ETIMEDOUT', // TCP-/Socket-Timeout beim Verbindungsaufbau
+    'ESOCKETTIMEDOUT', // Socket-Inaktivitäts-Timeout
+    'EPIPE', // Schreiben auf bereits geschlossene Verbindung
+    'ENETUNREACH', // Netzwerk vorübergehend nicht erreichbar
+    'EHOSTUNREACH', // Host vorübergehend nicht erreichbar
+    'EAI_AGAIN', // temporärer DNS-Auflösungsfehler
+    'UND_ERR_CONNECT_TIMEOUT', // undici: Timeout beim Verbindungsaufbau
+    'UND_ERR_SOCKET', // undici: Socket vorzeitig geschlossen
+]);
+
 export abstract class BaseTransportService implements ITransportService {
     protected client: Hafas.HafasClient | null = null;
     protected readonly adapter: PublicTransport;
@@ -119,12 +140,35 @@ export abstract class BaseTransportService implements ITransportService {
      * Entscheidet, ob ein Fehler vorübergehend (transient) und damit wiederholbar ist.
      * `hafas-client` markiert solche Fehler mit `shouldRetry`; Server-5xx zusätzlich mit
      * `isCausedByServer`. Eigene Timeout-Fehler werden ebenfalls als wiederholbar gewertet.
+     * Zusätzlich werden reine Netzwerkfehler der fetch-/Node-Schicht (DNS/TCP/TLS) erkannt,
+     * die `hafas-client` ohne diese Markierungen durchreicht (siehe
+     * {@link TRANSIENT_NETWORK_ERROR_CODES}).
      *
      * @param error Der aufgetretene Fehler
      */
     private isRetryable(error: unknown): boolean {
-        const e = error as { shouldRetry?: boolean; isCausedByServer?: boolean; isTimeout?: boolean } | undefined;
-        return e?.shouldRetry === true || e?.isCausedByServer === true || e?.isTimeout === true;
+        const e = error as
+            | {
+                  shouldRetry?: boolean;
+                  isCausedByServer?: boolean;
+                  isTimeout?: boolean;
+                  code?: unknown;
+                  cause?: unknown;
+              }
+            | undefined;
+        if (e?.shouldRetry === true || e?.isCausedByServer === true || e?.isTimeout === true) {
+            return true;
+        }
+        // Fehlercode kann direkt am Fehler oder (bei modernem fetch) in `cause` hängen.
+        const code = typeof e?.code === 'string' ? e.code : undefined;
+        const causeCode =
+            e?.cause && typeof (e.cause as { code?: unknown }).code === 'string'
+                ? (e.cause as { code: string }).code
+                : undefined;
+        return (
+            (code !== undefined && TRANSIENT_NETWORK_ERROR_CODES.has(code)) ||
+            (causeCode !== undefined && TRANSIENT_NETWORK_ERROR_CODES.has(causeCode))
+        );
     }
 
     /**
