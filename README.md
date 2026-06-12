@@ -27,6 +27,7 @@ The public-transport adapter enables seamless integration of real-time public tr
 ### **WORK IN PROGRESS**
 * (tt-tom17) added configurable objectsWarnLimit to the admin UI
 * (tt-tom17) improved reliability of backend requests (retry/timeout handling)
+* (tt-tom17) retry transient network errors (e.g. TLS/socket disconnects, ECONNRESET) instead of failing immediately
 * (tt-tom17) fixed transfer count, NaN duration and crashes on empty results
 * (tt-tom17) connections widget: popup header now stays fixed while scrolling
 
