@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "news": {
       "0.8.0": {
         "en": "added configurable objectsWarnLimit to the admin UI\nimproved reliability of backend requests (retry/timeout handling)\nretry transient network errors (e.g. TLS/socket disconnects, ECONNRESET) instead of failing immediately\nfixed transfer count, NaN duration and crashes on empty results\nconnections widget: popup header now stays fixed while scrolling",
@@ -93,19 +93,6 @@
         "pl": "fix countEntries for travel",
         "uk": "фіксувати кількістьПереваги для подорожей",
         "zh-cn": "固定行程的计数条目"
-      },
-      "0.2.1": {
-        "en": "fix Vendo forbidden -> change dbnav to db",
-        "de": "vendo verboten -> Änderung dbnav zu db",
-        "ru": "исправить Vendo forbidden -> изменить dbnav на db",
-        "pt": "corrigir Vendo proibido -> mudar dbnav para db",
-        "nl": "verander dbnav naar db",
-        "fr": "fixer Vendo interdit -> changer dbnav en db",
-        "it": "fix Vendo vietato -> cambiare dbnav a db",
-        "es": "fijar Vendo prohibido - cambio de moneda dbnav a db",
-        "pl": "fix Vendo zabronione - > zmiana dbnav na db",
-        "uk": "fix Vendo заборонений -> змінити dbnav до db",
-        "zh-cn": "将 Vendo 禁用 - > 将 dbnav 更改为 db"
       }
     },
     "titleLang": {
