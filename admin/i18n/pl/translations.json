@@ -5,6 +5,7 @@
     "ast": "Tranzyt na żądanie/na żądanie",
     "boat": "Łódź/prom",
     "bus": "Autobus",
+    "cable_car": "Kolej linowa",
     "change_from_station": "Zmień stację początkową",
     "change_to_station": "Zmień stację docelową",
     "clientConfig_clientName_helper": "Opcjonalna nazwa klienta HAFAS (np. User-Agent).",

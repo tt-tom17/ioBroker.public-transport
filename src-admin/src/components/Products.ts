@@ -27,6 +27,13 @@ export interface Products {
     interregional?: boolean;
     onCall?: boolean;
     taxi?: boolean;
+    // RMV-spezifische Produkte (hafas-client/p/rmv)
+    sBahn?: boolean;
+    uBahn?: boolean;
+    longDistanceTrain?: boolean;
+    regionaTrain?: boolean;
+    ast?: boolean;
+    cableCar?: boolean;
 }
 
 export const defaultProducts: Products = {
@@ -48,6 +55,12 @@ export const defaultProducts: Products = {
     interregional: true,
     onCall: true,
     taxi: true,
+    sBahn: true,
+    uBahn: true,
+    longDistanceTrain: true,
+    regionaTrain: true,
+    ast: true,
+    cableCar: true,
 };
 
 export const productConfig = [
@@ -69,6 +82,13 @@ export const productConfig = [
     { key: 'interregional', label: 'ir', icon: TrainIcon, color: '#FF8F00' },
     { key: 'onCall', label: 'on_call', icon: DirectionsCar, color: '#6D4C41' },
     { key: 'taxi', label: 'taxi', icon: LocalTaxiIcon, color: '#F9A825' },
+    // RMV-spezifische Produkte (hafas-client/p/rmv) – Labels überwiegend wiederverwendet
+    { key: 'sBahn', label: 's_bahn', icon: TrainIcon, color: '#008D4F' },
+    { key: 'uBahn', label: 'u_bahn', icon: SubwayIcon, color: '#0065AE' },
+    { key: 'longDistanceTrain', label: 'ic_ec_cnl_ir', icon: TrainIcon, color: '#FF6F00' },
+    { key: 'regionaTrain', label: 're_rb', icon: TrainIcon, color: '#1455C0' },
+    { key: 'ast', label: 'ast', icon: DirectionsCar, color: '#A5027D' },
+    { key: 'cableCar', label: 'cable_car', icon: DirectionsRailwayIcon, color: '#795548' },
 ] as const;
 
 /**
@@ -110,6 +130,21 @@ export const PROFILE_PRODUCTS: Record<string, Partial<Products>> = {
         subway: true,
         tram: true,
         onCall: true,
+    },
+    // HAFAS – RMV (Rhein-Main/Mainz)
+    // RMV nutzt eigene Produkt-IDs (hafas-client/p/rmv/products.js). Die Keys müssen exakt auf
+    // diese IDs zurückführen (camelToKebab), sonst wirft hafas-client "unknown product".
+    rmv: {
+        expressTrain: true, // express-train (ICE)
+        longDistanceTrain: true, // long-distance-train (IC/EC/EN/IR)
+        regionaTrain: true, // regiona-train (RE/RB)
+        sBahn: true, // s-bahn
+        uBahn: true, // u-bahn
+        tram: true,
+        bus: true,
+        watercraft: true,
+        ast: true, // Anruf-Sammel-Taxi
+        cableCar: true, // Seilbahn
     },
     // Vendo – Deutsche Bahn
     db: {
@@ -156,6 +191,12 @@ const HAFAS_PRODUCT_KEY_MAPPING: Record<string, string> = {
     'express-train': 'expressTrain',
     'national-train': 'nationalTrain',
     'local-train': 'localTrain',
+    // RMV-spezifische Produkt-IDs (hafas-client/p/rmv)
+    's-bahn': 'sBahn',
+    'u-bahn': 'uBahn',
+    'long-distance-train': 'longDistanceTrain',
+    'regiona-train': 'regionaTrain',
+    'cable-car': 'cableCar',
 };
 
 /**

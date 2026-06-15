@@ -5,6 +5,7 @@
     "ast": "Транзит по вызову/по требованию",
     "boat": "Лодка/паром",
     "bus": "Автобус",
+    "cable_car": "Канатная дорога",
     "change_from_station": "Изменить стартовую станцию",
     "change_to_station": "Изменить станцию ​​назначения",
     "clientConfig_clientName_helper": "Необязательное имя для клиента HAFAS (например, User-Agent).",

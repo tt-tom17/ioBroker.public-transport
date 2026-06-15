@@ -5,6 +5,7 @@
     "ast": "Transit op afroep/aanvraag",
     "boat": "Boot/veerboot",
     "bus": "Bus",
+    "cable_car": "Kabelbaan",
     "change_from_station": "Startstation wijzigen",
     "change_to_station": "Wijzig het bestemmingsstation",
     "clientConfig_clientName_helper": "Optionele naam voor de HAFAS-client (bijvoorbeeld voor User-Agent).",

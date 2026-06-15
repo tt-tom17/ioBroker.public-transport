@@ -5,6 +5,7 @@
     "ast": "随叫随到/按需转运",
     "boat": "船/渡轮",
     "bus": "公共汽车",
+    "cable_car": "缆车",
     "change_from_station": "更改起始站",
     "change_to_station": "更改目的地站",
     "clientConfig_clientName_helper": "HAFAS 客户端的可选名称（例如 User-Agent）。",

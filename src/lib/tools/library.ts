@@ -1000,6 +1000,12 @@ const CAMEL_TO_KEBAB_MAP: Record<string, string> = {
     expressTrain: 'express-train',
     nationalTrain: 'national-train',
     localTrain: 'local-train',
+    // RMV-spezifische Produkt-IDs (hafas-client/p/rmv/products.js)
+    sBahn: 's-bahn',
+    uBahn: 'u-bahn',
+    longDistanceTrain: 'long-distance-train',
+    regionaTrain: 'regiona-train', // [sic] Schreibweise wie im Upstream-Profil
+    cableCar: 'cable-car',
 };
 
 /**

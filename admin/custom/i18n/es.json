@@ -5,6 +5,7 @@
     "ast": "Tránsito de guardia/demanda",
     "boat": "Barco/ferry",
     "bus": "Autobús",
+    "cable_car": "Teleférico",
     "change_from_station": "Cambiar estación de inicio",
     "change_to_station": "Cambiar estación de destino",
     "clientConfig_clientName_helper": "Nombre opcional para el cliente HAFAS (por ejemplo, para User-Agent).",
