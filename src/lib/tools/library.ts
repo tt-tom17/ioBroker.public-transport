@@ -463,18 +463,6 @@ export class Library extends BaseClass {
     }
 
     /**
-     * Fügt Verzeichnisse zur Liste der verbotenen Verzeichnisse hinzu.
-     *
-     * Datenpunkte, die einem dieser Verzeichnis-Muster entsprechen, werden von Schreib-
-     * und Löschoperationen ausgeschlossen.
-     *
-     * @param dirs Array von Verzeichnis-Mustern, die zur Verbotsliste hinzugefügt werden sollen
-     */
-    setForbiddenDirs(dirs: string[]): void {
-        this.forbiddenDirs = this.forbiddenDirs.concat(dirs);
-    }
-
-    /**
      * Prüft, ob ein Datenpunkt-Pfad erlaubt ist oder in der Liste der verbotenen Verzeichnisse enthalten ist.
      *
      * Datenpunkte mit maximal 2 Pfadsegmenten sind immer erlaubt.
@@ -488,29 +476,11 @@ export class Library extends BaseClass {
             return true;
         }
         for (const a of this.forbiddenDirs) {
-            if (dp.search(new RegExp(a, 'g')) != -1) {
+            if (dp.includes(a)) {
                 return false;
             }
         }
         return true;
-    }
-
-    /**
-     * Gibt alle States zurück, die dem angegebenen Suchmuster entsprechen.
-     *
-     * Durchsucht die State-Datenbank nach Datenpunkten, deren ID das Suchmuster enthält.
-     *
-     * @param str Suchmuster (RegExp-String) zum Filtern der Datenpunkte
-     * @returns Objekt mit gefilterten States als Key-Value-Paare
-     */
-    getStates(str: string): { [key: string]: LibraryStateVal } {
-        const result: { [key: string]: LibraryStateVal } = {};
-        for (const dp in this.stateDataBase) {
-            if (dp.search(new RegExp(str, 'g')) != -1) {
-                result[dp] = this.stateDataBase[dp];
-            }
-        }
-        return result;
     }
 
     /**
