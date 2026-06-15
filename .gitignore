@@ -17,3 +17,6 @@ admin/i18n/flat.txt
 admin/i18n/*/flat.txt
 .eslintcache
 .commitinfo
+
+# Lokale Claude-Regeln (nicht committen)
+CLAUDE.md
