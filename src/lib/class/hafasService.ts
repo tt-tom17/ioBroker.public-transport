@@ -36,7 +36,11 @@ export class HafasService extends BaseTransportService {
     }
 
     protected createClient(): HafasClient {
-        return hafasClient(withThrottling(this.resolveProfile(this.profileName)), this.clientName);
+        const profile = this.resolveProfile(this.profileName);
+        // Vom Profil unterstützte Produkte merken, damit unbekannte Produkt-Filter (z.B.
+        // 'national-train' für rmv) vor dem Aufruf entfernt werden statt die Abfrage abzubrechen.
+        this.setProfileProducts(profile);
+        return hafasClient(withThrottling(profile), this.clientName);
     }
 
     /**

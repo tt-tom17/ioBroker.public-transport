@@ -31,6 +31,7 @@ class MotisService extends import_baseTransportService.BaseTransportService {
   }
   createClient() {
     const profile = { ...import_compat.profile, enrichStations: false };
+    this.setProfileProducts(profile);
     return (0, import_motis_fptf_client.createClient)((0, import_throttle.withThrottling)(profile), this.clientName);
   }
 }
