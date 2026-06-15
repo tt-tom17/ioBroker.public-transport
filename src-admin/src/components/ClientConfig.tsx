@@ -30,6 +30,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     { value: 'hafas:vbb', label: 'HAFAS - VBB (Berlin/Brandenburg)', serviceType: 'hafas', profile: 'vbb' },
     { value: 'hafas:oebb', label: 'HAFAS - ÖBB (Österreich)', serviceType: 'hafas', profile: 'oebb' },
     { value: 'hafas:vbn', label: 'HAFAS - VBN (Bremen/Niedersachsen)', serviceType: 'hafas', profile: 'vbn' },
+    { value: 'hafas:rmv', label: 'HAFAS - RMV (Rhein-Main/Mainz)', serviceType: 'hafas', profile: 'rmv' },
     { value: 'vendo:db', label: 'Vendo - Deutsche Bahn', serviceType: 'vendo', profile: 'db' },
     { value: 'motis:compat', label: 'MOTIS - Transitous (DE & Europa)', serviceType: 'motis', profile: 'compat' },
 ];

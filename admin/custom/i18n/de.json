@@ -5,6 +5,7 @@
     "ast": "Anruf-/Bedarfsverkehr",
     "boat": "Schiff/Fähre",
     "bus": "Bus",
+    "cable_car": "Seilbahn",
     "change_from_station": "Startstation ändern",
     "change_to_station": "Zielstation ändern",
     "clientConfig_clientName_helper": "Optionaler Name für den HAFAS-Client (z.B. für User-Agent).",

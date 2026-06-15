@@ -8,6 +8,7 @@
 import type { HafasClient, Profile } from 'hafas-client';
 import { createClient as hafasClient } from 'hafas-client';
 import { profile as oebbProfile } from 'hafas-client/p/oebb/index.js';
+import { profile as rmvProfile } from 'hafas-client/p/rmv/index.js';
 import { profile as vbbProfile } from 'hafas-client/p/vbb/index.js';
 import { profile as vbnProfile } from 'hafas-client/p/vbn/index.js';
 import { withThrottling } from 'hafas-client/throttle.js';
@@ -23,7 +24,7 @@ export class HafasService extends BaseTransportService {
      *
      * @param adapter Die Adapter-Instanz (für die ioBroker-Timer)
      * @param clientName Name, der an den Client übergeben wird
-     * @param profileName Name des HAFAS-Profils ('vbb', 'oebb', 'vbn')
+     * @param profileName Name des HAFAS-Profils ('vbb', 'oebb', 'vbn', 'rmv')
      */
     constructor(adapter: PublicTransport, clientName: string, profileName: string) {
         super(adapter, clientName);
@@ -39,7 +40,7 @@ export class HafasService extends BaseTransportService {
     }
 
     /**
-     * Löst einen Profilnamen ('vbb', 'oebb', 'vbn') in das zugehörige HAFAS-Profil auf.
+     * Löst einen Profilnamen ('vbb', 'oebb', 'vbn', 'rmv') in das zugehörige HAFAS-Profil auf.
      * Fail-fast: Ist kein Profil konfiguriert oder unbekannt, wird geworfen – der Adapter
      * startet bewusst NICHT mit einem stillschweigenden Default (z.B. vbb/Berlin für jemanden,
      * der ein anderes Verkehrsgebiet möchte). Die Fehler werden in main.ts geloggt.
@@ -50,7 +51,7 @@ export class HafasService extends BaseTransportService {
     private resolveProfile(profile?: string): Profile {
         if (!profile) {
             throw new Error(
-                `No HAFAS profile configured. Please select a profile ('vbb', 'oebb' or 'vbn') in the adapter settings.`,
+                `No HAFAS profile configured. Please select a profile ('vbb', 'oebb', 'vbn' or 'rmv') in the adapter settings.`,
             );
         }
 
@@ -64,8 +65,13 @@ export class HafasService extends BaseTransportService {
             case 'vbn': {
                 return vbnProfile;
             }
+            case 'rmv': {
+                return rmvProfile;
+            }
             default: {
-                throw new Error(`unknown profile: ${String(profile)}. available profiles: 'vbb', 'oebb', 'vbn'.`);
+                throw new Error(
+                    `unknown profile: ${String(profile)}. available profiles: 'vbb', 'oebb', 'vbn', 'rmv'.`,
+                );
             }
         }
     }

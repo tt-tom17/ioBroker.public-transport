@@ -5,6 +5,7 @@
     "ast": "Trânsito de plantão/demanda",
     "boat": "Barco/Balsa",
     "bus": "Ônibus",
+    "cable_car": "Teleférico",
     "change_from_station": "Alterar estação inicial",
     "change_to_station": "Alterar estação de destino",
     "clientConfig_clientName_helper": "Nome opcional para o cliente HAFAS (por exemplo, para User-Agent).",

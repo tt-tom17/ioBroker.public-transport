@@ -178,6 +178,18 @@ const Products: ChangeTypeOfKeysForState<Products, ioBroker.StateObject> = {
     interregional: stateObj('Interregional', 'boolean', 'indicator', 'Is Interregional (IR) transport included'),
     onCall: stateObj('On-Call', 'boolean', 'indicator', 'Is On-Call transport included'),
     taxi: stateObj('Taxi', 'boolean', 'indicator', 'Is (shared) Taxi transport included'),
+    // RMV-spezifische Produkte (hafas-client/p/rmv)
+    sBahn: stateObj('S-Bahn', 'boolean', 'indicator', 'Is S-Bahn transport included'),
+    uBahn: stateObj('U-Bahn', 'boolean', 'indicator', 'Is U-Bahn transport included'),
+    longDistanceTrain: stateObj(
+        'Long-Distance Train',
+        'boolean',
+        'indicator',
+        'Is Long-Distance Train (IC/EC/EN/IR) transport included',
+    ),
+    regionaTrain: stateObj('Regional Train', 'boolean', 'indicator', 'Is Regional Train (RE/RB) transport included'),
+    ast: stateObj('AST', 'boolean', 'indicator', 'Is AST (Anruf-Sammel-Taxi) transport included'),
+    cableCar: stateObj('Cable Car', 'boolean', 'indicator', 'Is Cable Car transport included'),
 };
 
 export const genericStateObjects: {
@@ -429,4 +441,11 @@ type Products = {
     interregional?: boolean | undefined;
     onCall?: boolean | undefined;
     taxi?: boolean | undefined;
+    // RMV-spezifische Produkte (hafas-client/p/rmv)
+    sBahn?: boolean | undefined;
+    uBahn?: boolean | undefined;
+    longDistanceTrain?: boolean | undefined;
+    regionaTrain?: boolean | undefined;
+    ast?: boolean | undefined;
+    cableCar?: boolean | undefined;
 };
