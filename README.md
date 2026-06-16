@@ -24,7 +24,7 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.8.1 (2026-06-16)
 * (tt-tom17) added HAFAS Profil RMV (Rhein-Main-Verkehrsverbund)
 * (tt-tom17) moved per-station polling logs (entry/fetching/updated) to suppressible info level (suppressInfoLogs)
 * (tt-tom17) fixed "unknown product" errors by dropping profile-unsupported products before requests

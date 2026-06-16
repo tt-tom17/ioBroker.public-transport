@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.8.0",
+    "version": "0.8.1",
     "news": {
       "0.8.1": {
         "en": "added HAFAS profile RMV (Rhein-Main-Verkehrsverbund)\nmoved per-station polling logs (entry/fetching/updated) to suppressible info level (suppressInfoLogs)\nfixed \"unknown product\" errors by dropping profile-unsupported products before requests",
@@ -93,19 +93,6 @@
         "pl": "naprawić problemy dla najnowszej Repo\nfix disabled for Journeys\nAdapter wymaga node.js >= 22",
         "uk": "виправлено проблеми для останнього Репо\nвиправити disabled for Journeys\nАдаптер вимагає node.js >= 22 тепер",
         "zh-cn": "解决最新Repo 的问题\n修补 disabled for Journeys\n适配器需要节点.js 现在22"
-      },
-      "0.2.2": {
-        "en": "fix countEntries for journeys",
-        "de": "fix Anzahl der Verbindungen",
-        "ru": "обсуждение CountEntries for Journeys",
-        "pt": "corrigir contagemEntradas para viagens",
-        "nl": "countEntries voor reizen vast te stellen",
-        "fr": "fixer le nombreEntrées pour les voyages",
-        "it": "fix conteggioAttivi per viaggi",
-        "es": "conteo de fijaciónIntérpretes para viajes",
-        "pl": "fix countEntries for travel",
-        "uk": "фіксувати кількістьПереваги для подорожей",
-        "zh-cn": "固定行程的计数条目"
       }
     },
     "titleLang": {
