@@ -46,7 +46,9 @@ class HafasService extends import_baseTransportService.BaseTransportService {
     return "HAFAS";
   }
   createClient() {
-    return (0, import_hafas_client.createClient)((0, import_throttle.withThrottling)(this.resolveProfile(this.profileName)), this.clientName);
+    const profile = this.resolveProfile(this.profileName);
+    this.setProfileProducts(profile);
+    return (0, import_hafas_client.createClient)((0, import_throttle.withThrottling)(profile), this.clientName);
   }
   /**
    * Löst einen Profilnamen ('vbb', 'oebb', 'vbn', 'rmv') in das zugehörige HAFAS-Profil auf.

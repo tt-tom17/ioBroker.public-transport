@@ -122,7 +122,7 @@ export class JourneyPolling extends PollingManager<JourneyConfig> {
     ): void {
         this.log.info(countMsg(configs.length));
         for (const config of configs) {
-            this.log.info(
+            this.log.info2(
                 `  - ${config.customName || ''} (From: ${config.fromStationName || config.fromStationId || ''}, To: ${config.toStationName || config.toStationId || ''})`,
             );
         }

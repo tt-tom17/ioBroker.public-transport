@@ -30,6 +30,7 @@ class VendoService extends import_baseTransportService.BaseTransportService {
     return "db-vendo";
   }
   createClient() {
+    this.setProfileProducts(import_db.profile);
     return (0, import_db_vendo_client.createClient)((0, import_throttle.withThrottling)(import_db.profile), this.clientName);
   }
 }

@@ -53,6 +53,13 @@ class BaseTransportService {
   adapter;
   clientName;
   /**
+   * IDs der Produkte, die das aktive Profil kennt (z.B. 'express-train', 's-bahn').
+   * Wird vom konkreten Service in {@link createClient} via {@link setProfileProducts}
+   * gesetzt. `null` bedeutet "unbekannt" – dann wird NICHT gefiltert (kein Regressionsrisiko
+   * für Profile ohne Produktliste).
+   */
+  supportedProductIds = null;
+  /**
    * @param adapter Die Adapter-Instanz (liefert die ioBroker-Timer für Timeout/Backoff,
    *                die beim Shutdown automatisch aufgeräumt werden)
    * @param clientName Name/User-Agent, der an den Backend-Client übergeben wird
@@ -148,6 +155,48 @@ class BaseTransportService {
     return Promise.race([promise, timeout]).finally(() => this.adapter.clearTimeout(timer));
   }
   /**
+   * Merkt sich die vom aktiven Profil unterstützten Produkt-IDs. Wird vom konkreten Service
+   * in {@link createClient} mit dem dort verwendeten Profil aufgerufen, damit unbekannte
+   * Produkt-Filter vor dem Backend-Aufruf entfernt werden können (siehe {@link sanitizeProducts}).
+   *
+   * @param profile Das HAFAS-kompatible Profil, mit dem der Client erzeugt wird
+   */
+  setProfileProducts(profile) {
+    var _a;
+    const ids = ((_a = profile == null ? void 0 : profile.products) != null ? _a : []).map((p) => p == null ? void 0 : p.id).filter((id) => typeof id === "string" && id.length > 0);
+    this.supportedProductIds = ids.length > 0 ? new Set(ids) : null;
+  }
+  /**
+   * Entfernt aus `options.products` alle Produkt-Keys, die das aktive Profil nicht kennt.
+   *
+   * Hintergrund: `hafas-client` wirft `unknown product <id>`, sobald ein dem Profil unbekanntes
+   * Produkt auf `true` gesetzt ist (siehe `format/products-filter.js`). Da die Admin-UI je nach
+   * Profil unpassende Produkte liefern kann (oder eine bestehende Konfiguration nach einem
+   * Profilwechsel veraltet ist), würde sonst die komplette Abfrage scheitern. Unbekannte Keys
+   * werden daher still verworfen; bekannte Produkte bleiben unangetastet.
+   *
+   * Es wird ein flacher Klon zurückgegeben – die übergebenen Optionen bleiben unverändert.
+   *
+   * @param options Die Abfrage-Optionen (können `products` enthalten)
+   * @returns Die Optionen mit bereinigter Produktliste (oder unverändert, wenn nichts zu tun ist)
+   */
+  sanitizeProducts(options) {
+    const supported = this.supportedProductIds;
+    if (!(options == null ? void 0 : options.products) || !supported) {
+      return options;
+    }
+    const entries = Object.entries(options.products);
+    const dropped = entries.filter(([id]) => !supported.has(id)).map(([id]) => id);
+    if (dropped.length === 0) {
+      return options;
+    }
+    const products = Object.fromEntries(entries.filter(([id]) => supported.has(id)));
+    this.adapter.log.debug(
+      `[${this.serviceName}] Dropped products not supported by the active profile: ${dropped.join(", ")}`
+    );
+    return { ...options, products };
+  }
+  /**
    * Suche nach Orten/Stationen.
    *
    * @param query Suchbegriff für Orte/Stationen
@@ -163,7 +212,8 @@ class BaseTransportService {
    * @param options optionale Abfrage-Optionen
    */
   async getDepartures(stationId, options) {
-    return this.call((client) => client.departures(stationId, options));
+    const opts = this.sanitizeProducts(options);
+    return this.call((client) => client.departures(stationId, opts));
   }
   /**
    * Liefert Routeninformationen zwischen zwei Stationen.
@@ -173,7 +223,8 @@ class BaseTransportService {
    * @param options optionale Routen-Optionen
    */
   async getJourneys(fromId, toId, options) {
-    return this.call((client) => client.journeys(fromId, toId, options));
+    const opts = this.sanitizeProducts(options);
+    return this.call((client) => client.journeys(fromId, toId, opts));
   }
   /**
    * Holt Details zu einer Station/einem Haltpunkt.

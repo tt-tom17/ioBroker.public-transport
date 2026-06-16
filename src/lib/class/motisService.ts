@@ -19,6 +19,9 @@ export class MotisService extends BaseTransportService {
     protected createClient(): HafasClient {
         // enrichStations deaktiviert, um das Laden von db-hafas-stations zu vermeiden
         const profile = { ...compatProfile, enrichStations: false };
+        // Vom Profil unterstützte Produkte merken, damit unbekannte Produkt-Filter vor
+        // dem Aufruf entfernt werden statt die Abfrage abzubrechen.
+        this.setProfileProducts(profile);
         return createClient(withThrottling(profile), this.clientName);
     }
 }

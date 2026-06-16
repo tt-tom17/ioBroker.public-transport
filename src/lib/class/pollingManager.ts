@@ -56,7 +56,7 @@ export abstract class PollingManager<T extends PollingConfig> extends BaseClass 
     ): void {
         this.log.info(countMsg(configs.length));
         for (const config of configs) {
-            this.log.info(entryMsg(config.customName || config.name || '', config.id ?? ''));
+            this.log.info2(entryMsg(config.customName || config.name || '', config.id ?? ''));
         }
     }
 
@@ -104,13 +104,13 @@ export abstract class PollingManager<T extends PollingConfig> extends BaseClass 
                 continue;
             }
 
-            this.log.info(fetchingMsg(config.customName || config.name || '', config.id));
+            this.log.info2(fetchingMsg(config.customName || config.name || '', config.id));
 
             const success = await this.queryConfig(config, service);
 
             if (success) {
                 successCount++;
-                this.log.info(updatedMsg(config.customName || config.name || '', config.id));
+                this.log.info2(updatedMsg(config.customName || config.name || '', config.id));
             } else {
                 errorCount++;
                 this.log.warn(failedMsg(config.customName || config.name || '', config.id));
