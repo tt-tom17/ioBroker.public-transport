@@ -17,6 +17,9 @@ export class VendoService extends BaseTransportService {
     }
 
     protected createClient(): HafasClient {
+        // Vom Profil unterstützte Produkte merken, damit unbekannte Produkt-Filter vor
+        // dem Aufruf entfernt werden statt die Abfrage abzubrechen.
+        this.setProfileProducts(dbNavProfile);
         return createClient(withThrottling(dbNavProfile), this.clientName);
     }
 }
