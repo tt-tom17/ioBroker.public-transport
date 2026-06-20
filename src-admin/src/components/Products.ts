@@ -34,6 +34,8 @@ export interface Products {
     regionaTrain?: boolean;
     ast?: boolean;
     cableCar?: boolean;
+    // VMT-spezifisches Produkt (hafas-client/p/vmt)
+    regionalTrain?: boolean;
 }
 
 export const defaultProducts: Products = {
@@ -61,6 +63,7 @@ export const defaultProducts: Products = {
     regionaTrain: true,
     ast: true,
     cableCar: true,
+    regionalTrain: true,
 };
 
 export const productConfig = [
@@ -89,6 +92,7 @@ export const productConfig = [
     { key: 'regionaTrain', label: 're_rb', icon: TrainIcon, color: '#1455C0' },
     { key: 'ast', label: 'ast', icon: DirectionsCar, color: '#A5027D' },
     { key: 'cableCar', label: 'cable_car', icon: DirectionsRailwayIcon, color: '#795548' },
+    { key: 'regionalTrain', label: 're_rb', icon: TrainIcon, color: '#1455C0' },
 ] as const;
 
 /**
@@ -146,6 +150,15 @@ export const PROFILE_PRODUCTS: Record<string, Partial<Products>> = {
         ast: true, // Anruf-Sammel-Taxi
         cableCar: true, // Seilbahn
     },
+    // HAFAS – VMT (Thüringen)
+    // VMT nutzt eigene Produkt-IDs (hafas-client/p/vmt/products.js). Die Keys müssen exakt auf
+    // diese IDs zurückführen (camelToKebab), sonst wirft hafas-client "unknown product".
+    vmt: {
+        longDistanceTrain: true, // long-distance-train (ICE/IC/EC)
+        regionalTrain: true, // regional-train (RE/RB)
+        tram: true,
+        bus: true,
+    },
     // Vendo – Deutsche Bahn
     db: {
         nationalExpress: true,
@@ -196,6 +209,7 @@ const HAFAS_PRODUCT_KEY_MAPPING: Record<string, string> = {
     'u-bahn': 'uBahn',
     'long-distance-train': 'longDistanceTrain',
     'regiona-train': 'regionaTrain',
+    'regional-train': 'regionalTrain',
     'cable-car': 'cableCar',
 };
 

@@ -26,6 +26,7 @@ var import_oebb = require("hafas-client/p/oebb/index.js");
 var import_rmv = require("hafas-client/p/rmv/index.js");
 var import_vbb = require("hafas-client/p/vbb/index.js");
 var import_vbn = require("hafas-client/p/vbn/index.js");
+var import_vmt = require("hafas-client/p/vmt/index.js");
 var import_throttle = require("hafas-client/throttle.js");
 var import_baseTransportService = require("./baseTransportService");
 class HafasService extends import_baseTransportService.BaseTransportService {
@@ -36,7 +37,7 @@ class HafasService extends import_baseTransportService.BaseTransportService {
    *
    * @param adapter Die Adapter-Instanz (für die ioBroker-Timer)
    * @param clientName Name, der an den Client übergeben wird
-   * @param profileName Name des HAFAS-Profils ('vbb', 'oebb', 'vbn', 'rmv')
+   * @param profileName Name des HAFAS-Profils ('vbb', 'oebb', 'vbn', 'rmv', 'vmt')
    */
   constructor(adapter, clientName, profileName) {
     super(adapter, clientName);
@@ -51,7 +52,7 @@ class HafasService extends import_baseTransportService.BaseTransportService {
     return (0, import_hafas_client.createClient)((0, import_throttle.withThrottling)(profile), this.clientName);
   }
   /**
-   * Löst einen Profilnamen ('vbb', 'oebb', 'vbn', 'rmv') in das zugehörige HAFAS-Profil auf.
+   * Löst einen Profilnamen ('vbb', 'oebb', 'vbn', 'rmv', 'vmt') in das zugehörige HAFAS-Profil auf.
    * Fail-fast: Ist kein Profil konfiguriert oder unbekannt, wird geworfen – der Adapter
    * startet bewusst NICHT mit einem stillschweigenden Default (z.B. vbb/Berlin für jemanden,
    * der ein anderes Verkehrsgebiet möchte). Die Fehler werden in main.ts geloggt.
@@ -62,7 +63,7 @@ class HafasService extends import_baseTransportService.BaseTransportService {
   resolveProfile(profile) {
     if (!profile) {
       throw new Error(
-        `No HAFAS profile configured. Please select a profile ('vbb', 'oebb', 'vbn' or 'rmv') in the adapter settings.`
+        `No HAFAS profile configured. Please select a profile ('vbb', 'oebb', 'vbn', 'rmv' or 'vmt') in the adapter settings.`
       );
     }
     switch (profile) {
@@ -78,9 +79,12 @@ class HafasService extends import_baseTransportService.BaseTransportService {
       case "rmv": {
         return import_rmv.profile;
       }
+      case "vmt": {
+        return import_vmt.profile;
+      }
       default: {
         throw new Error(
-          `unknown profile: ${String(profile)}. available profiles: 'vbb', 'oebb', 'vbn', 'rmv'.`
+          `unknown profile: ${String(profile)}. available profiles: 'vbb', 'oebb', 'vbn', 'rmv', 'vmt'.`
         );
       }
     }

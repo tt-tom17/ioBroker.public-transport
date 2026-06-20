@@ -24,6 +24,9 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) added HAFAS profile VMT (Verkehrsverbund Mittelthüringen)
+
 ### 0.8.1 (2026-06-16)
 * (tt-tom17) added HAFAS Profil RMV (Rhein-Main-Verkehrsverbund)
 * (tt-tom17) moved per-station polling logs (entry/fetching/updated) to suppressible info level (suppressInfoLogs)

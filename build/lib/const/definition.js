@@ -158,7 +158,8 @@ const Products = {
   ),
   regionaTrain: stateObj("Regional Train", "boolean", "indicator", "Is Regional Train (RE/RB) transport included"),
   ast: stateObj("AST", "boolean", "indicator", "Is AST (Anruf-Sammel-Taxi) transport included"),
-  cableCar: stateObj("Cable Car", "boolean", "indicator", "Is Cable Car transport included")
+  cableCar: stateObj("Cable Car", "boolean", "indicator", "Is Cable Car transport included"),
+  regionalTrain: stateObj("Regional Train", "boolean", "indicator", "Is Regional Train (RE/RB) transport included")
 };
 const genericStateObjects = {
   default: {

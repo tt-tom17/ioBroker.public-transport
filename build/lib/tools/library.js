@@ -861,7 +861,9 @@ const CAMEL_TO_KEBAB_MAP = {
   uBahn: "u-bahn",
   longDistanceTrain: "long-distance-train",
   regionaTrain: "regiona-train",
-  // [sic] Schreibweise wie im Upstream-Profil
+  // [sic] Schreibweise wie im Upstream-Profil (rmv)
+  regionalTrain: "regional-train",
+  // vmt-Produkt-ID (RE/RB)
   cableCar: "cable-car"
 };
 function camelToKebab(str) {

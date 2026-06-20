@@ -190,6 +190,7 @@ const Products: ChangeTypeOfKeysForState<Products, ioBroker.StateObject> = {
     regionaTrain: stateObj('Regional Train', 'boolean', 'indicator', 'Is Regional Train (RE/RB) transport included'),
     ast: stateObj('AST', 'boolean', 'indicator', 'Is AST (Anruf-Sammel-Taxi) transport included'),
     cableCar: stateObj('Cable Car', 'boolean', 'indicator', 'Is Cable Car transport included'),
+    regionalTrain: stateObj('Regional Train', 'boolean', 'indicator', 'Is Regional Train (RE/RB) transport included'),
 };
 
 export const genericStateObjects: {
@@ -448,4 +449,6 @@ type Products = {
     regionaTrain?: boolean | undefined;
     ast?: boolean | undefined;
     cableCar?: boolean | undefined;
+    // VMT-spezifisches Produkt (hafas-client/p/vmt)
+    regionalTrain?: boolean | undefined;
 };
