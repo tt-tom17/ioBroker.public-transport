@@ -15,7 +15,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportConnections'] = {
-    version: '0.0.5',
+    version: '0.0.6',
 
     showVersion: function () {
         if (vis.binds['public-transportConnections'].version) {
@@ -62,11 +62,12 @@ vis.binds['public-transportConnections'] = {
         // Spaltenüberschriften
         html += '<div class="pub-trans-conn-column-header">';
         html += '<div class="col-dep-time">Abfahrt</div>';
+        html += '<div class="col-dep-delay">Line</div>';
         html += '<div class="col-dep-delay">Verspätung</div>';
         html += '<div class="col-dep-platform">Gleis Ab</div>';
         html += '<div class="col-arr-time">Ankunft</div>';
-        html += '<div class="col-arr-delay">Verspätung</div>';
-        html += '<div class="col-arr-platform">Gleis An</div>';
+        //html += '<div class="col-arr-delay">Verspätung</div>';
+        //html += '<div class="col-arr-platform">Gleis An</div>';
         html += '<div class="col-transfers">Umstiege</div>';
         html += '<div class="col-info">Info</div>';
         html += '</div>';
@@ -388,6 +389,7 @@ vis.binds['public-transportConnections'] = {
                 const depPlatform = firstLeg.departurePlatform || '--';
                 const depPlannedPlatform = firstLeg.plannedDeparturePlatform || null;
                 const depPlatformChanged = depPlannedPlatform && depPlannedPlatform !== depPlatform;
+                const depLine = firstLeg.line && firstLeg.line.name ? firstLeg.line.name : ' --';
 
                 const arrTime = formatTime(lastLeg.arrival || lastLeg.plannedArrival);
                 const arrDelay = lastLeg.arrivalDelay || 0;
@@ -416,6 +418,7 @@ vis.binds['public-transportConnections'] = {
 
                 html += '<div class="pub-trans-conn-row' + (journeyHasDelay ? ' delayed' : '') + '" data-journey-index="' + index + '">';
                 html += '<div class="pub-trans-conn-time">' + depTime + '</div>';
+                html += '<div>' + depLine + '</div>';
                 html += '<div>' + formatDelay(depDelay) + '</div>';
                 html +=
                     '<div class="pub-trans-conn-platform' +
@@ -424,13 +427,13 @@ vis.binds['public-transportConnections'] = {
                     depPlatform +
                     '</div>';
                 html += '<div class="pub-trans-conn-time">' + arrTime + '</div>';
-                html += '<div>' + formatDelay(arrDelay) + '</div>';
-                html +=
+                //html += '<div>' + formatDelay(arrDelay) + '</div>';
+                /*html +=
                     '<div class="pub-trans-conn-platform' +
                     (arrPlatformChanged ? ' changed' : '') +
                     '">' +
                     arrPlatform +
-                    '</div>';
+                    '</div>'; */
                 html += '<div class="pub-trans-conn-transfers">' + transfers + '</div>';
                 html += '<div class="pub-trans-conn-info-cell">' + iconsHtml + '</div>';
                 html += '</div>';
