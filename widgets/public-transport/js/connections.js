@@ -418,7 +418,7 @@ vis.binds['public-transportConnections'] = {
 
                 html += '<div class="pub-trans-conn-row' + (journeyHasDelay ? ' delayed' : '') + '" data-journey-index="' + index + '">';
                 html += '<div class="pub-trans-conn-time">' + depTime + '</div>';
-                html += '<div>' + depLine + '</div>';
+                html += '<div class="pub-trans-conn-line">' + depLine + '</div>';
                 html += '<div>' + formatDelay(depDelay) + '</div>';
                 html +=
                     '<div class="pub-trans-conn-platform' +

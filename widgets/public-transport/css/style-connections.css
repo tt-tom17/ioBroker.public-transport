@@ -80,6 +80,13 @@
     color: #00ff00;
 }
 
+.pub-trans-conn-line {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #00ff00;
+}
+
 .pub-trans-conn-delay {
     text-align: center;
     font-weight: bold;
