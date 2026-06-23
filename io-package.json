@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.8.1",
+    "version": "0.8.2",
     "news": {
       "0.8.2": {
         "en": "added HAFAS profile VMT (Verkehrsverbund Mittelthüringen)\n(nspanel journey) DIRECTION = direction and line\n(widget) add departure line",
@@ -93,19 +93,6 @@
         "pl": "fix select Products\ndodaj Profil VBN (Bremen / Niedersachsen)",
         "uk": "оберіть товари\nдодати Profil VBN (Бремен/Нідерсачсен)",
         "zh-cn": "固定选中的产品\n添加 Profil VBN (不来梅/尼德萨赫森)"
-      },
-      "0.3.0": {
-        "en": "fix issues for latest Repo\nfix disabled for Journeys\nAdapter requires node.js >= 22 now",
-        "de": "probleme latest Repo behoben\nFix deaktivierte Verbindungen\nAdapter benötigt node.js >= 22 jetzt",
-        "ru": "устранение проблем с последним Repo\nфиксация disabled for Journeys\nАдаптер требует node.js >= 22 сейчас",
-        "pt": "corrigir problemas para o Repo mais recente\ncorrigir disabled for Journeys\nAdaptador requer nod.js >= 22 agora",
-        "nl": "problemen oplossen voor nieuwste Repo\nfix disabled for Journeys\nVoor de adapter zijn node.js < 22 nu nodig",
-        "fr": "corriger les problèmes pour la dernière Repo\nfixer disabled for Journeys\nAdaptateur nécessite node.js >= 22 maintenant",
-        "it": "risolvere problemi per l'ultimo Repo\nfix disabled for Journeys\nAdattatore richiede node.js >= 22 ora",
-        "es": "solucionar problemas para la última Repo\nfijar disabled for Journeys\nAdaptador requiere node.js >= 22 ahora",
-        "pl": "naprawić problemy dla najnowszej Repo\nfix disabled for Journeys\nAdapter wymaga node.js >= 22",
-        "uk": "виправлено проблеми для останнього Репо\nвиправити disabled for Journeys\nАдаптер вимагає node.js >= 22 тепер",
-        "zh-cn": "解决最新Repo 的问题\n修补 disabled for Journeys\n适配器需要节点.js 现在22"
       }
     },
     "titleLang": {

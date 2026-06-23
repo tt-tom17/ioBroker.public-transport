@@ -24,7 +24,7 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.8.2 (2026-06-23)
 * (tt-tom17) added HAFAS profile VMT (Verkehrsverbund Mittelthüringen)
 * (tt-tom17) (nspanel journey) DIRECTION = Direction And Line
 * (tt-tom17) (widget) add depature line
