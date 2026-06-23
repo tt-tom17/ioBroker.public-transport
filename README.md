@@ -26,6 +26,8 @@ The public-transport adapter enables seamless integration of real-time public tr
 -->
 ### **WORK IN PROGRESS**
 * (tt-tom17) added HAFAS profile VMT (Verkehrsverbund Mittelthüringen)
+* (tt-tom17) (nspanel journey) DIRECTION = Direction And Line
+* (tt-tom17) (widget) add depature line
 
 ### 0.8.1 (2026-06-16)
 * (tt-tom17) added HAFAS Profil RMV (Rhein-Main-Verkehrsverbund)

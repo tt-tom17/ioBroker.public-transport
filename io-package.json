@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "0.8.1",
     "news": {
+      "0.8.2": {
+        "en": "added HAFAS profile VMT (Verkehrsverbund Mittelthüringen)\n(nspanel journey) DIRECTION = direction and line\n(widget) add departure line",
+        "de": "HAFAS-Profil VMT (Verkehrsverbund Mittelthüringen) hinzugefügt\n(nsPanel Journey) DIRECTION = Richtung und Linie\n(Widget) Abfahrtslinie hinzugefügt",
+        "ru": "добавлен профиль HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = направление и линия\n(виджет) добавлена линия отправления",
+        "pt": "adicionado o perfil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = direção e linha\n(widget) adicionada a linha de partida",
+        "nl": "HAFAS-profiel VMT (Verkehrsverbund Mittelthüringen) toegevoegd\n(nsPanel journey) DIRECTION = richting en lijn\n(widget) vertreklijn toegevoegd",
+        "fr": "ajout du profil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = direction et ligne\n(widget) ajout de la ligne de départ",
+        "it": "aggiunto il profilo HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = direzione e linea\n(widget) aggiunta la linea di partenza",
+        "es": "añadido el perfil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = dirección y línea\n(widget) añadida la línea de salida",
+        "pl": "dodano profil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = kierunek i linia\n(widget) dodano linię odjazdu",
+        "uk": "додано профіль HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = напрямок і лінія\n(віджет) додано лінію відправлення",
+        "zh-cn": "添加了 HAFAS 配置文件 VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = 方向和线路\n(widget) 添加出发线路"
+      },
       "0.8.1": {
         "en": "added HAFAS profile RMV (Rhein-Main-Verkehrsverbund)\nmoved per-station polling logs (entry/fetching/updated) to suppressible info level (suppressInfoLogs)\nfixed \"unknown product\" errors by dropping profile-unsupported products before requests",
         "de": "HAFAS-Profil RMV (Rhein-Main-Verkehrsverbund) hinzugefügt\nstationsbezogene Polling-Logs (entry/fetching/updated) auf unterdrückbare Info-Stufe verschoben (suppressInfoLogs)\n\"unknown product\"-Fehler behoben, indem profilfremde Produkte vor Anfragen entfernt werden",
