@@ -114,10 +114,9 @@ class NsPanelTimetable extends import_library.BaseClass {
    * @param index    Index der Journey (0, 1, 2, ...)
    */
   async writeJourneyNsPanel(prefix, journey, index) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     const firstLeg = journey.legs[0];
     const firstNonWalkingLeg = journey.legs.find((leg) => leg.walking !== true);
-    const lastLeg = journey.legs[journey.legs.length - 1];
     await this.library.writedp(`${prefix}.nspanelJourney${index}`, void 0, {
       _id: "nicht_definieren",
       type: "channel",
@@ -175,7 +174,8 @@ class NsPanelTimetable extends import_library.BaseClass {
       },
       native: {}
     });
-    await this.library.writedp(`${prefix}.nspanelJourney${index}.DIRECTION`, (_g = (_f = lastLeg.destination) == null ? void 0 : _f.name) != null ? _g : "", {
+    const dirAndLine = firstLeg.direction && ((_f = firstLeg.line) == null ? void 0 : _f.name) ? `${firstLeg.direction} (${(_g = firstLeg.line) == null ? void 0 : _g.name})` : (_j = (_i = firstLeg.direction) != null ? _i : (_h = firstLeg.line) == null ? void 0 : _h.name) != null ? _j : "";
+    await this.library.writedp(`${prefix}.nspanelJourney${index}.DIRECTION`, dirAndLine, {
       _id: "nicht_definieren",
       type: "state",
       common: {

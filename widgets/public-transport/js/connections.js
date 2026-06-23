@@ -15,7 +15,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportConnections'] = {
-    version: '0.0.5',
+    version: '0.0.6',
 
     showVersion: function () {
         if (vis.binds['public-transportConnections'].version) {
@@ -62,6 +62,7 @@ vis.binds['public-transportConnections'] = {
         // Spaltenüberschriften
         html += '<div class="pub-trans-conn-column-header">';
         html += '<div class="col-dep-time">Abfahrt</div>';
+        html += '<div class="col-dep-line">Line</div>';
         html += '<div class="col-dep-delay">Verspätung</div>';
         html += '<div class="col-dep-platform">Gleis Ab</div>';
         html += '<div class="col-arr-time">Ankunft</div>';
@@ -388,6 +389,7 @@ vis.binds['public-transportConnections'] = {
                 const depPlatform = firstLeg.departurePlatform || '--';
                 const depPlannedPlatform = firstLeg.plannedDeparturePlatform || null;
                 const depPlatformChanged = depPlannedPlatform && depPlannedPlatform !== depPlatform;
+                const depLine = firstLeg.line && firstLeg.line.name ? firstLeg.line.name : ' --';
 
                 const arrTime = formatTime(lastLeg.arrival || lastLeg.plannedArrival);
                 const arrDelay = lastLeg.arrivalDelay || 0;
@@ -416,6 +418,7 @@ vis.binds['public-transportConnections'] = {
 
                 html += '<div class="pub-trans-conn-row' + (journeyHasDelay ? ' delayed' : '') + '" data-journey-index="' + index + '">';
                 html += '<div class="pub-trans-conn-time">' + depTime + '</div>';
+                html += '<div class="pub-trans-conn-line">' + depLine + '</div>';
                 html += '<div>' + formatDelay(depDelay) + '</div>';
                 html +=
                     '<div class="pub-trans-conn-platform' +

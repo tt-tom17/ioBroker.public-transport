@@ -104,7 +104,7 @@ export class NsPanelTimetable extends BaseClass {
     async writeJourneyNsPanel(prefix: string, journey: Hafas.Journey, index: number): Promise<void> {
         const firstLeg = journey.legs[0];
         const firstNonWalkingLeg = journey.legs.find(leg => leg.walking !== true);
-        const lastLeg = journey.legs[journey.legs.length - 1];
+        //const lastLeg = journey.legs[journey.legs.length - 1];
 
         // Channel
         await this.library.writedp(`${prefix}.nspanelJourney${index}`, undefined, {
@@ -169,7 +169,11 @@ export class NsPanelTimetable extends BaseClass {
             native: {},
         });
         // DIRECTION – Name der Zielstation (letztes Leg)
-        await this.library.writedp(`${prefix}.nspanelJourney${index}.DIRECTION`, lastLeg.destination?.name ?? '', {
+        const dirAndLine =
+            firstLeg.direction && firstLeg.line?.name
+                ? `${firstLeg.direction} (${firstLeg.line?.name})`
+                : (firstLeg.direction ?? firstLeg.line?.name ?? '');
+        await this.library.writedp(`${prefix}.nspanelJourney${index}.DIRECTION`, dirAndLine, {
             _id: 'nicht_definieren',
             type: 'state',
             common: {
