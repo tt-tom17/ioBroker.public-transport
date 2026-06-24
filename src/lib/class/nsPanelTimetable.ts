@@ -171,7 +171,7 @@ export class NsPanelTimetable extends BaseClass {
         // DIRECTION – Name der Zielstation (letztes Leg)
         const dirAndLine =
             firstLeg.direction && firstLeg.line?.name
-                ? `${firstLeg.direction} (${firstLeg.line?.name})`
+                ? `(${firstLeg.line?.name}) ${firstLeg.direction}`
                 : (firstLeg.direction ?? firstLeg.line?.name ?? '');
         await this.library.writedp(`${prefix}.nspanelJourney${index}.DIRECTION`, dirAndLine, {
             _id: 'nicht_definieren',
