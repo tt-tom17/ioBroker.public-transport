@@ -10,6 +10,7 @@ export default [
         // specify files to exclude from linting here
         ignores: [
             '.dev-server/',
+            '.user-data/', // Scratch-/Verifikationsskripte – nicht Teil des Adapter-Codes
             '.vscode/',
             '*.test.js',
             'test/**/*.js',

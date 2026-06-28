@@ -174,7 +174,7 @@ class NsPanelTimetable extends import_library.BaseClass {
       },
       native: {}
     });
-    const dirAndLine = firstLeg.direction && ((_f = firstLeg.line) == null ? void 0 : _f.name) ? `${firstLeg.direction} (${(_g = firstLeg.line) == null ? void 0 : _g.name})` : (_j = (_i = firstLeg.direction) != null ? _i : (_h = firstLeg.line) == null ? void 0 : _h.name) != null ? _j : "";
+    const dirAndLine = firstLeg.direction && ((_f = firstLeg.line) == null ? void 0 : _f.name) ? `(${(_g = firstLeg.line) == null ? void 0 : _g.name}) ${firstLeg.direction}` : (_j = (_i = firstLeg.direction) != null ? _i : (_h = firstLeg.line) == null ? void 0 : _h.name) != null ? _j : "";
     await this.library.writedp(`${prefix}.nspanelJourney${index}.DIRECTION`, dirAndLine, {
       _id: "nicht_definieren",
       type: "state",
