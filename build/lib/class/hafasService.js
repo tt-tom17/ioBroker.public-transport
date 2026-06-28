@@ -47,9 +47,34 @@ class HafasService extends import_baseTransportService.BaseTransportService {
     return "HAFAS";
   }
   createClient() {
-    const profile = this.resolveProfile(this.profileName);
+    const profile = this.forceIdentityEncoding(this.resolveProfile(this.profileName));
     this.setProfileProducts(profile);
     return (0, import_hafas_client.createClient)((0, import_throttle.withThrottling)(profile), this.clientName);
+  }
+  /**
+   * Erzwingt `Accept-Encoding: identity` (keine Kompression) für alle Requests des Profils.
+   *
+   * Hintergrund: Die HAFAS-`mgate.exe`-Endpoints (u.a. vbb/fahrinfo.vbb.de und oebb/fahrplan.oebb.at)
+   * senden gzip-Antworten ohne `Content-Length`. Daran verschluckt sich `node-fetch` v2 – die
+   * fetch-Schicht von `hafas-client` (via `cross-fetch`) – beim Entpacken und bricht mit
+   * `ERR_STREAM_PREMATURE_CLOSE` ("Premature close") ab. Das ist KEIN transienter Netzwerkfehler,
+   * sondern tritt systematisch auf; ein Retry hilft nicht. Ohne Kompression liefern die Server saubere
+   * Antworten; der Mehr-Traffic ist bei den Poll-Intervallen vernachlässigbar.
+   *
+   * @param profile Das aufgelöste HAFAS-Profil
+   * @returns Eine Profil-Kopie mit überschriebenem `transformReq`-Hook
+   */
+  forceIdentityEncoding(profile) {
+    const p = profile;
+    const origTransformReq = p.transformReq;
+    return {
+      ...p,
+      transformReq(ctx, req) {
+        const r = origTransformReq ? origTransformReq(ctx, req) : req;
+        r.headers = { ...r.headers, "Accept-Encoding": "identity" };
+        return r;
+      }
+    };
   }
   /**
    * Löst einen Profilnamen ('vbb', 'oebb', 'vbn', 'rmv', 'vmt') in das zugehörige HAFAS-Profil auf.

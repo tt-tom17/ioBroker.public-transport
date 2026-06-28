@@ -16,6 +16,20 @@ import { withThrottling } from 'hafas-client/throttle.js';
 import type { PublicTransport } from '../../main';
 import { BaseTransportService } from './baseTransportService';
 
+/** Minimaler Request-Typ des hafas-client-Hooks (nur `headers` wird hier angefasst). */
+interface HafasReq {
+    headers?: Record<string, string>;
+    [key: string]: unknown;
+}
+
+/**
+ * `transformReq` ist ein interner Request-Hook von `hafas-client` und nicht Teil der
+ * offiziellen `Profile`-Typen – daher hier minimal nachgebildet.
+ */
+interface HafasReqProfile extends Profile {
+    transformReq?: (ctx: unknown, req: HafasReq) => HafasReq;
+}
+
 export class HafasService extends BaseTransportService {
     private readonly profileName: string;
 
@@ -37,11 +51,37 @@ export class HafasService extends BaseTransportService {
     }
 
     protected createClient(): HafasClient {
-        const profile = this.resolveProfile(this.profileName);
+        const profile = this.forceIdentityEncoding(this.resolveProfile(this.profileName));
         // Vom Profil unterstützte Produkte merken, damit unbekannte Produkt-Filter (z.B.
         // 'national-train' für rmv) vor dem Aufruf entfernt werden statt die Abfrage abzubrechen.
         this.setProfileProducts(profile);
         return hafasClient(withThrottling(profile), this.clientName);
+    }
+
+    /**
+     * Erzwingt `Accept-Encoding: identity` (keine Kompression) für alle Requests des Profils.
+     *
+     * Hintergrund: Die HAFAS-`mgate.exe`-Endpoints (u.a. vbb/fahrinfo.vbb.de und oebb/fahrplan.oebb.at)
+     * senden gzip-Antworten ohne `Content-Length`. Daran verschluckt sich `node-fetch` v2 – die
+     * fetch-Schicht von `hafas-client` (via `cross-fetch`) – beim Entpacken und bricht mit
+     * `ERR_STREAM_PREMATURE_CLOSE` ("Premature close") ab. Das ist KEIN transienter Netzwerkfehler,
+     * sondern tritt systematisch auf; ein Retry hilft nicht. Ohne Kompression liefern die Server saubere
+     * Antworten; der Mehr-Traffic ist bei den Poll-Intervallen vernachlässigbar.
+     *
+     * @param profile Das aufgelöste HAFAS-Profil
+     * @returns Eine Profil-Kopie mit überschriebenem `transformReq`-Hook
+     */
+    private forceIdentityEncoding(profile: Profile): Profile {
+        const p = profile as HafasReqProfile;
+        const origTransformReq = p.transformReq;
+        return {
+            ...p,
+            transformReq(ctx: unknown, req: HafasReq): HafasReq {
+                const r = origTransformReq ? origTransformReq(ctx, req) : req;
+                r.headers = { ...r.headers, 'Accept-Encoding': 'identity' };
+                return r;
+            },
+        } as Profile;
     }
 
     /**
