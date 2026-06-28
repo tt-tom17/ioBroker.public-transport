@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.8.2",
+    "version": "0.8.3",
     "news": {
       "0.8.3": {
         "en": "fixed HAFAS \"Premature close\" errors (vbb/oebb) by requesting uncompressed responses (Accept-Encoding: identity)\nupdated @iobroker/adapter-core to ^3.4.1",
@@ -93,19 +93,6 @@
         "pl": "dodano productName do stanów\nwidget połączeń: pokazanie ikon uwag w tabeli głównej (nowa kolumna Info)\nwidżet połączeń: podkreślenie opóźnionych podróży / nóg z czerwoną lewą granicą",
         "uk": "додано продуктName до штатів\nз'єднання віджету: показати значки зауваження в головному таблиці (новий інформаційний стовпчик)\nз'єднання віджету: виділіть затримані подорожі/леги з червоним лівим кордоном",
         "zh-cn": "添加到状态的产品Name\n连接部件: 在主表格中显示注释图标( 新信息列)\n连接部件:用红色左边框突出显示延迟行程/腿部"
-      },
-      "0.4.0": {
-        "en": "fix select Products\nadd Profil VBN (Bremen/Niedersachsen)",
-        "de": "Problem mit Auswahl der Verkehrsmittel behoben\nProfil VBN (Bremen/Niedersachsen) hinzugefügt",
-        "ru": "выберите продукты\nдобавить Profil VBN (Bremen/Niedersachsen)",
-        "pt": "corrigir selecionar produtos\nadicionar Perfil VBN (Bremen/Niedersachsen)",
-        "nl": "fix select producten\nprofil VBN (Bremen/Niedersachsen) toevoegen",
-        "fr": "corriger la sélection des produits\najouter Profil VBN (Bremen/Niedersachsen)",
-        "it": "selezionare i prodotti\naggiungere Profil VBN (Bremen/Niedersachsen)",
-        "es": "selecto Productos\nañadir Profil VBN (Bremen/Niedersachsen)",
-        "pl": "fix select Products\ndodaj Profil VBN (Bremen / Niedersachsen)",
-        "uk": "оберіть товари\nдодати Profil VBN (Бремен/Нідерсачсен)",
-        "zh-cn": "固定选中的产品\n添加 Profil VBN (不来梅/尼德萨赫森)"
       }
     },
     "titleLang": {
