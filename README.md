@@ -24,6 +24,9 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) (widget) flexible height with vertical scroll
+
 ### 0.8.3 (2026-06-28)
 * (tt-tom17) fixed HAFAS "Premature close" errors (vbb/oebb) by requesting uncompressed responses (Accept-Encoding: identity)
 * (tt-tom17) updated @iobroker/adapter-core to ^3.4.1
