@@ -1,7 +1,7 @@
 <!--
     ioBroker.vis public-transport Widget-Set
 
-    version: "0.0.6"
+    version: "0.0.8"
 
     Copyright 2026 tt-tom17 tgb@kabelmail.de
 -->
@@ -108,7 +108,7 @@ x
         data-vis-set="public-transport"
         data-vis-type="val"
         data-vis-name="Departure Table">
-    <div class="vis-widget <%== this.data.attr('class') %>" style="min-width: 620px; min-height: 200px; height: 100%; box-sizing: border-box; overflow: visible;" id="<%= this.data.attr('wid') %>">
+    <div class="vis-widget <%== this.data.attr('class') %>" style="min-width: 320px; min-height: 200px; height: 100%; box-sizing: border-box; overflow: visible;" id="<%= this.data.attr('wid') %>">
         <% vis.binds['public-transportDepTt'].createDepTt(this.data.wid, this.view, this.data, this.style); %>
         <div class="pub-trans-deptt-widget"></div>
     </div>
@@ -122,7 +122,7 @@ x
         data-vis-set="public-transport"
         data-vis-type="val"
         data-vis-name="Connections Table">
-    <div class="vis-widget <%== this.data.attr('class') %>" style="min-width: 800px; min-height: 200px; height: 100%; box-sizing: border-box; overflow: visible;" id="<%= this.data.attr('wid') %>">
+    <div class="vis-widget <%== this.data.attr('class') %>" style="min-width: 380px; min-height: 200px; height: 100%; box-sizing: border-box; overflow: visible;" id="<%= this.data.attr('wid') %>">
         <% vis.binds['public-transportConnections'].createConnections(this.data.wid, this.view, this.data, this.style); %>
         <div class="pub-trans-conn-widget"></div>
     </div>

@@ -13,6 +13,9 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    /* Basis-Schriftgröße (Fallback); die tatsächliche Skalierung mit der Widget-Breite
+       setzt deptt.js per ResizeObserver, da CSS Container Queries in vis 1.x nicht greifen. */
+    font-size: 14px;
 }
 
 /* Header der Abfahrtstafel */
@@ -29,31 +32,44 @@
     flex-shrink: 0;
 }
 
+/* Gemeinsamer Scroll-Container: füllt Resthöhe, scrollt vertikal (Zeilen) und horizontal (gesamte Tabelle) */
+.pub-trans-deptt-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    background-color: #000000;
+}
+
 /* Zeile mit Spaltenüberschriften */
 .pub-trans-deptt-column-header.no-remarks {
     background-color: #2c2c2c;
     color: #ffcc00;
-    padding: 8px 10px;
+    padding: 0.6em 0.7em;
     display: grid;
-    grid-template-columns: 80px minmax(150px, 300px) 100px 80px;
-    gap: 10px;
-    font-size: 13px;
+    grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em;
+    gap: 0.7em;
+    font-size: 0.93em;
     font-weight: bold;
     border-bottom: 2px solid #444;
-    flex-shrink: 0;
+    /* Spaltenkopf bleibt beim vertikalen Scrollen oben stehen, läuft horizontal mit den Zeilen mit */
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 
 .pub-trans-deptt-column-header.remarks {
     background-color: #2c2c2c;
     color: #ffcc00;
-    padding: 8px 10px;
+    padding: 0.6em 0.7em;
     display: grid;
-    grid-template-columns: 80px minmax(150px, 300px) 100px 80px 150px;
-    gap: 10px;
-    font-size: 13px;
+    grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em 9em;
+    gap: 0.7em;
+    font-size: 0.93em;
     font-weight: bold;
     border-bottom: 2px solid #444;
-    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 
 .pub-trans-deptt-column-header > div {
@@ -72,36 +88,31 @@
     text-align: left;
 }
 
-/* Container für die Abfahrtszeilen */
+/* Container für die Abfahrtszeilen (Scroll übernimmt der .pub-trans-deptt-scroll-Wrapper) */
 .pub-trans-deptt-content {
     background-color: #000000;
-    overflow-y: auto;
-    overflow-x: auto; /* Ermöglicht horizontales Scrollen bei Bedarf */
-    /* Füllt den Restplatz unter Header/Spaltenkopf; vertikaler Scroll bei Überlauf */
-    flex: 1 1 auto;
-    min-height: 0;
 }
 
 /* Einzelne Abfahrtszeile */
 .pub-trans-deptt-row.no-remarks {
     display: grid;
-    grid-template-columns: 80px minmax(150px, 300px) 100px 80px;
-    gap: 10px;
-    padding: 10px;
+    grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em;
+    gap: 0.7em;
+    padding: 0.7em;
     border-bottom: 1px solid #333;
     color: #ffcc00;
-    font-size: 14px;
+    font-size: 1em;
     transition: background-color 0.2s;
 }
 
 .pub-trans-deptt-row.remarks {
     display: grid;
-    grid-template-columns: 80px minmax(150px, 300px) 100px 80px 150px;
-    gap: 10px;
-    padding: 10px;
+    grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em 9em;
+    gap: 0.7em;
+    padding: 0.7em;
     border-bottom: 1px solid #333;
     color: #ffcc00;
-    font-size: 14px;
+    font-size: 1em;
     transition: background-color 0.2s;
 }
 
@@ -120,7 +131,7 @@
 .pub-trans-deptt-time {
     text-align: center;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 1.15em;
     color: #00ff00;
 }
 
@@ -137,9 +148,9 @@
     padding: 4px 8px;
     border-radius: 3px;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 0.85em;
     text-align: center;
-    min-width: 40px;
+    min-width: 2.8em;
     background-color: #ffcc00;
     color: #000000;
 }
@@ -174,7 +185,7 @@
 /* Richtungstext */
 .pub-trans-deptt-direction {
     color: #ffffff;
-    font-size: 14px;
+    font-size: 1em;
 }
 
 /* Verspätungsanzeige */
@@ -199,7 +210,7 @@
 /* Gleis-Anzeige */
 .pub-trans-deptt-platform {
     text-align: left;
-    font-size: 14px;
+    font-size: 1em;
     font-weight: bold;
     color: #ffcc00;
 }
@@ -376,20 +387,20 @@
 }
 
 /* Scrollbar Styling */
-.pub-trans-deptt-content::-webkit-scrollbar {
+.pub-trans-deptt-scroll::-webkit-scrollbar {
     width: 8px;
 }
 
-.pub-trans-deptt-content::-webkit-scrollbar-track {
+.pub-trans-deptt-scroll::-webkit-scrollbar-track {
     background: #1a1a1a;
 }
 
-.pub-trans-deptt-content::-webkit-scrollbar-thumb {
+.pub-trans-deptt-scroll::-webkit-scrollbar-thumb {
     background: #444;
     border-radius: 4px;
 }
 
-.pub-trans-deptt-content::-webkit-scrollbar-thumb:hover {
+.pub-trans-deptt-scroll::-webkit-scrollbar-thumb:hover {
     background: #a2a2a2;
 }
 

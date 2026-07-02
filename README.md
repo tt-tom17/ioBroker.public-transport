@@ -26,6 +26,7 @@ The public-transport adapter enables seamless integration of real-time public tr
 -->
 ### **WORK IN PROGRESS**
 * (tt-tom17) (widget) flexible height with vertical scroll
+* (tt-tom17) (widget) flexible width: font scales with widget width down to a minimum, horizontal scroll below
 
 ### 0.8.3 (2026-06-28)
 * (tt-tom17) fixed HAFAS "Premature close" errors (vbb/oebb) by requesting uncompressed responses (Accept-Encoding: identity)
