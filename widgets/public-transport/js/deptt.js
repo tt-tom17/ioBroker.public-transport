@@ -19,7 +19,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportDepTt'] = {
-    version: '0.0.3',
+    version: '0.0.6',
 
     showVersion: function () {
         if (vis.binds['public-transportDepTt'].version) {
@@ -74,6 +74,9 @@ vis.binds['public-transportDepTt'] = {
         }
         html += '</div>';
 
+        // Gemeinsamer Scroll-Container: Spaltenkopf (sticky) + Zeilen scrollen horizontal deckungsgleich
+        html += '<div class="pub-trans-deptt-scroll">';
+
         // Spaltenüberschriften
 
         if (hasRemarks) {
@@ -100,6 +103,8 @@ vis.binds['public-transportDepTt'] = {
         html += '<div class="pub-trans-deptt-loading">Lade Daten</div>';
         html += '</div>';
 
+        html += '</div>'; // Ende .pub-trans-deptt-scroll
+
         // Modal für Remark-Details (Pattern wie connections.js)
         html += '<div class="pub-trans-deptt-modal" id="modal-deptt-' + widgetID + '">';
         html += '<div class="pub-trans-deptt-modal-content">';
@@ -114,6 +119,26 @@ vis.binds['public-transportDepTt'] = {
         html += '</div>';
 
         $div.html(html);
+
+        // Schrift skaliert mit der Widget-Breite (Variante 4): 2% der Breite, gedeckelt auf 10–14px.
+        // Umsetzung per ResizeObserver statt CSS Container Queries, da letztere in vis 1.x nicht greifen.
+        const scaleContainer = $div.find('.pub-trans-deptt-container').get(0);
+        if (scaleContainer && typeof ResizeObserver !== 'undefined') {
+            const prevObserver = $div.data('ptResizeObserver');
+            if (prevObserver) {
+                prevObserver.disconnect();
+            }
+            const applyFontScale = function () {
+                const width = scaleContainer.clientWidth;
+                if (!width) return;
+                const size = Math.max(10, Math.min(14, width * 0.02));
+                scaleContainer.style.fontSize = size + 'px';
+            };
+            const observer = new ResizeObserver(applyFontScale);
+            observer.observe(scaleContainer);
+            $div.data('ptResizeObserver', observer);
+            applyFontScale();
+        }
 
         // Modal-Close Handler (wie connections.js)
         $('#close-modal-deptt-' + widgetID).on('click', function() {
