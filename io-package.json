@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.8.3",
+    "version": "0.9.0",
     "news": {
       "0.9.0": {
         "en": "(widget) flexible height with vertical scroll\n(widget) flexible width: font scales with widget width down to a minimum, horizontal scroll below",
@@ -93,19 +93,6 @@
         "pl": "dodaj obsługę Motis\ndodaj klasę nsPanelDescription dla integracji NSPanel\nwidżet połączeń: poprawiaj wyświetlacz szczegółów chodzenia\nwidget połączeń: dodaj stylizację łącza dla uwag modalnych",
         "uk": "додати підтримку сервісу Motis\nadd nsPanelTimetable клас для інтеграції NSPanel\nconnections віджет: виправити детальну інформацію про хід\nз'єднання віджет: додати вкладку для модальних зауважень",
         "zh-cn": "添加 Motis 服务支持\n为NSPanel 集成添加 nsPanelTimable 类\n连接部件: 修补行走细节信息显示\n连接部件: 为模式语句添加链接样式"
-      },
-      "0.5.0": {
-        "en": "added productName to states\nconnections widget: show remarks icons in main table (new Info column)\nconnections widget: highlight delayed journeys/legs with red left border",
-        "de": "productName zu States hinzugefügt\nWidget Verbindungen: Icons in der Haupttabelle anzeigen (Neue Infospalte)\nWidget Verbindungen: Markierung für verspätete Verbindungen mit roten linken Balken",
-        "ru": "добавлено название продукта в штаты\nвиджет соединений: покажите значки замечаний в главной таблице (новая колонка Инфо)\nвиджет соединений: выделение отложенных поездок / ног с красной левой границей",
-        "pt": "produto adicionadoName to states\nwidget de conexões: mostrar ícones de observações na tabela principal (nova coluna Info)\nwidget de conexões: destacar jornadas/pernas atrasadas com borda esquerda vermelha",
-        "nl": "toegevoegd productNaam aan toestanden\nverbindingswidget: toon opmerkingen iconen in hoofdtabel (nieuwe Info kolom)\nverbindingswidget: markeer vertraagde ritten/benen met rode linkerrand",
-        "fr": "produit ajoutéNom aux états\nwidget de connexions: afficher les icônes de remarques dans la table principale (nouvelle colonne Info)\nwidget de connexions: mettre en évidence les trajets / jambes retardés avec bordure rouge gauche",
-        "it": "aggiunto productName agli stati\nwidget connessioni: mostra le icone della tabella principale (nuova colonna Info)\nwidget connessioni: evidenziare viaggi / gambe ritardati con bordo sinistro rosso",
-        "es": "producto añadidoName a estados\nwidget de conexiones: mostrar comentarios iconos en la tabla principal (nueva columna Info)\nwidget de conexiones: resaltar los viajes retardados / patas con frontera izquierda roja",
-        "pl": "dodano productName do stanów\nwidget połączeń: pokazanie ikon uwag w tabeli głównej (nowa kolumna Info)\nwidżet połączeń: podkreślenie opóźnionych podróży / nóg z czerwoną lewą granicą",
-        "uk": "додано продуктName до штатів\nз'єднання віджету: показати значки зауваження в головному таблиці (новий інформаційний стовпчик)\nз'єднання віджету: виділіть затримані подорожі/леги з червоним лівим кордоном",
-        "zh-cn": "添加到状态的产品Name\n连接部件: 在主表格中显示注释图标( 新信息列)\n连接部件:用红色左边框突出显示延迟行程/腿部"
       }
     },
     "titleLang": {

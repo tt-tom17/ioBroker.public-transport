@@ -24,7 +24,7 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.9.0 (2026-07-02)
 * (tt-tom17) (widget) flexible height with vertical scroll
 * (tt-tom17) (widget) flexible width: font scales with widget width down to a minimum, horizontal scroll below
 
