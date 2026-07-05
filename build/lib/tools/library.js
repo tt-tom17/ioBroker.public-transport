@@ -592,7 +592,7 @@ class Library extends BaseClass {
       if (!del) {
         const obj = await this.adapter.getObjectAsync(dp);
         this.setdb(
-          dp,
+          this.cleandp(state),
           "state",
           states[state] ? states[state].val : void 0,
           obj && obj.common && obj.common.type ? obj.common.type : void 0,
@@ -624,6 +624,7 @@ class Library extends BaseClass {
     if (!prefix) {
       return;
     }
+    prefix = this.cleandp(prefix);
     if (this.stateDataBase) {
       for (const id in this.stateDataBase) {
         if (id.startsWith(prefix)) {

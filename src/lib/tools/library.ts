@@ -713,8 +713,12 @@ export class Library extends BaseClass {
             const del = !this.isDirAllowed(dp);
             if (!del) {
                 const obj = await this.adapter.getObjectAsync(dp);
+                // Store with the full, namespaced id so the key matches what writedp/readdb and
+                // garbageColleting use at runtime. Stripping the namespace here caused a key-format
+                // mismatch after a restart: writedp could not find the existing entry, recreated it
+                // as undefined, and stale values could neither be overwritten nor garbage-collected.
                 this.setdb(
-                    dp,
+                    this.cleandp(state),
                     'state',
                     states[state] ? states[state].val : undefined,
                     obj && obj.common && obj.common.type ? obj.common.type : undefined,
@@ -747,6 +751,11 @@ export class Library extends BaseClass {
         if (!prefix) {
             return;
         }
+        // Normalize the prefix exactly like writedp normalizes state ids (cleandp). Otherwise a
+        // station/journey id containing forbidden chars (e.g. ':' in "de-DELFI_de:12072:900245002")
+        // yields a raw prefix that never startsWith the sanitized db keys ("..._12072_..."), so
+        // garbage collection silently matches nothing and stale values are never cleared (#82).
+        prefix = this.cleandp(prefix);
         if (this.stateDataBase) {
             for (const id in this.stateDataBase) {
                 if (id.startsWith(prefix)) {

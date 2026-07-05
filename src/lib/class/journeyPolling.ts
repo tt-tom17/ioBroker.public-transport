@@ -52,7 +52,7 @@ export class JourneyPolling extends PollingManager<JourneyConfig> {
 
             // Verwende garbageColleting um States auf Standardwerte zu setzen
             await this.adapter.library.garbageColleting(
-                `Journeys.${config.id}.`,
+                `${this.adapter.namespace}.Journeys.${config.id}.`,
                 2000, // offset = 0 bedeutet: alle States sofort zurücksetzen
                 false, // del = false: States zurücksetzen, nicht löschen
             );
