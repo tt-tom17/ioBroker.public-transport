@@ -11,6 +11,7 @@ interface Station {
     enabled?: boolean;
     numDepartures?: number;
     offsetTime?: number;
+    duration?: number;
     products?: Products;
     availableProducts?: Partial<Products>; // Produkte die von HAFAS für diese Station zurückgegeben wurden
     nativeProducts?: Partial<Products>; // Von HAFAS gemeldete Produkte der Station (unveränderlich)
@@ -57,6 +58,15 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate, alive 
             const value = parseInt(event.target.value, 10);
             if (!isNaN(value) && value >= 0) {
                 onUpdate(station.id, { offsetTime: value });
+            }
+        }
+    };
+
+    const handleDurationChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        if (station && onUpdate) {
+            const value = parseInt(event.target.value, 10);
+            if (!isNaN(value) && value > 0) {
+                onUpdate(station.id, { duration: value });
             }
         }
     };
@@ -166,6 +176,19 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate, alive 
                             size="small"
                             slotProps={{ htmlInput: { min: 0 } }}
                             helperText={I18n.t('offset_time_hint')}
+                            disabled={!alive}
+                        />
+
+                        {/* Duration / Zeitfenster in Minuten */}
+                        <TextField
+                            label={I18n.t('departure_duration')}
+                            type="number"
+                            value={station.duration || 60}
+                            onChange={handleDurationChange}
+                            fullWidth
+                            size="small"
+                            slotProps={{ htmlInput: { min: 1, max: 720 } }}
+                            helperText={I18n.t('departure_duration_hint')}
                             disabled={!alive}
                         />
 

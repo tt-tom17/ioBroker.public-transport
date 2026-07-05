@@ -21,6 +21,7 @@ interface ServiceOption {
     label: string;
     serviceType: 'hafas' | 'vendo' | 'motis';
     profile: string;
+    disabled?: boolean;
 }
 
 /** Mindestwert für die Objektanzahl-Warnschwelle */
@@ -32,7 +33,8 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     { value: 'hafas:vbn', label: 'HAFAS - VBN (Bremen/Niedersachsen)', serviceType: 'hafas', profile: 'vbn' },
     { value: 'hafas:rmv', label: 'HAFAS - RMV (Rhein-Main/Mainz)', serviceType: 'hafas', profile: 'rmv' },
     { value: 'hafas:vmt', label: 'HAFAS - VMT (Thüringen)', serviceType: 'hafas', profile: 'vmt' },
-    { value: 'vendo:db', label: 'Vendo - Deutsche Bahn', serviceType: 'vendo', profile: 'db' },
+    // 'vendo:db' (Deutsche Bahn) deaktiviert: db-vendo-Endpoint liefert aktuell OPS_BLOCKED (serverseitige Sperre).
+    { value: 'vendo:db', label: 'Vendo - Deutsche Bahn', serviceType: 'vendo', profile: 'db', disabled: true },
     { value: 'motis:compat', label: 'MOTIS - Transitous (DE & Europa)', serviceType: 'motis', profile: 'compat' },
 ];
 
@@ -147,8 +149,9 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
                             <MenuItem
                                 key={option.value}
                                 value={option.value}
+                                disabled={option.disabled}
                             >
-                                {option.label}
+                                {option.disabled ? `${option.label} (${I18n.t('client_unavailable')})` : option.label}
                             </MenuItem>
                         ))}
                     </Select>
