@@ -46,7 +46,7 @@ class DeparturePolling extends import_pollingManager.PollingManager {
         `Reset states for deactivated station: ${config.customName || config.name || ""} (${config.id})`
       );
       await this.adapter.library.garbageColleting(
-        `Stations.${config.id}.`,
+        `${this.adapter.namespace}.Stations.${config.id}.`,
         2e3,
         // offset = 0 bedeutet: alle States sofort zurücksetzen
         false

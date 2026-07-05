@@ -44,7 +44,7 @@ export class DeparturePolling extends PollingManager<DepartureConfig> {
 
             // Verwende garbageColleting um States auf Standardwerte zu setzen
             await this.adapter.library.garbageColleting(
-                `Stations.${config.id}.`,
+                `${this.adapter.namespace}.Stations.${config.id}.`,
                 2000, // offset = 0 bedeutet: alle States sofort zurücksetzen
                 false, // del = false: States zurücksetzen, nicht löschen
             );

@@ -44,7 +44,7 @@ class JourneyPolling extends import_pollingManager.PollingManager {
       }
       this.log.debug(`Reset states for deactivated journey: ${config.customName || ""} (${config.id})`);
       await this.adapter.library.garbageColleting(
-        `Journeys.${config.id}.`,
+        `${this.adapter.namespace}.Journeys.${config.id}.`,
         2e3,
         // offset = 0 bedeutet: alle States sofort zurücksetzen
         false
