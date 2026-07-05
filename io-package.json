@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "0.9.0",
     "news": {
+      "0.9.1": {
+        "en": "fixed stale data points not being cleared, both after a restart and during operation (#82)",
+        "de": "veraltete Datenpunkte werden nun zuverlässig geleert – sowohl nach einem Neustart als auch im laufenden Betrieb (#82)",
+        "ru": "устаревшие точки данных теперь надёжно очищаются — как после перезапуска, так и во время работы (#82)",
+        "pt": "pontos de dados desatualizados agora são limpos de forma confiável, tanto após uma reinicialização quanto durante a operação (#82)",
+        "nl": "verouderde datapunten worden nu betrouwbaar gewist, zowel na een herstart als tijdens bedrijf (#82)",
+        "fr": "les points de données obsolètes sont désormais effacés de manière fiable, aussi bien après un redémarrage que pendant le fonctionnement (#82)",
+        "it": "i punti dati obsoleti ora vengono cancellati in modo affidabile, sia dopo un riavvio sia durante il funzionamento (#82)",
+        "es": "los puntos de datos obsoletos ahora se borran de forma fiable, tanto tras un reinicio como durante el funcionamiento (#82)",
+        "pl": "nieaktualne punkty danych są teraz niezawodnie czyszczone, zarówno po ponownym uruchomieniu, jak i podczas pracy (#82)",
+        "uk": "застарілі точки даних тепер надійно очищаються — як після перезапуску, так і під час роботи (#82)",
+        "zh-cn": "过时的数据点现在会被可靠地清除，无论是在重启后还是在运行期间 (#82)"
+      },
       "0.9.0": {
         "en": "(widget) flexible height with vertical scroll\n(widget) flexible width: font scales with widget width down to a minimum, horizontal scroll below",
         "de": "(Widget) flexible Höhe mit vertikalem Scrollen\n(Widget) flexible Breite: Schrift skaliert mit der Widget-Breite bis zu einer Mindestgröße, darunter horizontales Scrollen",
