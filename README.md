@@ -24,7 +24,7 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.9.1 (2026-07-05)
 * (tt-tom17) fixed stale data points not being cleared, both after a restart and during operation (#82)
 
 ### 0.9.0 (2026-07-02)
