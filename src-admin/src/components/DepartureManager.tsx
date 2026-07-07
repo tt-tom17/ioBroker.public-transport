@@ -13,6 +13,8 @@ interface Station {
     customName?: string;
     enabled?: boolean;
     numDepartures?: number;
+    offsetTime?: number;
+    duration?: number;
     products?: Products;
     availableProducts?: Partial<Products>;
     nativeProducts?: Partial<Products>; // Von HAFAS gemeldete Produkte der Station (unveränderlich)
