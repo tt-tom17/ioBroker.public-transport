@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.9.1",
+    "version": "0.10.0",
     "news": {
       "0.10.0": {
         "en": "added a configurable time window (duration, in minutes) per station to fetch departures beyond the default 60 minutes (#85)\ndisabled the \"Vendo - Deutsche Bahn\" client option, as the db-vendo endpoint currently returns OPS_BLOCKED (#85)\nfixed repository checker warnings (#80): translated untranslated admin i18n strings (zh-cn, es)",
@@ -93,19 +93,6 @@
         "pl": "dodano konfigurowalny objectsWarnLimit do interfejsu administratora\npoprawiono niezawodność żądań do backendu (obsługa ponawiania/limitu czasu)\nprzejściowe błędy sieciowe (np. rozłączenia TLS/gniazda, ECONNRESET) są teraz ponawiane zamiast natychmiastowego niepowodzenia\nnaprawiono liczbę przesiadek, czas trwania NaN i awarie przy pustych wynikach\nwidżet połączeń: nagłówek wyskakującego okna pozostaje teraz nieruchomy podczas przewijania",
         "uk": "додано настроюваний objectsWarnLimit до адмін-інтерфейсу\nпокращено надійність запитів до бекенду (обробка повторів/тайм-аутів)\nтимчасові мережеві помилки (напр. розриви TLS/сокета, ECONNRESET) тепер повторюються замість негайного збою\nвиправлено кількість пересадок, тривалість NaN та збої за порожніх результатів\nвіджет з'єднань: заголовок спливаючого вікна тепер залишається фіксованим під час прокручування",
         "zh-cn": "在管理界面中添加了可配置的 objectsWarnLimit\n提高了后端请求的可靠性(重试/超时处理)\n瞬时网络错误(例如 TLS/套接字断开、ECONNRESET)现在会重试而不是立即失败\n修复了换乘次数、NaN 时长以及空结果时的崩溃\n连接部件:弹出窗口标题现在在滚动时保持固定"
-      },
-      "0.7.0": {
-        "en": "fixed issues detected by repository checker\nupdated documentation\nbump @motis-project/motis-fptf-client from 6.4.0 to 6.5.0\nbump db-vendo-client from 6.10.10 to 6.10.11",
-        "de": "von repository checker erkannte probleme behoben\naktualisierung der dokumentation\nbump @motis-projekt/motis-fptf-client von 6.4.0 bis 6.5.0\nbump db-vendo-client von 6.10.10 bis 6.10.11",
-        "ru": "фиксированные проблемы, обнаруженные проверкой репозитория\nобновленная документация\nbump @motis-project/motis-fptf-клиент с 6.4.0 до 6.5.0\nbump db-vendo-клиент с 6.10.10 до 6.10.11",
-        "pt": "problemas fixos detectados pelo verificador de repositório\ndocumentação atualizada\nbump @motis-project/motis-fptf-client de 6.4.0 para 6.5.0\nblump db-vendo-cliente de 6.10.10 a 6.10.11",
-        "nl": "vaste problemen gedetecteerd door repository checker\nbijgewerkte documentatie\nbump @motis-project/motis-fptf-client van 6.4.0 tot 6.5.0\nbump db-vendo-client van 6.10.10 tot 6.10.11",
-        "fr": "problèmes corrigés détectés par le vérificateur du dépôt\ndocumentation actualisée\nbump @motis-project/motis-fptf-client de 6.4.0 à 6.5.0\nblock db-vendo-client du 6.10.10 au 6.10.11",
-        "it": "problemi fissi rilevati da repository checker\ndocumentazione aggiornata\nurto @motis-project/motis-fptf-client da 6.4.0 a 6.5.0\nda 6.10.10 a 6.10.11",
-        "es": "problemas fijos detectados por el repositorio\ndocumentación actualizada\ntope @motis-project/motis-fptf-client de 6.4.0 a 6.5.0\nde 6.10 a 6.10.11",
-        "pl": "stałe problemy wykryte przez kontroler repozytorium\nzaktualizowana dokumentacja\nbump @ motis- project / motis- fptf- client od 6.4.0 do 6.5.0\nbump db- vendo- client od 6.10.10 do 6.10.11",
-        "uk": "виправлені питання, виявлені репозиторійним чекером\nоновлена документація\nbump @motis-project/motis-fptf-client від 6.4.0 до 6.5.0\nbump db-vendo-client від 6.10.10 до 6.10.11",
-        "zh-cn": "仓库检查器检测到的固定问题\n更新的文件\n从6.4.0到6.5.0\n从6.10.10到6.10.11"
       }
     },
     "titleLang": {
