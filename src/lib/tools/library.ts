@@ -743,14 +743,18 @@ export class Library extends BaseClass {
      * Resets states that have not been updated in the database in offset time.
      *
      * @param prefix String with which states begin that are reset.
-     * @param offset Time in ms since last update.
+     * @param offset Time in ms since last update. Ignored when `since` is given.
      * @param del Delete the state if it is not updated.
+     * @param since Cut-off timestamp: states older than this are considered stale. Callers that
+     * write a batch of states first should pass the timestamp taken *before* the batch, otherwise
+     * a batch taking longer than `offset` collects its own freshly written states (#87).
      * @returns void
      */
-    async garbageColleting(prefix: string, offset: number = 2000, del = false): Promise<void> {
+    async garbageColleting(prefix: string, offset: number = 2000, del = false, since?: number): Promise<void> {
         if (!prefix) {
             return;
         }
+        const cutoff = since ?? Date.now() - offset;
         // Normalize the prefix exactly like writedp normalizes state ids (cleandp). Otherwise a
         // station/journey id containing forbidden chars (e.g. ':' in "de-DELFI_de:12072:900245002")
         // yields a raw prefix that never startsWith the sanitized db keys ("..._12072_..."), so
@@ -763,7 +767,7 @@ export class Library extends BaseClass {
                     if (!state || state.val == undefined) {
                         continue;
                     }
-                    if (state.ts < Date.now() - offset) {
+                    if (state.ts < cutoff) {
                         if (del) {
                             await this.cleanUpTree([], [id], -1);
                             continue;

@@ -206,6 +206,10 @@ export class DepartureRequest extends BaseClass {
             // const filteredDepartures = products ? this.filterByProducts(departures, products) : departures;
             // Konvertiere zu reduzierten States
             const departureStates: DepartureState[] = mapDeparturesToDepartureStates(departures);
+            // Stichzeitpunkt VOR dem Schreiben. Das Schreiben vieler Abfahrten dauert bei langsamen
+            // Backends laenger als der GC-Offset von 2000 ms; ein Vergleich gegen die Uhrzeit zum
+            // GC-Zeitpunkt wuerde die zuerst geschriebenen Abfahrten als veraltet einstufen (#87).
+            const pollStart = Date.now();
             // JSON in die States schreiben
             await this.writeBaseStates(departureStates, stationId, countEntries, stationConfig.nspanel);
 
@@ -216,6 +220,8 @@ export class DepartureRequest extends BaseClass {
             await this.library.garbageColleting(
                 `${this.adapter.namespace}.Stations.${stationConfig.id}.Departures_`,
                 2000,
+                false,
+                pollStart,
             );
         } catch (err) {
             this.log.error(`Error writing departures: ${(err as Error).message}`);

@@ -188,6 +188,8 @@ export class JourneysRequest extends BaseClass {
                 },
             );
 
+            // Stichzeitpunkt VOR dem Schreiben, siehe departure.ts / #87.
+            const pollStart = Date.now();
             // Schreibe die Journey-Daten
             await this.writesBaseStates(
                 `${this.adapter.namespace}.Journeys.${journeyId}`,
@@ -200,7 +202,12 @@ export class JourneysRequest extends BaseClass {
             // Garbage Collection: Journey-Channels (inkl. variabler Leg_XX), die in diesem Poll
             // nicht (mehr) geschrieben wurden, auf Standardwerte zuruecksetzen. Praeziser Prefix
             // "Journey_", damit json/countJourneys/StationFrom/StationTo unberuehrt bleiben.
-            await this.library.garbageColleting(`${this.adapter.namespace}.Journeys.${journeyId}.Journey_`, 2000);
+            await this.library.garbageColleting(
+                `${this.adapter.namespace}.Journeys.${journeyId}.Journey_`,
+                2000,
+                false,
+                pollStart,
+            );
         } catch (err) {
             this.log.error(`Error writing journeys. Error message: ${(err as Error).message}`);
         }
