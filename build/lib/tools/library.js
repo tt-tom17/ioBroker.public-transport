@@ -616,14 +616,18 @@ class Library extends BaseClass {
    * Resets states that have not been updated in the database in offset time.
    *
    * @param prefix String with which states begin that are reset.
-   * @param offset Time in ms since last update.
+   * @param offset Time in ms since last update. Ignored when `since` is given.
    * @param del Delete the state if it is not updated.
+   * @param since Cut-off timestamp: states older than this are considered stale. Callers that
+   * write a batch of states first should pass the timestamp taken *before* the batch, otherwise
+   * a batch taking longer than `offset` collects its own freshly written states (#87).
    * @returns void
    */
-  async garbageColleting(prefix, offset = 2e3, del = false) {
+  async garbageColleting(prefix, offset = 2e3, del = false, since) {
     if (!prefix) {
       return;
     }
+    const cutoff = since != null ? since : Date.now() - offset;
     prefix = this.cleandp(prefix);
     if (this.stateDataBase) {
       for (const id in this.stateDataBase) {
@@ -632,7 +636,7 @@ class Library extends BaseClass {
           if (!state || state.val == void 0) {
             continue;
           }
-          if (state.ts < Date.now() - offset) {
+          if (state.ts < cutoff) {
             if (del) {
               await this.cleanUpTree([], [id], -1);
               continue;

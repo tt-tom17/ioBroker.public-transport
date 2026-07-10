@@ -173,6 +173,7 @@ class JourneysRequest extends import_library.BaseClass {
           native: {}
         }
       );
+      const pollStart = Date.now();
       await this.writesBaseStates(
         `${this.adapter.namespace}.Journeys.${journeyId}`,
         journeys,
@@ -180,7 +181,12 @@ class JourneysRequest extends import_library.BaseClass {
         client_profile,
         journeyConfig.nspanel
       );
-      await this.library.garbageColleting(`${this.adapter.namespace}.Journeys.${journeyId}.Journey_`, 2e3);
+      await this.library.garbageColleting(
+        `${this.adapter.namespace}.Journeys.${journeyId}.Journey_`,
+        2e3,
+        false,
+        pollStart
+      );
     } catch (err) {
       this.log.error(`Error writing journeys. Error message: ${err.message}`);
     }

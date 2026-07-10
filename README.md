@@ -24,6 +24,9 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) fixed departure and journey data points being cleared during slow polls (#87)
+
 ### 0.10.0 (2026-07-07)
 * (tt-tom17) added a configurable time window (duration, in minutes) per station to fetch departures beyond the default 60 minutes (#85)
 * (tt-tom17) disabled the "Vendo - Deutsche Bahn" client option, as the db-vendo endpoint currently returns OPS_BLOCKED (#85)
