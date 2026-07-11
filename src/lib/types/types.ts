@@ -2,7 +2,7 @@ type departureOpt = {
     when?: Date | undefined; // Datum & Uhrzeit der Abfahrten; `undefined` bedeutet "jetzt"
     direction?: string | undefined; // zeige nur Abfahrten in Richtung dieser Station
     line?: string | undefined; // filtere nach Linien-ID
-    duration?: number; // zeige Abfahrten für die nächsten n Minuten (Standard: 10)
+    duration?: number; // zeige Abfahrten für die nächsten n Minuten (hafas-client-Standard: 10; hier 60, s. defaultDepartureOpt)
     results?: number | undefined; // max. Anzahl der Ergebnisse; `undefined` bedeutet "was auch immer HAFAS liefert"
     subStops?: boolean; // parse & zeige Unterhaltestellen von Stationen? (Standard: true)
     entrances?: boolean; // parse & zeige Eingänge von Haltestellen/Stationen? (Standard: true)
