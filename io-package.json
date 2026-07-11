@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.10.0",
+    "version": "0.10.1",
     "news": {
+      "0.10.1": {
+        "en": "fixed departure and journey data points being cleared during slow polls (#87)",
+        "de": "Fix: Feste Abfahrts- und Reisedatenpunkte werden während langsamer Umfragen gelöscht (#87)",
+        "ru": "Неисправные точки данных об отправлении и маршруте удаляются во время медленных опросов (#87)",
+        "pt": "Pontos de dados fixos de partida e viagem sendo apagados durante votações lentas (#87)",
+        "nl": "Vaste vertrek- en reisgegevenspunten worden gewist tijdens langzame peilingen (#87)",
+        "fr": "Les points de données fixes de départ et de trajet sont effacés pendant les sondages lents (#87)",
+        "it": "I punti dati fissi di partenza e di viaggio vengono cancellati durante i sondaggi lenti (#87)",
+        "es": "Los puntos de datos fijos de salida y viaje se borran durante las encuestas lentas (#87)",
+        "pl": "stałe punkty danych o wyjazdach i podróżach czyszczone podczas powolnych sondaży (#87)",
+        "uk": "виправлено очищення точок даних про відправлення та подорожі під час повільних опитувань (#87)",
+        "zh-cn": "慢速轮询期间清除固定出发和行程数据点（#87）"
+      },
       "0.10.0": {
         "en": "added a configurable time window (duration, in minutes) per station to fetch departures beyond the default 60 minutes (#85)\ndisabled the \"Vendo - Deutsche Bahn\" client option, as the db-vendo endpoint currently returns OPS_BLOCKED (#85)\nfixed repository checker warnings (#80): translated untranslated admin i18n strings (zh-cn, es)",
         "de": "konfigurierbares Zeitfenster (Dauer in Minuten) pro Station hinzugefügt, um Abfahrten über die standardmäßigen 60 Minuten hinaus abzurufen (#85)\nClient-Option \"Vendo - Deutsche Bahn\" deaktiviert, da der db-vendo-Endpoint aktuell OPS_BLOCKED zurückgibt (#85)\nvom Repository-Checker gemeldete Warnungen behoben (#80): nicht übersetzte Admin-i18n-Strings übersetzt (zh-cn, es)",
@@ -80,19 +93,6 @@
         "pl": "dodano profil HAFAS RMV (Rhein-Main-Verkehrsverbund)\nlogi odpytywania per stacja (entry/fetching/updated) przeniesione na tłumiony poziom info (suppressInfoLogs)\nnaprawiono błędy \"unknown product\" przez usuwanie produktów nieobsługiwanych przez profil przed żądaniami",
         "uk": "додано профіль HAFAS RMV (Rhein-Main-Verkehrsverbund)\nлоги опитування за станціями (entry/fetching/updated) перенесено на придушуваний рівень info (suppressInfoLogs)\nвиправлено помилки \"unknown product\" шляхом видалення непідтримуваних профілем продуктів перед запитами",
         "zh-cn": "添加了 HAFAS 配置文件 RMV (Rhein-Main-Verkehrsverbund)\n将每站轮询日志(entry/fetching/updated)移至可抑制的 info 级别(suppressInfoLogs)\n通过在请求前移除配置文件不支持的产品,修复了\"unknown product\"错误"
-      },
-      "0.8.0": {
-        "en": "added configurable objectsWarnLimit to the admin UI\nimproved reliability of backend requests (retry/timeout handling)\nretry transient network errors (e.g. TLS/socket disconnects, ECONNRESET) instead of failing immediately\nfixed transfer count, NaN duration and crashes on empty results\nconnections widget: popup header now stays fixed while scrolling",
-        "de": "konfigurierbares objectsWarnLimit zur Admin-UI hinzugefügt\nZuverlässigkeit der Backend-Anfragen verbessert (Retry-/Timeout-Behandlung)\nvorübergehende Netzwerkfehler (z. B. TLS-/Socket-Verbindungsabbrüche, ECONNRESET) werden erneut versucht, statt sofort fehlzuschlagen\nUmstiegsanzahl, NaN-Dauer und Abstürze bei leeren Ergebnissen behoben\nVerbindungen-Widget: Popup-Kopfzeile bleibt beim Scrollen fixiert",
-        "ru": "добавлен настраиваемый objectsWarnLimit в админ-интерфейс\nповышена надёжность запросов к бэкенду (обработка повторов/таймаутов)\nвременные сетевые ошибки (например, разрывы TLS/сокета, ECONNRESET) теперь повторяются вместо немедленного сбоя\nисправлены количество пересадок, длительность NaN и сбои при пустых результатах\nвиджет соединений: заголовок всплывающего окна теперь фиксируется при прокрутке",
-        "pt": "adicionado objectsWarnLimit configurável à interface de administração\nmelhorada a confiabilidade das requisições ao backend (tratamento de repetição/tempo limite)\nerros de rede transitórios (por exemplo, desconexões de TLS/socket, ECONNRESET) agora são repetidos em vez de falhar imediatamente\ncorrigidos a contagem de baldeações, a duração NaN e falhas em resultados vazios\nwidget de conexões: o cabeçalho do popup agora permanece fixo ao rolar",
-        "nl": "configureerbare objectsWarnLimit toegevoegd aan de admin-UI\nbetrouwbaarheid van backend-verzoeken verbeterd (retry-/timeout-afhandeling)\ntijdelijke netwerkfouten (bijv. TLS-/socket-verbindingsverbrekingen, ECONNRESET) worden nu opnieuw geprobeerd in plaats van direct te falen\noverstapaantal, NaN-duur en crashes bij lege resultaten opgelost\nverbindingswidget: popup-koptekst blijft nu vast tijdens het scrollen",
-        "fr": "objectsWarnLimit configurable ajouté à l'interface d'administration\nfiabilité des requêtes backend améliorée (gestion des tentatives/délais)\nles erreurs réseau transitoires (par ex. déconnexions TLS/socket, ECONNRESET) sont désormais réessayées au lieu d'échouer immédiatement\ncorrection du nombre de correspondances, de la durée NaN et des plantages sur résultats vides\nwidget de connexions: l'en-tête de la popup reste désormais fixe lors du défilement",
-        "it": "aggiunto objectsWarnLimit configurabile all'interfaccia di amministrazione\nmigliorata l'affidabilità delle richieste al backend (gestione di tentativi/timeout)\ngli errori di rete transitori (ad es. disconnessioni TLS/socket, ECONNRESET) vengono ora ritentati invece di fallire immediatamente\ncorretti il numero di cambi, la durata NaN e i crash con risultati vuoti\nwidget connessioni: l'intestazione del popup ora rimane fissa durante lo scorrimento",
-        "es": "añadido objectsWarnLimit configurable a la interfaz de administración\nmejorada la fiabilidad de las solicitudes al backend (gestión de reintentos/tiempos de espera)\nlos errores de red transitorios (p. ej. desconexiones de TLS/socket, ECONNRESET) ahora se reintentan en lugar de fallar inmediatamente\ncorregidos el número de transbordos, la duración NaN y los fallos con resultados vacíos\nwidget de conexiones: el encabezado del popup ahora permanece fijo al desplazarse",
-        "pl": "dodano konfigurowalny objectsWarnLimit do interfejsu administratora\npoprawiono niezawodność żądań do backendu (obsługa ponawiania/limitu czasu)\nprzejściowe błędy sieciowe (np. rozłączenia TLS/gniazda, ECONNRESET) są teraz ponawiane zamiast natychmiastowego niepowodzenia\nnaprawiono liczbę przesiadek, czas trwania NaN i awarie przy pustych wynikach\nwidżet połączeń: nagłówek wyskakującego okna pozostaje teraz nieruchomy podczas przewijania",
-        "uk": "додано настроюваний objectsWarnLimit до адмін-інтерфейсу\nпокращено надійність запитів до бекенду (обробка повторів/тайм-аутів)\nтимчасові мережеві помилки (напр. розриви TLS/сокета, ECONNRESET) тепер повторюються замість негайного збою\nвиправлено кількість пересадок, тривалість NaN та збої за порожніх результатів\nвіджет з'єднань: заголовок спливаючого вікна тепер залишається фіксованим під час прокручування",
-        "zh-cn": "在管理界面中添加了可配置的 objectsWarnLimit\n提高了后端请求的可靠性(重试/超时处理)\n瞬时网络错误(例如 TLS/套接字断开、ECONNRESET)现在会重试而不是立即失败\n修复了换乘次数、NaN 时长以及空结果时的崩溃\n连接部件:弹出窗口标题现在在滚动时保持固定"
       }
     },
     "titleLang": {
