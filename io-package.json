@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "0.10.1",
     "news": {
+      "0.10.2": {
+        "en": "fixed journey and departure channel names showing stale labels after a connection changed",
+        "de": "Fix: journey- und departure-channel zeigten nach einer geänderten Verbindung veraltete Namen — werden jetzt korrekt aktualisiert",
+        "ru": "Исправлено: имена channel journey и departure показывали устаревшие метки после изменения соединения — теперь обновляются корректно",
+        "pt": "Corrigido: os nomes dos channel journey e departure mostravam rótulos desatualizados após a alteração de uma ligação — agora são atualizados corretamente",
+        "nl": "Opgelost: namen van journey- en departure-channel toonden verouderde labels nadat een verbinding was gewijzigd — worden nu correct bijgewerkt",
+        "fr": "Corrigé : les noms des channel journey et departure affichaient des libellés obsolètes après la modification d'une correspondance — ils sont désormais mis à jour correctement",
+        "it": "Corretto: i nomi dei channel journey e departure mostravano etichette obsolete dopo la modifica di una connessione — ora vengono aggiornati correttamente",
+        "es": "Corregido: los nombres de los channel journey y departure mostraban etiquetas obsoletas tras cambiar una conexión — ahora se actualizan correctamente",
+        "pl": "Poprawiono: nazwy channel journey i departure pokazywały nieaktualne etykiety po zmianie połączenia — teraz są poprawnie aktualizowane",
+        "uk": "Виправлено: імена channel journey і departure показували застарілі мітки після зміни з'єднання — тепер оновлюються коректно",
+        "zh-cn": "修复：连接变化后 journey 和 departure channel 的名称显示过时标签——现在会正确更新"
+      },
       "0.10.1": {
         "en": "fixed departure and journey data points being cleared during slow polls (#87)",
         "de": "Fix: Feste Abfahrts- und Reisedatenpunkte werden während langsamer Umfragen gelöscht (#87)",
