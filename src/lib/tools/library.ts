@@ -428,6 +428,39 @@ export class Library extends BaseClass {
                 await this.adapter.extendObject(dp, obj);
                 node.init = false;
             }
+        } else if (obj && !node.init) {
+            // Object already known and initialised. The two branches above write common.name/desc
+            // only on first creation and on the first post-restart touch; afterwards the metadata
+            // was never refreshed. Dynamic channel names (leg route "A → B", station name, line
+            // name) therefore went stale when a re-written leg changed its content (same slot,
+            // different train/line/station). Refresh name/desc here whenever they actually changed
+            // so a surviving leg follows its new content. NOTE: this only covers channels that ARE
+            // written in this poll; legs that vanished entirely (journey shrank) are not visited
+            // here and are handled by garbageColleting. Guarded by a value comparison
+            // (JSON.stringify handles both plain strings and translation objects with their
+            // deterministic key order) so an unchanged/static channel triggers no extendObject on
+            // every poll.
+            if (typeof obj.common.name === 'string') {
+                obj.common.name = await this.getTranslationObj(obj.common.name);
+            }
+            const oldCommon = node.obj?.common;
+            const nameChanged =
+                obj.common.name !== undefined && JSON.stringify(oldCommon?.name) !== JSON.stringify(obj.common.name);
+            const descChanged =
+                obj.common.desc !== undefined && JSON.stringify(oldCommon?.desc) !== JSON.stringify(obj.common.desc);
+            if (!disallowed && (nameChanged || descChanged)) {
+                await this.adapter.extendObject(dp, obj);
+                // Keep the in-memory object in sync so the next poll compares against the new
+                // value and does not re-extend unnecessarily.
+                node.obj = obj;
+            }
+        }
+
+        // Touch container timestamp on every write so garbageColleting can tell a container that is
+        // still present in this poll from one that vanished (all its states/legs are gone). Without
+        // this, channels keep their creation ts forever and stale-container detection could not work.
+        if (node && obj && obj.type !== 'state') {
+            node.ts = Date.now();
         }
 
         // If the object exists and is NOT a state → nothing to write
@@ -740,7 +773,10 @@ export class Library extends BaseClass {
     }
 
     /**
-     * Resets states that have not been updated in the database in offset time.
+     * Resets states that have not been updated in the database in offset time. Container objects
+     * (channel/folder/device) that were not rewritten in this poll additionally get their
+     * common.name/desc reset to a neutral placeholder (the id's leaf segment), so a vanished
+     * leg/station/line no longer shows its old dynamic label over emptied states.
      *
      * @param prefix String with which states begin that are reset.
      * @param offset Time in ms since last update. Ignored when `since` is given.
@@ -764,7 +800,28 @@ export class Library extends BaseClass {
             for (const id in this.stateDataBase) {
                 if (id.startsWith(prefix)) {
                     const state = this.stateDataBase[id];
-                    if (!state || state.val == undefined) {
+                    if (!state) {
+                        continue;
+                    }
+                    // Container objects (channel/folder/device) carry no value. When a container
+                    // was not (re)written in this poll — e.g. a leg that vanished because the journey
+                    // shrank — resetting only its states leaves the stale dynamic name ("A → B",
+                    // line/station name) sitting over emptied data. Reset the metadata to a neutral
+                    // placeholder (the id's leaf segment). Guarded by a value comparison so an already
+                    // neutral or fresh container triggers no extendObject. Skipped for del=true (the
+                    // whole subtree is removed) and for value states (val==undefined && type 'state'),
+                    // which keep the existing reset path below.
+                    if (state.val == undefined) {
+                        if (!del && state.type !== 'state' && state.obj?.common && state.ts < cutoff) {
+                            const leaf = id.split('.').pop() ?? '';
+                            const common = state.obj.common;
+                            if (JSON.stringify(common.name) !== JSON.stringify(leaf) || (common.desc ?? '') !== '') {
+                                await this.adapter.extendObject(id, { common: { name: leaf, desc: '' } });
+                                common.name = leaf;
+                                common.desc = '';
+                                state.ts = Date.now();
+                            }
+                        }
                         continue;
                     }
                     if (state.ts < cutoff) {

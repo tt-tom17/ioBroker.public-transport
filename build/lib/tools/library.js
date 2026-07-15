@@ -342,7 +342,7 @@ class Library extends BaseClass {
    * @returns Promise<void>
    */
   async writedp(dp, val, obj = null, ack = true, forceWrite = false) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     dp = this.cleandp(dp);
     let node = this.readdb(dp);
     const disallowed = !this.isDirAllowed(dp);
@@ -367,6 +367,20 @@ class Library extends BaseClass {
         await this.adapter.extendObject(dp, obj);
         node.init = false;
       }
+    } else if (obj && !node.init) {
+      if (typeof obj.common.name === "string") {
+        obj.common.name = await this.getTranslationObj(obj.common.name);
+      }
+      const oldCommon = (_b = node.obj) == null ? void 0 : _b.common;
+      const nameChanged = obj.common.name !== void 0 && JSON.stringify(oldCommon == null ? void 0 : oldCommon.name) !== JSON.stringify(obj.common.name);
+      const descChanged = obj.common.desc !== void 0 && JSON.stringify(oldCommon == null ? void 0 : oldCommon.desc) !== JSON.stringify(obj.common.desc);
+      if (!disallowed && (nameChanged || descChanged)) {
+        await this.adapter.extendObject(dp, obj);
+        node.obj = obj;
+      }
+    }
+    if (node && obj && obj.type !== "state") {
+      node.ts = Date.now();
     }
     if (obj && obj.type !== "state") {
       return;
@@ -375,7 +389,7 @@ class Library extends BaseClass {
       this.setdb(dp, node.type, val, node.stateTyp, false, void 0, void 0, node.init);
     }
     if (node && val !== void 0 && (!this.defaults.updateStateOnChangeOnly || node.val != val || forceWrite || !node.ack)) {
-      const targetType = (_c = (_b = obj == null ? void 0 : obj.common) == null ? void 0 : _b.type) != null ? _c : node.stateTyp;
+      const targetType = (_d = (_c = obj == null ? void 0 : obj.common) == null ? void 0 : _c.type) != null ? _d : node.stateTyp;
       if (targetType && typeof val !== targetType) {
         val = this.convertToType(val, targetType);
       }
@@ -613,7 +627,10 @@ class Library extends BaseClass {
     }
   }
   /**
-   * Resets states that have not been updated in the database in offset time.
+   * Resets states that have not been updated in the database in offset time. Container objects
+   * (channel/folder/device) that were not rewritten in this poll additionally get their
+   * common.name/desc reset to a neutral placeholder (the id's leaf segment), so a vanished
+   * leg/station/line no longer shows its old dynamic label over emptied states.
    *
    * @param prefix String with which states begin that are reset.
    * @param offset Time in ms since last update. Ignored when `since` is given.
@@ -624,6 +641,7 @@ class Library extends BaseClass {
    * @returns void
    */
   async garbageColleting(prefix, offset = 2e3, del = false, since) {
+    var _a, _b, _c;
     if (!prefix) {
       return;
     }
@@ -633,7 +651,20 @@ class Library extends BaseClass {
       for (const id in this.stateDataBase) {
         if (id.startsWith(prefix)) {
           const state = this.stateDataBase[id];
-          if (!state || state.val == void 0) {
+          if (!state) {
+            continue;
+          }
+          if (state.val == void 0) {
+            if (!del && state.type !== "state" && ((_a = state.obj) == null ? void 0 : _a.common) && state.ts < cutoff) {
+              const leaf = (_b = id.split(".").pop()) != null ? _b : "";
+              const common = state.obj.common;
+              if (JSON.stringify(common.name) !== JSON.stringify(leaf) || ((_c = common.desc) != null ? _c : "") !== "") {
+                await this.adapter.extendObject(id, { common: { name: leaf, desc: "" } });
+                common.name = leaf;
+                common.desc = "";
+                state.ts = Date.now();
+              }
+            }
             continue;
           }
           if (state.ts < cutoff) {
