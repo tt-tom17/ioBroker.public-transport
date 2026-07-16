@@ -595,6 +595,7 @@ class Library extends BaseClass {
    * @returns void
    */
   async initStates(states) {
+    var _a;
     if (!states) {
       return;
     }
@@ -625,6 +626,26 @@ class Library extends BaseClass {
         this.log.debug(`Delete channel with dp:${channel}`);
       }
     }
+    for (const type of ["device", "channel", "folder"]) {
+      let objs = {};
+      try {
+        objs = await this.adapter.getForeignObjectsAsync(
+          `${this.adapter.name}.${this.adapter.instance}.*`,
+          type
+        );
+      } catch (err) {
+        this.log.warn(`initStates: could not load ${type} objects: ${err.message}`);
+        continue;
+      }
+      for (const id in objs) {
+        const dp = id.replace(`${this.adapter.name}.${this.adapter.instance}.`, "");
+        if (!this.isDirAllowed(dp)) {
+          continue;
+        }
+        const obj = objs[id];
+        this.setdb(this.cleandp(id), type, void 0, void 0, true, (_a = obj == null ? void 0 : obj.ts) != null ? _a : 0, obj, true);
+      }
+    }
   }
   /**
    * Resets states that have not been updated in the database in offset time. Container objects
@@ -647,6 +668,9 @@ class Library extends BaseClass {
     }
     const cutoff = since != null ? since : Date.now() - offset;
     prefix = this.cleandp(prefix);
+    let gcMatched = 0;
+    let gcChannels = 0;
+    let gcNeutralized = 0;
     if (this.stateDataBase) {
       for (const id in this.stateDataBase) {
         if (id.startsWith(prefix)) {
@@ -654,7 +678,11 @@ class Library extends BaseClass {
           if (!state) {
             continue;
           }
+          gcMatched++;
           if (state.val == void 0) {
+            if (state.type !== "state") {
+              gcChannels++;
+            }
             if (!del && state.type !== "state" && ((_a = state.obj) == null ? void 0 : _a.common) && state.ts < cutoff) {
               const leaf = (_b = id.split(".").pop()) != null ? _b : "";
               const common = state.obj.common;
@@ -663,6 +691,7 @@ class Library extends BaseClass {
                 common.name = leaf;
                 common.desc = "";
                 state.ts = Date.now();
+                gcNeutralized++;
               }
             }
             continue;
@@ -708,6 +737,9 @@ class Library extends BaseClass {
         }
       }
     }
+    this.log.debug(
+      `garbageColleting ${prefix}: matched=${gcMatched} channels=${gcChannels} neutralized=${gcNeutralized}`
+    );
   }
   getLocalLanguage() {
     if (this.adapter.language) {
