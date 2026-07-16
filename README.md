@@ -24,6 +24,9 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) fixed journey and departure channel names showing stale labels after a connection changed
+
 ### 0.10.1 (2026-07-11)
 * (tt-tom17) fixed departure and journey data points being cleared during slow polls (#87)
 
