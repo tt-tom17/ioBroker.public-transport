@@ -127,6 +127,9 @@ class BaseTransportService {
    */
   isRetryable(error) {
     const e = error;
+    if ((e == null ? void 0 : e.hafasCode) === "H890") {
+      return false;
+    }
     if ((e == null ? void 0 : e.shouldRetry) === true || (e == null ? void 0 : e.isCausedByServer) === true || (e == null ? void 0 : e.isTimeout) === true) {
       return true;
     }

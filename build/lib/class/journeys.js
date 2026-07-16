@@ -72,6 +72,21 @@ class JourneysRequest extends import_library.BaseClass {
       await this.writeJourneysStates(journeyId, response, countEntries, client_profile);
       return true;
     } catch (error) {
+      if (error.hafasCode === "H890") {
+        const transfers = options.transfers;
+        const hint = typeof transfers === "number" && transfers >= 0 ? ` (no connection with max. ${transfers} transfer(s) - increase "Number of transfers")` : "";
+        this.log.warn(
+          `No journeys found from station ${from} to ${to}${hint}, client_profile: ${client_profile || "kein Profil angegeben"}`
+        );
+        try {
+          await this.writeJourneysStates(journeyId, { journeys: [] }, countEntries, client_profile);
+        } catch (writeError) {
+          this.log.error(
+            `Error clearing journey states from station ${from} to ${to}: ${writeError.message}`
+          );
+        }
+        return true;
+      }
       this.log.error(`Error querying journeys from station ${from} to ${to}: ${error.message}`);
       return false;
     }

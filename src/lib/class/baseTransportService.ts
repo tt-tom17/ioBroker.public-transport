@@ -162,8 +162,16 @@ export abstract class BaseTransportService implements ITransportService {
                   isTimeout?: boolean;
                   code?: unknown;
                   cause?: unknown;
+                  hafasCode?: string;
               }
             | undefined;
+        // H890 "journeys search unsuccessful" markiert hafas-client zwar als shouldRetry,
+        // ist bei eingeschränkten Suchparametern (z. B. transfers=0 ohne Direktverbindung)
+        // aber deterministisch: ein sofortiger Retry liefert dasselbe Ergebnis und kostet nur
+        // Zeit. Der nächste Poll-Zyklus versucht es ohnehin erneut.
+        if (e?.hafasCode === 'H890') {
+            return false;
+        }
         if (e?.shouldRetry === true || e?.isCausedByServer === true || e?.isTimeout === true) {
             return true;
         }
