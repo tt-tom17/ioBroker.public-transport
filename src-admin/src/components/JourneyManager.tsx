@@ -15,6 +15,7 @@ interface Journey {
     toStationName?: string;
     enabled?: boolean;
     numResults?: number;
+    transfers?: number;
     products?: Products;
     availableProducts?: Partial<Products>;
     client_profile?: string;
@@ -48,6 +49,7 @@ const JourneyManagerContent: React.FC<ConfigComponentProps> = ({ oContext, data,
             customName: `Journey ${journeys.length + 1}`,
             enabled: true,
             numResults: 5,
+            transfers: -1,
             products: { ...availableProducts } as Products,
             availableProducts,
             client_profile,
