@@ -71,6 +71,28 @@ export class JourneysRequest extends BaseClass {
             await this.writeJourneysStates(journeyId, response, countEntries, client_profile);
             return true;
         } catch (error) {
+            // H890 "journeys search unsuccessful": HAFAS liefert bei zu engen Suchvorgaben
+            // (z. B. transfers=0, aber keine umsteigefreie Verbindung) keinen leeren Treffer,
+            // sondern diesen Fehler. Als "keine Verbindung gefunden" behandeln (nicht als Fehler)
+            // und die States wie im Leer-Fall neutralisieren.
+            if ((error as { hafasCode?: string }).hafasCode === 'H890') {
+                const transfers = options.transfers;
+                const hint =
+                    typeof transfers === 'number' && transfers >= 0
+                        ? ` (no connection with max. ${transfers} transfer(s) - increase "Number of transfers")`
+                        : '';
+                this.log.warn(
+                    `No journeys found from station ${from} to ${to}${hint}, client_profile: ${client_profile || 'kein Profil angegeben'}`,
+                );
+                try {
+                    await this.writeJourneysStates(journeyId, { journeys: [] }, countEntries, client_profile);
+                } catch (writeError) {
+                    this.log.error(
+                        `Error clearing journey states from station ${from} to ${to}: ${(writeError as Error).message}`,
+                    );
+                }
+                return true;
+            }
             this.log.error(`Error querying journeys from station ${from} to ${to}: ${(error as Error).message}`);
             return false;
         }

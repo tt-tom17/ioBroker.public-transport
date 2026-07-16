@@ -1,13 +1,18 @@
 import { I18n } from '@iobroker/adapter-react-v5';
 import type { ConfigGenericProps } from '@iobroker/json-config';
+import type { SelectChangeEvent } from '@mui/material';
 import {
     Box,
     Button,
     Dialog,
     Divider,
+    FormControl,
     FormControlLabel,
     FormHelperText,
+    InputLabel,
+    MenuItem,
     Paper,
+    Select,
     Switch,
     TextField,
     Typography,
@@ -16,6 +21,9 @@ import React, { useState } from 'react';
 import { defaultProducts, getProductsForProfile, type Products } from './Products';
 import ProductSelector from './ProductSelector';
 import StationSearch from './StationSearch';
+
+// Auswahlwerte für „Anzahl Umstiege": -1 = Backend entscheidet (unbegrenzt), 0 = nur Direktverbindungen
+const TRANSFER_OPTIONS = [-1, 0, 1, 2, 3, 4, 5];
 
 interface Journey {
     id: string;
@@ -26,6 +34,7 @@ interface Journey {
     toStationName?: string;
     enabled?: boolean;
     numResults?: number;
+    transfers?: number;
     products?: Products;
     availableProducts?: Partial<Products>; // Produkte die für diese Route verfügbar sind
     client_profile?: string;
@@ -69,6 +78,16 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
             const value = parseInt(event.target.value, 10);
             if (!isNaN(value) && value > 0) {
                 onUpdate(journey.id, { numResults: value });
+            }
+        }
+    };
+
+    const handleTransfersChange = (event: SelectChangeEvent<number>): void => {
+        if (journey && onUpdate) {
+            const raw = event.target.value;
+            const value = typeof raw === 'number' ? raw : parseInt(raw, 10);
+            if (!isNaN(value)) {
+                onUpdate(journey.id, { transfers: value });
             }
         }
     };
@@ -220,6 +239,37 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
                                 helperText={I18n.t('journey_results_count_hint')}
                                 disabled={!alive}
                             />
+
+                            {/* Number of Transfers */}
+                            <FormControl
+                                fullWidth
+                                size="small"
+                                disabled={!alive}
+                            >
+                                <InputLabel id="journey-transfers-label">{I18n.t('journey_transfers')}</InputLabel>
+                                <Select
+                                    labelId="journey-transfers-label"
+                                    id="journey-transfers-select"
+                                    value={journey.transfers ?? -1}
+                                    label={I18n.t('journey_transfers')}
+                                    onChange={handleTransfersChange}
+                                    disabled={!alive}
+                                >
+                                    {TRANSFER_OPTIONS.map(option => (
+                                        <MenuItem
+                                            key={option}
+                                            value={option}
+                                        >
+                                            {option === -1
+                                                ? `-1 (${I18n.t('journey_transfers_any')})`
+                                                : option === 0
+                                                  ? `0 (${I18n.t('journey_transfers_direct')})`
+                                                  : option}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>{I18n.t('journey_transfers_hint')}</FormHelperText>
+                            </FormControl>
 
                             <Divider sx={{ my: 1 }} />
 

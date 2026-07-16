@@ -770,6 +770,34 @@ export class Library extends BaseClass {
                 this.log.debug(`Delete channel with dp:${channel}`);
             }
         }
+
+        // Channel-Objekte (device/channel/folder) ebenfalls laden. `states` (aus getStates)
+        // enthaelt nur State-Datenpunkte; ohne die Channels fehlen sie nach jedem Neustart in
+        // stateDataBase. garbageColleting kann dann verschwundene Channels nicht erkennen und ihre
+        // stale common.name/desc nicht neutralisieren (die Neutralisierung lief bis hier nur im
+        // Unit-Test, wo ein Channel kuenstlich injiziert wird). Alter ts, damit ein Channel, den
+        // der naechste Poll nicht mehr schreibt, als "verschwunden" gilt; noch vorhandene Channels
+        // werden beim Schreiben via writedp wieder auf Date.now() getoucht.
+        for (const type of ['device', 'channel', 'folder'] as const) {
+            let objs: Record<string, ioBroker.Object> = {};
+            try {
+                objs = await this.adapter.getForeignObjectsAsync(
+                    `${this.adapter.name}.${this.adapter.instance}.*`,
+                    type,
+                );
+            } catch (err) {
+                this.log.warn(`initStates: could not load ${type} objects: ${(err as Error).message}`);
+                continue;
+            }
+            for (const id in objs) {
+                const dp = id.replace(`${this.adapter.name}.${this.adapter.instance}.`, '');
+                if (!this.isDirAllowed(dp)) {
+                    continue;
+                }
+                const obj = objs[id];
+                this.setdb(this.cleandp(id), type, undefined, undefined, true, obj?.ts ?? 0, obj, true);
+            }
+        }
     }
 
     /**
@@ -796,6 +824,11 @@ export class Library extends BaseClass {
         // yields a raw prefix that never startsWith the sanitized db keys ("..._12072_..."), so
         // garbage collection silently matches nothing and stale values are never cleared (#82).
         prefix = this.cleandp(prefix);
+        // Diagnose-Zähler: wie viele DB-Einträge unter dem Prefix gematcht wurden, wie viele davon
+        // Channels (channel/folder/device) sind und wie viele davon neutralisiert wurden.
+        let gcMatched = 0;
+        let gcChannels = 0;
+        let gcNeutralized = 0;
         if (this.stateDataBase) {
             for (const id in this.stateDataBase) {
                 if (id.startsWith(prefix)) {
@@ -803,6 +836,7 @@ export class Library extends BaseClass {
                     if (!state) {
                         continue;
                     }
+                    gcMatched++;
                     // Container objects (channel/folder/device) carry no value. When a container
                     // was not (re)written in this poll — e.g. a leg that vanished because the journey
                     // shrank — resetting only its states leaves the stale dynamic name ("A → B",
@@ -812,6 +846,9 @@ export class Library extends BaseClass {
                     // whole subtree is removed) and for value states (val==undefined && type 'state'),
                     // which keep the existing reset path below.
                     if (state.val == undefined) {
+                        if (state.type !== 'state') {
+                            gcChannels++;
+                        }
                         if (!del && state.type !== 'state' && state.obj?.common && state.ts < cutoff) {
                             const leaf = id.split('.').pop() ?? '';
                             const common = state.obj.common;
@@ -820,6 +857,7 @@ export class Library extends BaseClass {
                                 common.name = leaf;
                                 common.desc = '';
                                 state.ts = Date.now();
+                                gcNeutralized++;
                             }
                         }
                         continue;
@@ -866,6 +904,9 @@ export class Library extends BaseClass {
                 }
             }
         }
+        this.log.debug(
+            `garbageColleting ${prefix}: matched=${gcMatched} channels=${gcChannels} neutralized=${gcNeutralized}`,
+        );
     }
 
     getLocalLanguage(): ioBroker.Languages {
