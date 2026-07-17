@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.10.1",
+    "version": "0.10.2",
     "news": {
       "0.10.2": {
         "en": "fixed journey and departure channel names showing stale labels after a connection changed",
@@ -93,19 +93,6 @@
         "pl": "dodano profil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = kierunek i linia\n(widget) dodano linię odjazdu",
         "uk": "додано профіль HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = напрямок і лінія\n(віджет) додано лінію відправлення",
         "zh-cn": "添加了 HAFAS 配置文件 VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = 方向和线路\n(widget) 添加出发线路"
-      },
-      "0.8.1": {
-        "en": "added HAFAS profile RMV (Rhein-Main-Verkehrsverbund)\nmoved per-station polling logs (entry/fetching/updated) to suppressible info level (suppressInfoLogs)\nfixed \"unknown product\" errors by dropping profile-unsupported products before requests",
-        "de": "HAFAS-Profil RMV (Rhein-Main-Verkehrsverbund) hinzugefügt\nstationsbezogene Polling-Logs (entry/fetching/updated) auf unterdrückbare Info-Stufe verschoben (suppressInfoLogs)\n\"unknown product\"-Fehler behoben, indem profilfremde Produkte vor Anfragen entfernt werden",
-        "ru": "добавлен профиль HAFAS RMV (Rhein-Main-Verkehrsverbund)\nлоги опроса по станциям (entry/fetching/updated) перенесены на подавляемый уровень info (suppressInfoLogs)\nисправлены ошибки \"unknown product\" путём удаления неподдерживаемых профилем продуктов перед запросами",
-        "pt": "adicionado o perfil HAFAS RMV (Rhein-Main-Verkehrsverbund)\nlogs de polling por estação (entry/fetching/updated) movidos para o nível info suprimível (suppressInfoLogs)\ncorrigidos erros \"unknown product\" removendo produtos não suportados pelo perfil antes das requisições",
-        "nl": "HAFAS-profiel RMV (Rhein-Main-Verkehrsverbund) toegevoegd\npolling-logs per station (entry/fetching/updated) verplaatst naar onderdrukbaar info-niveau (suppressInfoLogs)\n\"unknown product\"-fouten opgelost door profielonondersteunde producten voor verzoeken te verwijderen",
-        "fr": "ajout du profil HAFAS RMV (Rhein-Main-Verkehrsverbund)\nlogs de polling par station (entry/fetching/updated) déplacés vers un niveau info supprimable (suppressInfoLogs)\ncorrection des erreurs \"unknown product\" en supprimant les produits non pris en charge par le profil avant les requêtes",
-        "it": "aggiunto il profilo HAFAS RMV (Rhein-Main-Verkehrsverbund)\nlog di polling per stazione (entry/fetching/updated) spostati su un livello info sopprimibile (suppressInfoLogs)\ncorretti gli errori \"unknown product\" rimuovendo i prodotti non supportati dal profilo prima delle richieste",
-        "es": "añadido el perfil HAFAS RMV (Rhein-Main-Verkehrsverbund)\nlogs de sondeo por estación (entry/fetching/updated) movidos a un nivel info suprimible (suppressInfoLogs)\ncorregidos los errores \"unknown product\" eliminando los productos no compatibles con el perfil antes de las solicitudes",
-        "pl": "dodano profil HAFAS RMV (Rhein-Main-Verkehrsverbund)\nlogi odpytywania per stacja (entry/fetching/updated) przeniesione na tłumiony poziom info (suppressInfoLogs)\nnaprawiono błędy \"unknown product\" przez usuwanie produktów nieobsługiwanych przez profil przed żądaniami",
-        "uk": "додано профіль HAFAS RMV (Rhein-Main-Verkehrsverbund)\nлоги опитування за станціями (entry/fetching/updated) перенесено на придушуваний рівень info (suppressInfoLogs)\nвиправлено помилки \"unknown product\" шляхом видалення непідтримуваних профілем продуктів перед запитами",
-        "zh-cn": "添加了 HAFAS 配置文件 RMV (Rhein-Main-Verkehrsverbund)\n将每站轮询日志(entry/fetching/updated)移至可抑制的 info 级别(suppressInfoLogs)\n通过在请求前移除配置文件不支持的产品,修复了\"unknown product\"错误"
       }
     },
     "titleLang": {
