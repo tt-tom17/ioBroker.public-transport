@@ -218,6 +218,7 @@ export abstract class BaseTransportService implements ITransportService {
      * Produkt-Filter vor dem Backend-Aufruf entfernt werden können (siehe {@link sanitizeProducts}).
      *
      * @param profile Das HAFAS-kompatible Profil, mit dem der Client erzeugt wird
+     * @param profile.products Die vom Profil unterstützten Produkte, deren `id` als Filter gemerkt wird
      */
     protected setProfileProducts(profile: { products?: ReadonlyArray<{ id?: string }> }): void {
         const ids = (profile?.products ?? [])
