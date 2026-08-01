@@ -20,7 +20,7 @@
     "node": ">= 22"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^3.4.1",
+    "@iobroker/adapter-core": "^3.4.3",
     "@motis-project/motis-fptf-client": "^6.5.2",
     "db-vendo-client": "^6.10.12",
     "hafas-client": "^6.3.6"
