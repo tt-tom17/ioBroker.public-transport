@@ -229,5 +229,5 @@ export const normalizeProducts = (products?: Record<string, boolean>): Station['
         const mappedKey = HAFAS_PRODUCT_KEY_MAPPING[key] ?? key;
         normalized[mappedKey] = value;
     });
-    return normalized as Station['products'];
+    return normalized;
 };

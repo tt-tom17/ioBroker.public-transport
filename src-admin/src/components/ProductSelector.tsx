@@ -1,4 +1,4 @@
-import { I18n } from '@iobroker/adapter-react-v5';
+import { I18n } from '@iobroker/gui-components';
 import { Box, Checkbox, FormControlLabel, Paper, Typography } from '@mui/material';
 import React from 'react';
 import { productConfig, type Products } from './Products';
@@ -45,8 +45,8 @@ const ProductSelector: React.FC<ProductSelectorProps> = ({
                         disabled={disabled}
                         control={
                             <Checkbox
-                                checked={products[key as keyof Products] ?? true}
-                                onChange={e => handleChange(key as keyof Products, e.target.checked)}
+                                checked={products[key] ?? true}
+                                onChange={e => handleChange(key, e.target.checked)}
                                 sx={{ color, '&.Mui-checked': { color } }}
                                 size="small"
                             />
@@ -57,11 +57,7 @@ const ProductSelector: React.FC<ProductSelectorProps> = ({
                                 <Typography
                                     variant="body2"
                                     color={disabled ? 'text.disabled' : 'text.primary'}
-                                    sx={
-                                        nativeProducts?.[key as keyof Products]
-                                            ? { textDecoration: 'underline' }
-                                            : undefined
-                                    }
+                                    sx={nativeProducts?.[key] ? { textDecoration: 'underline' } : undefined}
                                 >
                                     {I18n.t(label)}
                                 </Typography>

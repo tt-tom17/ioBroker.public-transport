@@ -1,4 +1,4 @@
-import { I18n } from '@iobroker/adapter-react-v5';
+import { I18n } from '@iobroker/gui-components';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import {
     Box,
@@ -126,7 +126,7 @@ const StationList: React.FC<StationListProps> = ({
                                             <Typography
                                                 component="span"
                                                 variant="caption"
-                                                display="block"
+                                                sx={{ display: 'block' }}
                                             >
                                                 ID: {station.id}
                                             </Typography>
@@ -134,7 +134,7 @@ const StationList: React.FC<StationListProps> = ({
                                                 <Typography
                                                     component="span"
                                                     variant="caption"
-                                                    display="block"
+                                                    sx={{ display: 'block' }}
                                                     color="text.secondary"
                                                 >
                                                     Original: {station.name}
@@ -143,7 +143,7 @@ const StationList: React.FC<StationListProps> = ({
                                             <Typography
                                                 component="span"
                                                 variant="caption"
-                                                display="block"
+                                                sx={{ display: 'block' }}
                                             >
                                                 {station.enabled === false ? I18n.t('disabled') : I18n.t('active')}
                                             </Typography>
@@ -151,14 +151,17 @@ const StationList: React.FC<StationListProps> = ({
                                                 <Typography
                                                     component="span"
                                                     variant="caption"
-                                                    display="block"
+                                                    sx={{ display: 'block' }}
                                                 >
                                                     {station.client_profile}
                                                 </Typography>
                                             )}
                                         </>
                                     }
-                                    slotProps={{ primary: { fontWeight: 500 }, secondary: { component: 'div' } }}
+                                    slotProps={{
+                                        primary: { sx: { fontWeight: 500 } },
+                                        secondary: { component: 'div' },
+                                    }}
                                 />
                                 <IconButton
                                     edge="end"

@@ -1,4 +1,4 @@
-import { I18n } from '@iobroker/adapter-react-v5';
+import { I18n } from '@iobroker/gui-components';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import {
     Box,
@@ -130,7 +130,7 @@ const JourneyList: React.FC<JourneyListProps> = ({
                                                 <Typography
                                                     component="span"
                                                     variant="caption"
-                                                    display="block"
+                                                    sx={{ display: 'block' }}
                                                 >
                                                     {I18n.t('from')}: {journey.fromStationName}
                                                 </Typography>
@@ -139,7 +139,7 @@ const JourneyList: React.FC<JourneyListProps> = ({
                                                 <Typography
                                                     component="span"
                                                     variant="caption"
-                                                    display="block"
+                                                    sx={{ display: 'block' }}
                                                 >
                                                     {I18n.t('to')}: {journey.toStationName}
                                                 </Typography>
@@ -147,7 +147,7 @@ const JourneyList: React.FC<JourneyListProps> = ({
                                             <Typography
                                                 component="span"
                                                 variant="caption"
-                                                display="block"
+                                                sx={{ display: 'block' }}
                                             >
                                                 {journey.enabled === false ? I18n.t('disabled') : I18n.t('active')}
                                             </Typography>
@@ -155,14 +155,17 @@ const JourneyList: React.FC<JourneyListProps> = ({
                                                 <Typography
                                                     component="span"
                                                     variant="caption"
-                                                    display="block"
+                                                    sx={{ display: 'block' }}
                                                 >
                                                     {journey.client_profile}
                                                 </Typography>
                                             )}
                                         </>
                                     }
-                                    slotProps={{ primary: { fontWeight: 500 }, secondary: { component: 'div' } }}
+                                    slotProps={{
+                                        primary: { sx: { fontWeight: 500 } },
+                                        secondary: { component: 'div' },
+                                    }}
                                 />
                                 <IconButton
                                     edge="end"

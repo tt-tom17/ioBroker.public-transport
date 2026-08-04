@@ -11,7 +11,7 @@ import {
     type GenericAppProps,
     type GenericAppState,
     type IobTheme,
-} from '@iobroker/adapter-react-v5';
+} from '@iobroker/gui-components';
 
 import ClientConfig from './components/ClientConfig';
 import DepartureManager from './components/DepartureManager';
@@ -118,7 +118,7 @@ class App extends GenericApp<GenericAppProps, AppState> {
             data: this.state.data,
             originalData: this.state.originalData,
             onError: (): void => {},
-            onChange: (attrOrData: string | Record<string, any>): void => {
+            onChange: (attrOrData?: string | Record<string, any>): void => {
                 if (typeof attrOrData === 'object') {
                     this.setState({ data: attrOrData });
                 }

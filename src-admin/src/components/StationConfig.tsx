@@ -1,4 +1,4 @@
-import { I18n } from '@iobroker/adapter-react-v5';
+import { I18n } from '@iobroker/gui-components';
 import { Box, Divider, FormControlLabel, FormHelperText, Paper, Switch, TextField, Typography } from '@mui/material';
 import React from 'react';
 import ProductSelector from './ProductSelector';
