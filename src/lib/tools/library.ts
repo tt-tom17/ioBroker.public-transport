@@ -956,7 +956,7 @@ export class Library extends BaseClass {
         'zh-cn',
     ];
     private standardTranslationPath(language: ioBroker.Languages | undefined): string {
-        return `../../../admin/i18n/${language}/translations.json`;
+        return `../../../admin/i18n/${language}.json`;
     }
     private customTranslationPath(language: ioBroker.Languages | undefined): string {
         return `../../../admin/custom/i18n/${language}.json`;

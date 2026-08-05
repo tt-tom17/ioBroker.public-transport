@@ -17,6 +17,7 @@ interface Station {
     nativeProducts?: Partial<Products>; // Von HAFAS gemeldete Produkte der Station (unveränderlich)
     client_profile?: string;
     nspanel?: boolean;
+    createDetailDatapoints?: boolean;
 }
 
 interface StationConfigProps {
@@ -41,6 +42,12 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate, alive 
     const handleNsPanelChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         if (station && onUpdate) {
             onUpdate(station.id, { nspanel: event.target.checked });
+        }
+    };
+
+    const handleCreateDetailDatapointsChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        if (station && onUpdate) {
+            onUpdate(station.id, { createDetailDatapoints: event.target.checked });
         }
     };
 
@@ -137,6 +144,21 @@ const StationConfig: React.FC<StationConfigProps> = ({ station, onUpdate, alive 
                             }
                             label={I18n.t('enabled')}
                         />
+
+                        {/* Set Datapoints Switch */}
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={station.createDetailDatapoints === true}
+                                        onChange={handleCreateDetailDatapointsChange}
+                                        disabled={!alive}
+                                    />
+                                }
+                                label={I18n.t('set_datapoints')}
+                            />
+                            <FormHelperText>{I18n.t('se_datapoints_hint')}</FormHelperText>
+                        </Box>
 
                         {/* NSPanel Channel Switch */}
                         <Box>
