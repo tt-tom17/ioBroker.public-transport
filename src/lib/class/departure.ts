@@ -214,7 +214,7 @@ export class DepartureRequest extends BaseClass {
             const CreateDetailDatapoints = stationConfig.createDetailDatapoints ?? false;
             this.log.debug(`nspanel ${Nspanel}`);
             this.log.debug(`datapoints ${CreateDetailDatapoints}`);
-            if (Nspanel && CreateDetailDatapoints) {
+            if (Nspanel || CreateDetailDatapoints) {
                 // JSON in die States schreiben
                 await this.writeBaseStates(departureStates, stationId, countEntries, Nspanel, CreateDetailDatapoints);
             }

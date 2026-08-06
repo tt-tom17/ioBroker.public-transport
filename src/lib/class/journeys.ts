@@ -290,7 +290,7 @@ export class JourneysRequest extends BaseClass {
             // Verbindungen
             this.log.debug(`nspanel ${nspanel}`);
             this.log.debug(`datapoints ${createDetailDatapoints}`);
-            if (nspanel && createDetailDatapoints) {
+            if (nspanel || createDetailDatapoints) {
                 await this.writeJourneyStates(basePath, journeys, countEntries, nspanel, createDetailDatapoints);
             }
         } catch (err) {

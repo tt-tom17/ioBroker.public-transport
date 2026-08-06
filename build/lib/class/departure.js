@@ -198,7 +198,7 @@ class DepartureRequest extends import_library.BaseClass {
       const CreateDetailDatapoints = (_b = stationConfig.createDetailDatapoints) != null ? _b : false;
       this.log.debug(`nspanel ${Nspanel}`);
       this.log.debug(`datapoints ${CreateDetailDatapoints}`);
-      if (Nspanel && CreateDetailDatapoints) {
+      if (Nspanel || CreateDetailDatapoints) {
         await this.writeBaseStates(departureStates, stationId, countEntries, Nspanel, CreateDetailDatapoints);
       }
       await this.library.garbageColleting(
