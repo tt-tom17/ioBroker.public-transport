@@ -3,7 +3,7 @@
     "name": "public-transport",
     "version": "0.10.2",
     "news": {
-      "0.11.0": {
+      "1.0.0": {
         "en": "The configuration UI was migrated to the new admin UI (React 19, MUI 9) — this version requires admin 8.0.1 or newer, the settings no longer open on admin 7",
         "de": "Die Konfigurationsoberfläche wurde auf die neue Admin-UI umgestellt (React 19, MUI 9) — ab dieser Version wird Admin 8.0.1 oder neuer benötigt, unter Admin 7 lassen sich die Einstellungen nicht mehr öffnen",
         "ru": "Интерфейс настроек переведён на новый интерфейс admin (React 19, MUI 9) — начиная с этой версии требуется admin 8.0.1 или новее, в admin 7 настройки больше не открываются",
