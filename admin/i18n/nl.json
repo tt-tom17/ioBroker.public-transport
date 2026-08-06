@@ -209,6 +209,8 @@
     "select_journey_to_configure": "Selecteer een reis om te configureren",
     "select_station_to_configure": "Selecteer een station om te configureren",
     "select_to_station": "Selecteer Bestemmingsstation",
+    "set_datapoints": "Detailgegevenspunten aanmaken",
+    "set_datapoints_hint": "Maakt afzonderlijke gegevenspunten aan voor elke vermelding (lijn, bestemming, vertraging enz.). Als de optie uit staat, worden alleen het JSON-gegevenspunt en de samenvatting geschreven — dat scheelt veel objecten.",
     "settings_title": "Instellingen",
     "stationSearch_cancel": "Annuleren",
     "stationSearch_confirm": "Bevestigen",

@@ -231,7 +231,7 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
                                     }
                                     label={I18n.t('set_datapoints')}
                                 />
-                                <FormHelperText>{I18n.t('se_datapoints_hint')}</FormHelperText>
+                                <FormHelperText>{I18n.t('set_datapoints_hint')}</FormHelperText>
                             </Box>
 
                             {/* NSPanel Channel Switch */}

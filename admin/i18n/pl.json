@@ -209,6 +209,8 @@
     "select_journey_to_configure": "Wybierz podróż do skonfigurowania",
     "select_station_to_configure": "Wybierz stację do skonfigurowania",
     "select_to_station": "Wybierz stację docelową",
+    "set_datapoints": "Utwórz szczegółowe punkty danych",
+    "set_datapoints_hint": "Tworzy osobne punkty danych dla każdego wpisu (linia, cel, opóźnienie itd.). Gdy opcja jest wyłączona, zapisywane są tylko punkt danych JSON i podsumowanie — to oszczędza wiele obiektów.",
     "settings_title": "Ustawienia",
     "stationSearch_cancel": "Anulować",
     "stationSearch_confirm": "Potwierdzać",
