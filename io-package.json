@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "1.0.0",
     "news": {
+      "1.1.0": {
+        "en": "The detail datapoints per departure and journey are now optional — the switch is off by default",
+        "de": "Die Detail-Datenpunkte je Abfahrt und Verbindung sind jetzt optional — der Schalter ist standardmäßig aus",
+        "ru": "Подробные точки данных для отправлений и маршрутов теперь необязательны — переключатель по умолчанию выключен",
+        "pt": "Os pontos de dados detalhados por partida e ligação são agora opcionais — o interruptor está desativado por predefinição",
+        "nl": "De detailgegevenspunten per vertrek en verbinding zijn nu optioneel — de schakelaar staat standaard uit",
+        "fr": "Les points de données détaillés par départ et par trajet sont désormais optionnels — l'interrupteur est désactivé par défaut",
+        "it": "I punti dati dettagliati per partenza e collegamento sono ora opzionali — l'interruttore è disattivato per impostazione predefinita",
+        "es": "Los puntos de datos detallados por salida y trayecto ahora son opcionales — el interruptor está desactivado de forma predeterminada",
+        "pl": "Szczegółowe punkty danych dla odjazdów i połączeń są teraz opcjonalne — przełącznik jest domyślnie wyłączony",
+        "uk": "Докладні точки даних для відправлень і маршрутів тепер необов’язкові — перемикач типово вимкнено",
+        "zh-cn": "每个出发和行程的详细数据点现在是可选的——该开关默认关闭"
+      },
       "1.0.0": {
         "en": "The configuration UI was migrated to the new admin UI (React 19, MUI 9) — this version requires admin 8.0.1 or newer",
         "de": "Die Konfigurationsoberfläche wurde auf die neue Admin-UI umgestellt (React 19, MUI 9) — ab dieser Version wird Admin 8.0.1 oder neuer benötigt",
