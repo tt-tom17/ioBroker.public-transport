@@ -24,6 +24,9 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) added a "Create detail data points" switch per station and journey; when it is off, only the json data point and the summary are written, which noticeably reduces the number of objects. The switch is off by default - enable it if you rely on the individual data points
+
 ### 1.0.0 (2026-08-08)
 * (tt-tom17) migrated the admin configuration GUI to @iobroker/gui-components 10 (React 19, MUI 9); requires admin >= 8.0.1
 
