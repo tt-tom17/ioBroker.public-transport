@@ -177,7 +177,9 @@ export class PublicTransport extends utils.Adapter {
         this.departurePolling = new DeparturePolling(this);
         this.journeyPolling = new JourneyPolling(this);
 
-        const pollInterval = this.config.pollInterval || 5;
+        // Untergrenze absichern: das Eingabefeld im Admin begrenzt nur im Browser, Werte aus
+        // dem Objektbaum oder aus Alt-Konfigurationen können darunter liegen
+        const pollInterval = Math.max(5, this.config.pollInterval || 5);
 
         try {
             await this.departurePolling.startDepartures(pollInterval);
