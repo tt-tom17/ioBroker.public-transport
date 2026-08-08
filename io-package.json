@@ -1,20 +1,20 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "0.10.2",
+    "version": "1.0.0",
     "news": {
       "1.0.0": {
-        "en": "The configuration UI was migrated to the new admin UI (React 19, MUI 9) — this version requires admin 8.0.1 or newer, the settings no longer open on admin 7",
-        "de": "Die Konfigurationsoberfläche wurde auf die neue Admin-UI umgestellt (React 19, MUI 9) — ab dieser Version wird Admin 8.0.1 oder neuer benötigt, unter Admin 7 lassen sich die Einstellungen nicht mehr öffnen",
-        "ru": "Интерфейс настроек переведён на новый интерфейс admin (React 19, MUI 9) — начиная с этой версии требуется admin 8.0.1 или новее, в admin 7 настройки больше не открываются",
-        "pt": "A interface de configuração foi migrada para a nova interface do admin (React 19, MUI 9) — a partir desta versão é necessário o admin 8.0.1 ou mais recente; no admin 7 as definições já não abrem",
-        "nl": "De configuratie-interface is overgezet naar de nieuwe admin-interface (React 19, MUI 9) — vanaf deze versie is admin 8.0.1 of nieuwer vereist, onder admin 7 openen de instellingen niet meer",
-        "fr": "L'interface de configuration a été migrée vers la nouvelle interface admin (React 19, MUI 9) — à partir de cette version, admin 8.0.1 ou plus récent est requis ; sous admin 7, les paramètres ne s'ouvrent plus",
-        "it": "L'interfaccia di configurazione è stata migrata alla nuova interfaccia admin (React 19, MUI 9) — da questa versione è richiesto admin 8.0.1 o successivo, con admin 7 le impostazioni non si aprono più",
-        "es": "La interfaz de configuración se ha migrado a la nueva interfaz de admin (React 19, MUI 9) — a partir de esta versión se requiere admin 8.0.1 o posterior; con admin 7 los ajustes ya no se abren",
-        "pl": "Interfejs konfiguracji został przeniesiony na nowy interfejs admin (React 19, MUI 9) — od tej wersji wymagany jest admin 8.0.1 lub nowszy, w admin 7 ustawienia już się nie otwierają",
-        "uk": "Інтерфейс налаштувань переведено на новий інтерфейс admin (React 19, MUI 9) — починаючи з цієї версії потрібен admin 8.0.1 або новіший, в admin 7 налаштування більше не відкриваються",
-        "zh-cn": "配置界面已迁移到新的 admin 界面（React 19、MUI 9）——此版本需要 admin 8.0.1 或更高版本，在 admin 7 下将无法打开设置"
+        "en": "The configuration UI was migrated to the new admin UI (React 19, MUI 9) — this version requires admin 8.0.1 or newer",
+        "de": "Die Konfigurationsoberfläche wurde auf die neue Admin-UI umgestellt (React 19, MUI 9) — ab dieser Version wird Admin 8.0.1 oder neuer benötigt",
+        "ru": "Интерфейс настроек переведён на новый интерфейс admin (React 19, MUI 9) — начиная с этой версии требуется admin 8.0.1 или новее",
+        "pt": "A interface de configuração foi migrada para a nova interface do admin (React 19, MUI 9) — a partir desta versão é necessário o admin 8.0.1 ou mais recente",
+        "nl": "De configuratie-interface is overgezet naar de nieuwe admin-interface (React 19, MUI 9) — vanaf deze versie is admin 8.0.1 of nieuwer vereist",
+        "fr": "L'interface de configuration a été migrée vers la nouvelle interface admin (React 19, MUI 9) — à partir de cette version, admin 8.0.1 ou plus récent est requis",
+        "it": "L'interfaccia di configurazione è stata migrata alla nuova interfaccia admin (React 19, MUI 9) — da questa versione è richiesto admin 8.0.1 o successivo",
+        "es": "La interfaz de configuración se ha migrado a la nueva interfaz de admin (React 19, MUI 9) — a partir de esta versión se requiere admin 8.0.1 o posterior",
+        "pl": "Interfejs konfiguracji został przeniesiony na nowy interfejs admin (React 19, MUI 9) — od tej wersji wymagany jest admin 8.0.1 lub nowszy",
+        "uk": "Інтерфейс налаштувань переведено на новий інтерфейс admin (React 19, MUI 9) — починаючи з цієї версії потрібен admin 8.0.1 або новіший",
+        "zh-cn": "配置界面已迁移到新的 admin 界面（React 19、MUI 9）——此版本需要 admin 8.0.1 或更高版本"
       },
       "0.10.2": {
         "en": "fixed journey and departure channel names showing stale labels after a connection changed",
@@ -93,19 +93,6 @@
         "pl": "naprawiono błędy HAFAS \"Premature close\" (vbb/oebb) przez żądanie nieskompresowanych odpowiedzi (Accept-Encoding: identity)\nzaktualizowano @iobroker/adapter-core do ^3.4.1",
         "uk": "виправлено помилки HAFAS \"Premature close\" (vbb/oebb) шляхом запиту нестиснених відповідей (Accept-Encoding: identity)\nоновлено @iobroker/adapter-core до ^3.4.1",
         "zh-cn": "通过请求未压缩的响应(Accept-Encoding: identity)修复了 HAFAS \"Premature close\"(vbb/oebb)错误\n将 @iobroker/adapter-core 更新至 ^3.4.1"
-      },
-      "0.8.2": {
-        "en": "added HAFAS profile VMT (Verkehrsverbund Mittelthüringen)\n(nspanel journey) DIRECTION = direction and line\n(widget) add departure line",
-        "de": "HAFAS-Profil VMT (Verkehrsverbund Mittelthüringen) hinzugefügt\n(nsPanel Journey) DIRECTION = Richtung und Linie\n(Widget) Abfahrtslinie hinzugefügt",
-        "ru": "добавлен профиль HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = направление и линия\n(виджет) добавлена линия отправления",
-        "pt": "adicionado o perfil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = direção e linha\n(widget) adicionada a linha de partida",
-        "nl": "HAFAS-profiel VMT (Verkehrsverbund Mittelthüringen) toegevoegd\n(nsPanel journey) DIRECTION = richting en lijn\n(widget) vertreklijn toegevoegd",
-        "fr": "ajout du profil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = direction et ligne\n(widget) ajout de la ligne de départ",
-        "it": "aggiunto il profilo HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = direzione e linea\n(widget) aggiunta la linea di partenza",
-        "es": "añadido el perfil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = dirección y línea\n(widget) añadida la línea de salida",
-        "pl": "dodano profil HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = kierunek i linia\n(widget) dodano linię odjazdu",
-        "uk": "додано профіль HAFAS VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = напрямок і лінія\n(віджет) додано лінію відправлення",
-        "zh-cn": "添加了 HAFAS 配置文件 VMT (Verkehrsverbund Mittelthüringen)\n(nsPanel journey) DIRECTION = 方向和线路\n(widget) 添加出发线路"
       }
     },
     "titleLang": {

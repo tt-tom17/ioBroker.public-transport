@@ -24,7 +24,7 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.0 (2026-08-08)
 * (tt-tom17) migrated the admin configuration GUI to @iobroker/gui-components 10 (React 19, MUI 9); requires admin >= 8.0.1
 
 ### 0.10.2 (2026-07-17)
