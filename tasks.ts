@@ -20,7 +20,7 @@ async function main(): Promise<void> {
                 fs.mkdirSync(targetSrcAdmin, { recursive: true });
                 copyDir(buildSrcAdmin, targetSrcAdmin);
                 for (const lang of languages) {
-                    const masterFile = `../admin/i18n/${lang}/translations.json`;
+                    const masterFile = `../admin/i18n/${lang}.json`;
                     const srcFile = `../src-admin/src/i18n/${lang}.json`;
                     const destFile = `../admin/custom/i18n/${lang}.json`;
                     let master: Record<string, string> | undefined = undefined;

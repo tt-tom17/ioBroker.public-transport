@@ -1,4 +1,4 @@
-import { moduleFederationShared } from '@iobroker/adapter-react-v5/modulefederation.admin.config';
+import { moduleFederationShared } from '@iobroker/gui-components/modulefederation.admin.config';
 import { federation } from '@module-federation/vite';
 import react from '@vitejs/plugin-react';
 import { readFileSync } from 'node:fs';
@@ -9,6 +9,7 @@ const config = {
     plugins: [
         federation({
             manifest: true,
+            dts: false,
             name: 'AdminComponentEasyAccessSet',
             filename: 'customComponents.js',
             exposes: {

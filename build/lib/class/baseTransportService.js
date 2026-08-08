@@ -163,6 +163,7 @@ class BaseTransportService {
    * Produkt-Filter vor dem Backend-Aufruf entfernt werden können (siehe {@link sanitizeProducts}).
    *
    * @param profile Das HAFAS-kompatible Profil, mit dem der Client erzeugt wird
+   * @param profile.products Die vom Profil unterstützten Produkte, deren `id` als Filter gemerkt wird
    */
   setProfileProducts(profile) {
     var _a;

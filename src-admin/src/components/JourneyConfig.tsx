@@ -1,4 +1,4 @@
-import { I18n } from '@iobroker/adapter-react-v5';
+import { I18n } from '@iobroker/gui-components';
 import type { ConfigGenericProps } from '@iobroker/json-config';
 import type { SelectChangeEvent } from '@mui/material';
 import {
@@ -97,7 +97,7 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
             // Wenn availableProducts definiert sind, filtere nur die verfügbaren Produkte
             let productsToSave: Products = products;
             if (journey.availableProducts) {
-                productsToSave = {} as Products;
+                productsToSave = {};
                 // Nur Produkte speichern, die in availableProducts vorhanden sind
                 Object.keys(journey.availableProducts).forEach(key => {
                     const productKey = key as keyof Products;
@@ -235,7 +235,7 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
                                 onChange={handleNumResultsChange}
                                 fullWidth
                                 size="small"
-                                inputProps={{ min: 1, max: 20 }}
+                                slotProps={{ htmlInput: { min: 1, max: 20 } }}
                                 helperText={I18n.t('journey_results_count_hint')}
                                 disabled={!alive}
                             />

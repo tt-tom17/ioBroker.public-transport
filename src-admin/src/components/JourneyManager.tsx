@@ -50,7 +50,7 @@ const JourneyManagerContent: React.FC<ConfigComponentProps> = ({ oContext, data,
             enabled: true,
             numResults: 5,
             transfers: -1,
-            products: { ...availableProducts } as Products,
+            products: { ...availableProducts },
             availableProducts,
             client_profile,
         };

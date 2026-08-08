@@ -1,4 +1,4 @@
-import { I18n } from '@iobroker/adapter-react-v5';
+import { I18n } from '@iobroker/gui-components';
 import { ConfigGeneric } from '@iobroker/json-config';
 import type { SelectChangeEvent } from '@mui/material';
 import {

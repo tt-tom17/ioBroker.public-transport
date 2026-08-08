@@ -180,7 +180,7 @@ class PublicTransport extends utils.Adapter {
     this.journeysRequest = new import_journeys.JourneysRequest(this);
     this.departurePolling = new import_departurePolling.DeparturePolling(this);
     this.journeyPolling = new import_journeyPolling.JourneyPolling(this);
-    const pollInterval = this.config.pollInterval || 5;
+    const pollInterval = Math.max(5, this.config.pollInterval || 5);
     try {
       await this.departurePolling.startDepartures(pollInterval);
     } catch (err) {

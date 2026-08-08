@@ -1,4 +1,4 @@
-import { I18n } from '@iobroker/adapter-react-v5';
+import { I18n } from '@iobroker/gui-components';
 import type { ConfigGenericProps } from '@iobroker/json-config';
 import {
     Box,
@@ -201,8 +201,7 @@ const StationSearch: React.FC<StationSearchProps> = ({ oContext, onStationSelect
                                             <Box sx={{ mt: 0.5 }}>
                                                 <Typography
                                                     variant="caption"
-                                                    display="block"
-                                                    sx={{ mb: 0.5 }}
+                                                    sx={{ display: 'block', mb: 0.5 }}
                                                 >
                                                     {station.type
                                                         ? `${station.type}${station.location ? ` (${station.location.latitude?.toFixed(4)}, ${station.location.longitude?.toFixed(4)})` : ''}`
