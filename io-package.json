@@ -108,6 +108,48 @@
         "zh-cn": "通过请求未压缩的响应(Accept-Encoding: identity)修复了 HAFAS \"Premature close\"(vbb/oebb)错误\n将 @iobroker/adapter-core 更新至 ^3.4.1"
       }
     },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<1.1.0",
+            "newVersion>=1.1.0"
+          ]
+        },
+        "title": {
+          "en": "Detail data points are now optional",
+          "de": "Detail-Datenpunkte sind jetzt optional",
+          "ru": "Подробные точки данных теперь необязательны",
+          "pt": "Os pontos de dados detalhados agora são opcionais",
+          "nl": "Detailgegevenspunten zijn nu optioneel",
+          "fr": "Les points de données détaillés sont désormais optionnels",
+          "it": "I punti dati dettagliati sono ora opzionali",
+          "es": "Los puntos de datos detallados ahora son opcionales",
+          "pl": "Szczegółowe punkty danych są teraz opcjonalne",
+          "uk": "Докладні точки даних тепер необов’язкові",
+          "zh-cn": "详细数据点现在为可选项"
+        },
+        "text": {
+          "en": "As of version 1.1.0 the adapter only creates the detail data points per departure and journey if the option “Create detail data points” is enabled for that station or journey. The option is off by default, so existing detail data points are no longer updated after the update. If you use these data points in scripts or in your visualisation, enable the option in the adapter settings after updating.",
+          "de": "Ab Version 1.1.0 legt der Adapter die Detail-Datenpunkte je Abfahrt und Verbindung nur noch an, wenn bei der jeweiligen Station bzw. Verbindung die Option „Detail-Datenpunkte anlegen“ eingeschaltet ist. Die Option ist standardmäßig aus, bestehende Detail-Datenpunkte werden nach dem Update also nicht mehr aktualisiert. Wenn Sie diese Datenpunkte in Skripten oder in der Visualisierung verwenden, schalten Sie die Option nach dem Update in den Adaptereinstellungen ein.",
+          "ru": "Начиная с версии 1.1.0 адаптер создаёт подробные точки данных для каждого отправления и маршрута только тогда, когда для соответствующей станции или маршрута включена опция «Создавать подробные точки данных». По умолчанию опция выключена, поэтому после обновления существующие подробные точки данных больше не обновляются. Если вы используете эти точки данных в скриптах или в визуализации, включите опцию в настройках адаптера после обновления.",
+          "pt": "A partir da versão 1.1.0, o adaptador só cria os pontos de dados detalhados por partida e viagem se a opção “Criar pontos de dados detalhados” estiver ativada na respectiva estação ou viagem. A opção está desativada por padrão, portanto os pontos de dados detalhados existentes deixam de ser atualizados após a atualização. Se você usa esses pontos de dados em scripts ou na visualização, ative a opção nas configurações do adaptador depois de atualizar.",
+          "nl": "Vanaf versie 1.1.0 maakt de adapter de detailgegevenspunten per vertrek en verbinding alleen nog aan als bij het betreffende station of de betreffende verbinding de optie “Detailgegevenspunten aanmaken” is ingeschakeld. De optie staat standaard uit, bestaande detailgegevenspunten worden na de update dus niet meer bijgewerkt. Gebruikt u deze gegevenspunten in scripts of in de visualisatie, schakel de optie dan na de update in bij de adapterinstellingen.",
+          "fr": "À partir de la version 1.1.0, l’adaptateur ne crée les points de données détaillés par départ et par trajet que si l’option « Créer des points de données détaillés » est activée pour la station ou le trajet concerné. L’option est désactivée par défaut ; les points de données détaillés existants ne sont donc plus mis à jour après la mise à jour. Si vous utilisez ces points de données dans des scripts ou dans la visualisation, activez l’option dans les paramètres de l’adaptateur après la mise à jour.",
+          "it": "A partire dalla versione 1.1.0 l’adattatore crea i punti dati dettagliati per ogni partenza e collegamento solo se per la relativa stazione o collegamento è attivata l’opzione “Crea punti dati dettagliati”. L’opzione è disattivata per impostazione predefinita, quindi i punti dati dettagliati esistenti non vengono più aggiornati dopo l’aggiornamento. Se utilizzi questi punti dati in script o nella visualizzazione, attiva l’opzione nelle impostazioni dell’adattatore dopo l’aggiornamento.",
+          "es": "A partir de la versión 1.1.0, el adaptador solo crea los puntos de datos detallados por salida y trayecto si la opción «Crear puntos de datos detallados» está activada en la estación o el trayecto correspondiente. La opción está desactivada de forma predeterminada, por lo que los puntos de datos detallados existentes ya no se actualizan tras la actualización. Si utiliza estos puntos de datos en scripts o en la visualización, active la opción en la configuración del adaptador después de actualizar.",
+          "pl": "Od wersji 1.1.0 adapter tworzy szczegółowe punkty danych dla każdego odjazdu i połączenia tylko wtedy, gdy dla danej stacji lub połączenia włączona jest opcja „Utwórz szczegółowe punkty danych”. Opcja jest domyślnie wyłączona, więc istniejące szczegółowe punkty danych nie są już aktualizowane po aktualizacji. Jeśli używasz tych punktów danych w skryptach lub w wizualizacji, włącz tę opcję w ustawieniach adaptera po aktualizacji.",
+          "uk": "Починаючи з версії 1.1.0 адаптер створює докладні точки даних для кожного відправлення та маршруту лише тоді, коли для відповідної станції або маршруту увімкнено опцію «Створювати докладні точки даних». За замовчуванням опція вимкнена, тому наявні докладні точки даних після оновлення більше не оновлюються. Якщо ви використовуєте ці точки даних у скриптах або у візуалізації, увімкніть опцію в налаштуваннях адаптера після оновлення.",
+          "zh-cn": "从 1.1.0 版本起，适配器仅在相应车站或行程启用了“创建详细数据点”选项时，才会为每个发车和行程创建详细数据点。该选项默认关闭，因此升级后现有的详细数据点将不再更新。如果您在脚本或可视化中使用这些数据点，请在升级后于适配器设置中启用该选项。"
+        },
+        "level": "warn",
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      }
+    ],
     "titleLang": {
       "en": "Public Transport",
       "de": "Public Transport",
