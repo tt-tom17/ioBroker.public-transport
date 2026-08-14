@@ -2,6 +2,7 @@ import * as utils from '@iobroker/adapter-core';
 import { VendoService } from './lib/class/dbVendoService';
 import { DepartureRequest } from './lib/class/departure';
 import { DeparturePolling } from './lib/class/departurePolling';
+import { EfaService } from './lib/class/efaService';
 import { HafasService } from './lib/class/hafasService';
 import { JourneyPolling } from './lib/class/journeyPolling';
 import { JourneysRequest } from './lib/class/journeys';
@@ -19,6 +20,7 @@ export class PublicTransport extends utils.Adapter {
     hService!: HafasService;
     vService!: VendoService;
     mService!: MotisService;
+    eService!: EfaService;
     activeService!: ITransportService | undefined;
     depRequest!: DepartureRequest;
     journeysRequest!: JourneysRequest;
@@ -137,7 +139,7 @@ export class PublicTransport extends utils.Adapter {
         await this.applyObjectsWarnLimit();
 
         // Service basierend auf Konfiguration auswählen
-        const serviceType = this.config.serviceType || 'hafas'; // 'hafas' oder 'vendo'
+        const serviceType = this.config.serviceType || 'hafas'; // 'hafas', 'vendo', 'motis' oder 'efa'
         const clientName = `${this.config.clientName || 'iobroker-public-transport'}-${Math.floor(Math.random() * 1001)}`;
 
         try {
@@ -147,6 +149,12 @@ export class PublicTransport extends utils.Adapter {
                 this.vService.init();
                 this.activeService = this.vService;
                 this.log.info(`VendoService initialized with ClientName: ${clientName}`);
+            } else if (serviceType === 'efa') {
+                // EfaService initialisieren (EFA-JSON, z.B. VRR)
+                this.eService = new EfaService(this, clientName, this.config.efaEndpoint || '');
+                this.eService.init();
+                this.activeService = this.eService;
+                this.log.info(`EFA client initialized with endpoint: ${this.config.efaEndpoint}`);
             } else if (serviceType === 'motis') {
                 // MotisService (Transitous) initialisieren
                 this.mService = new MotisService(this, clientName);

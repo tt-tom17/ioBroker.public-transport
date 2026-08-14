@@ -12,6 +12,8 @@
     "clientConfig_clientName_label": "Client Name",
     "clientConfig_delayOffset_helper": "Offset in Minuten, damit die Verspätung noch als Pünktlich gilt.",
     "clientConfig_delayOffset_label": "Verspätungsoffset (Minuten)",
+    "clientConfig_efaEndpoint_helper": "Basis-URL des EFA-Systems, z. B. https://openservice.vrr.de/openservice",
+    "clientConfig_efaEndpoint_label": "EFA-Basis-URL",
     "clientConfig_objectsWarnLimit_helper": "Ab dieser Objektanzahl warnt der js-controller für diese Instanz (Minimum 5000). Wirksam nach dem Speichern.",
     "clientConfig_objectsWarnLimit_label": "Objektanzahl-Warnschwelle",
     "clientConfig_objectsWarnLimit_min_error": "Mindestwert ist %s.",

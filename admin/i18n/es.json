@@ -12,6 +12,8 @@
     "clientConfig_clientName_label": "Nombre del cliente",
     "clientConfig_delayOffset_helper": "Compensación en minutos para que un retraso aún se considere puntual.",
     "clientConfig_delayOffset_label": "Compensación de retraso (minutos)",
+    "clientConfig_efaEndpoint_helper": "URL base del sistema EFA, p. ej. https://openservice.vrr.de/openservice",
+    "clientConfig_efaEndpoint_label": "URL base de EFA",
     "clientConfig_objectsWarnLimit_helper": "El js-controller advierte para esta instancia por encima de este recuento de objetos (mínimo 5000). Se aplica tras guardar.",
     "clientConfig_objectsWarnLimit_label": "Límite de advertencia de recuento de objetos",
     "clientConfig_objectsWarnLimit_min_error": "El valor mínimo es %s.",

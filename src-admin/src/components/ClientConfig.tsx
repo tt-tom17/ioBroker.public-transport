@@ -19,7 +19,7 @@ import { withConfigGeneric, type ConfigComponentProps } from './ConfigGenericWra
 interface ServiceOption {
     value: string;
     label: string;
-    serviceType: 'hafas' | 'vendo' | 'motis';
+    serviceType: 'hafas' | 'vendo' | 'motis' | 'efa';
     profile: string;
     disabled?: boolean;
 }
@@ -36,7 +36,16 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     // 'vendo:db' (Deutsche Bahn) deaktiviert: db-vendo-Endpoint liefert aktuell OPS_BLOCKED (serverseitige Sperre).
     { value: 'vendo:db', label: 'Vendo - Deutsche Bahn', serviceType: 'vendo', profile: 'db', disabled: true },
     { value: 'motis:compat', label: 'MOTIS - Transitous (DE & Europa)', serviceType: 'motis', profile: 'compat' },
+    { value: 'efa:vrr', label: 'EFA - VRR (Rhein-Ruhr)', serviceType: 'efa', profile: 'vrr' },
 ];
+
+/**
+ * Vorbelegung der Basis-URL je EFA-Profil. Weitere EFA-Verbünde sprechen dasselbe Format und
+ * lassen sich durch Überschreiben des Feldes anbinden.
+ */
+const EFA_DEFAULT_ENDPOINTS: Record<string, string> = {
+    vrr: 'https://openservice.vrr.de/openservice',
+};
 
 const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, onChange, alive, disabled }) => {
     const serviceType = ConfigGeneric.getValue(data, 'serviceType') as string;
@@ -44,6 +53,7 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
     const combinedValue = `${serviceType || 'hafas'}:${profile || 'vbb'}`;
 
     const clientName = ConfigGeneric.getValue(data, 'clientName') as string;
+    const efaEndpoint = ConfigGeneric.getValue(data, 'efaEndpoint') as string;
     const pollInterval = ConfigGeneric.getValue(data, 'pollInterval') as number;
     const suppressInfoLogs = ConfigGeneric.getValue(data, 'suppressInfoLogs') as boolean;
     const delayOffset = ConfigGeneric.getValue(data, 'delayOffset') as number;
@@ -104,7 +114,16 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
         if (selected) {
             await onChange('serviceType', selected.serviceType);
             await onChange('profile', selected.profile);
+            // Beim Wechsel auf EFA die passende Basis-URL vorbelegen, aber eine bereits
+            // eingetragene URL niemals überschreiben – sie kann bewusst abweichen.
+            if (selected.serviceType === 'efa' && !efaEndpoint) {
+                await onChange('efaEndpoint', EFA_DEFAULT_ENDPOINTS[selected.profile] ?? '');
+            }
         }
+    };
+
+    const handleEfaEndpointChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+        await onChange('efaEndpoint', event.target.value);
     };
 
     const handleClientNameChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -175,6 +194,29 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
                     />
                 </FormControl>
             </Box>
+
+            {/* Basis-URL des EFA-Systems: nur bei EFA sichtbar, dort aber Pflichtangabe */}
+            {serviceType === 'efa' && (
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 3 }}>
+                    <FormControl
+                        sx={{ flex: { sm: '1 1 0' }, minWidth: { xs: '100%', sm: 200 } }}
+                        disabled={isDisabled}
+                        fullWidth
+                    >
+                        <TextField
+                            id="efa-endpoint-input"
+                            label={I18n.t('clientConfig_efaEndpoint_label')}
+                            value={efaEndpoint || ''}
+                            onChange={handleEfaEndpointChange}
+                            error={!!efaEndpoint && !/^https?:\/\//i.test(efaEndpoint)}
+                            helperText={I18n.t('clientConfig_efaEndpoint_helper')}
+                            disabled={isDisabled}
+                            fullWidth
+                        />
+                    </FormControl>
+                </Box>
+            )}
+
             <Typography
                 variant="h5"
                 sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}

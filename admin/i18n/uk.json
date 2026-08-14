@@ -12,6 +12,8 @@
     "clientConfig_clientName_label": "Ім'я клієнта",
     "clientConfig_delayOffset_helper": "Зсув у хвилинах для затримки, яка все ще вважається вчасною.",
     "clientConfig_delayOffset_label": "Зміщення затримки (хвилини)",
+    "clientConfig_efaEndpoint_helper": "Базова URL-адреса системи EFA, наприклад https://openservice.vrr.de/openservice",
+    "clientConfig_efaEndpoint_label": "Базова URL-адреса EFA",
     "clientConfig_objectsWarnLimit_helper": "js-controller попереджає для цього екземпляра при перевищенні цієї кількості об'єктів (мінімум 5000). Діє після збереження.",
     "clientConfig_objectsWarnLimit_label": "Поріг попередження про кількість об'єктів",
     "clientConfig_objectsWarnLimit_min_error": "Мінімальне значення — %s.",

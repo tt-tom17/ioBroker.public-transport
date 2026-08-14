@@ -12,6 +12,8 @@
     "clientConfig_clientName_label": "Klantnaam",
     "clientConfig_delayOffset_helper": "Compensatie in minuten zodat een vertraging nog steeds als op tijd wordt beschouwd.",
     "clientConfig_delayOffset_label": "Vertragingscompensatie (minuten)",
+    "clientConfig_efaEndpoint_helper": "Basis-URL van het EFA-systeem, bijv. https://openservice.vrr.de/openservice",
+    "clientConfig_efaEndpoint_label": "EFA-basis-URL",
     "clientConfig_objectsWarnLimit_helper": "De js-controller waarschuwt voor deze instantie boven dit objectaantal (minimaal 5000). Actief na opslaan.",
     "clientConfig_objectsWarnLimit_label": "Waarschuwingslimiet objectaantal",
     "clientConfig_objectsWarnLimit_min_error": "Minimumwaarde is %s.",

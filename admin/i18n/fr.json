@@ -12,6 +12,8 @@
     "clientConfig_clientName_label": "Nom du client",
     "clientConfig_delayOffset_helper": "Décalage en minutes pour qu'un retard soit toujours pris en compte dans le temps.",
     "clientConfig_delayOffset_label": "Décalage du délai (minutes)",
+    "clientConfig_efaEndpoint_helper": "URL de base du système EFA, par ex. https://openservice.vrr.de/openservice",
+    "clientConfig_efaEndpoint_label": "URL de base EFA",
     "clientConfig_objectsWarnLimit_helper": "Le js-controller alerte pour cette instance au-dessus de ce nombre d'objets (minimum 5000). Appliqué après l'enregistrement.",
     "clientConfig_objectsWarnLimit_label": "Seuil d'alerte du nombre d'objets",
     "clientConfig_objectsWarnLimit_min_error": "La valeur minimale est %s.",

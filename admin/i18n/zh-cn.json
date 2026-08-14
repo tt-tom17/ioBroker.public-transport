@@ -12,6 +12,8 @@
     "clientConfig_clientName_label": "客户名称",
     "clientConfig_delayOffset_helper": "以分钟为单位的偏移量仍可按时考虑延迟。",
     "clientConfig_delayOffset_label": "延迟偏移（分钟）",
+    "clientConfig_efaEndpoint_helper": "EFA 系统的基础 URL，例如 https://openservice.vrr.de/openservice",
+    "clientConfig_efaEndpoint_label": "EFA 基础 URL",
     "clientConfig_objectsWarnLimit_helper": "当该实例的对象数量超过此值时，js-controller 会发出警告（最小值 5000）。保存后生效。",
     "clientConfig_objectsWarnLimit_label": "对象数量警告阈值",
     "clientConfig_objectsWarnLimit_min_error": "最小值为 %s。",

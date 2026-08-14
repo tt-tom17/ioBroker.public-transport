@@ -24,6 +24,9 @@ The public-transport adapter enables seamless integration of real-time public tr
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) added EFA as a new backend with VRR (Rhein-Ruhr) as the first network
+
 ### 1.1.0 (2026-08-21)
 * (tt-tom17) added a "Create detail data points" switch per station and journey. The switch is off by default
 * (tt-tom17) fixed the departure widget hiding all multi-word products (S-Bahn, U-Bahn, RE, ICE, ...) whenever the product filter was enabled

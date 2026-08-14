@@ -207,6 +207,7 @@
   "native": {
     "serviceType": "hafas",
     "profile": "vbb",
+    "efaEndpoint": "",
     "clientName": "",
     "pollInterval": 5,
     "logUnknownTokens": false,
