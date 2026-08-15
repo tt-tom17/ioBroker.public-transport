@@ -35,8 +35,6 @@ The adapter itself does not host any timetable data — it queries the interface
 -->
 ### **WORK IN PROGRESS**
 * (tt-tom17) added EFA as a new backend with VRR (Rhein-Ruhr) as the first network
-* (tt-tom17) added the VRR attribution (logo and link) to the instance settings and the documentation
-* (tt-tom17) removed the EFA base URL from the settings; it now belongs to the selected network
 * (tt-tom17) fixed object names no longer being translated since the language files were renamed
 
 ### 1.1.0 (2026-08-21)
