@@ -4,17 +4,17 @@
     "version": "1.0.0",
     "news": {
       "1.1.0": {
-        "en": "The detail datapoints per departure and journey are now optional — the switch is off by default",
-        "de": "Die Detail-Datenpunkte je Abfahrt und Verbindung sind jetzt optional — der Schalter ist standardmäßig aus",
-        "ru": "Подробные точки данных для отправлений и маршрутов теперь необязательны — переключатель по умолчанию выключен",
-        "pt": "Os pontos de dados detalhados por partida e ligação são agora opcionais — o interruptor está desativado por predefinição",
-        "nl": "De detailgegevenspunten per vertrek en verbinding zijn nu optioneel — de schakelaar staat standaard uit",
-        "fr": "Les points de données détaillés par départ et par trajet sont désormais optionnels — l'interrupteur est désactivé par défaut",
-        "it": "I punti dati dettagliati per partenza e collegamento sono ora opzionali — l'interruttore è disattivato per impostazione predefinita",
-        "es": "Los puntos de datos detallados por salida y trayecto ahora son opcionales — el interruptor está desactivado de forma predeterminada",
-        "pl": "Szczegółowe punkty danych dla odjazdów i połączeń są teraz opcjonalne — przełącznik jest domyślnie wyłączony",
-        "uk": "Докладні точки даних для відправлень і маршрутів тепер необов’язкові — перемикач типово вимкнено",
-        "zh-cn": "每个出发和行程的详细数据点现在是可选的——该开关默认关闭"
+        "en": "The detail datapoints per departure and journey are now optional — the switch is off by default\n(Widget) Fix: S-Bahn, U-Bahn, RE and ICE were hidden when the product filter was enabled",
+        "de": "Die Detail-Datenpunkte je Abfahrt und Verbindung sind jetzt optional — der Schalter ist standardmäßig aus\n(Widget) Fix: bei aktivem Produktfilter wurden S-Bahn, U-Bahn, RE und ICE ausgeblendet",
+        "ru": "Подробные точки данных для отправлений и маршрутов теперь необязательны — переключатель по умолчанию выключен\n(Widget) Fix: при включённом фильтре продуктов скрывались S-Bahn, U-Bahn, RE и ICE",
+        "pt": "Os pontos de dados detalhados por partida e ligação são agora opcionais — o interruptor está desativado por predefinição\n(Widget) Fix: com o filtro de produtos ativo, S-Bahn, U-Bahn, RE e ICE ficavam ocultos",
+        "nl": "De detailgegevenspunten per vertrek en verbinding zijn nu optioneel — de schakelaar staat standaard uit\n(Widget) Fix: met actief productfilter werden S-Bahn, U-Bahn, RE en ICE verborgen",
+        "fr": "Les points de données détaillés par départ et par trajet sont désormais optionnels — l'interrupteur est désactivé par défaut\n(Widget) Fix : avec le filtre de produits actif, S-Bahn, U-Bahn, RE et ICE étaient masqués",
+        "it": "I punti dati dettagliati per partenza e collegamento sono ora opzionali — l'interruttore è disattivato per impostazione predefinita\n(Widget) Fix: con il filtro prodotti attivo, S-Bahn, U-Bahn, RE e ICE venivano nascosti",
+        "es": "Los puntos de datos detallados por salida y trayecto ahora son opcionales — el interruptor está desactivado de forma predeterminada\n(Widget) Fix: con el filtro de productos activo se ocultaban S-Bahn, U-Bahn, RE e ICE",
+        "pl": "Szczegółowe punkty danych dla odjazdów i połączeń są teraz opcjonalne — przełącznik jest domyślnie wyłączony\n(Widget) Fix: przy włączonym filtrze produktów ukrywane były S-Bahn, U-Bahn, RE i ICE",
+        "uk": "Докладні точки даних для відправлень і маршрутів тепер необов’язкові — перемикач типово вимкнено\n(Widget) Fix: за увімкненого фільтра продуктів приховувалися S-Bahn, U-Bahn, RE та ICE",
+        "zh-cn": "每个出发和行程的详细数据点现在是可选的——该开关默认关闭\n(Widget) Fix：启用产品过滤器时会隐藏 S-Bahn、U-Bahn、RE 和 ICE"
       },
       "1.0.0": {
         "en": "The configuration UI was migrated to the new admin UI (React 19, MUI 9) — this version requires admin 8.0.1 or newer",
