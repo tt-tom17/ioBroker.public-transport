@@ -8,8 +8,9 @@
  * Produkt-Bereinigung kommen unverändert aus {@link BaseTransportService}.
  *
  * Erstes Zielsystem ist der VRR (Rhein-Ruhr, größter deutscher Verbund). Dieselbe Software
- * läuft bei zahlreichen weiteren Verbünden – deshalb ist die Basis-URL konfigurierbar und
- * nichts VRR-Spezifisches fest verdrahtet.
+ * läuft bei zahlreichen weiteren Verbünden; die Basis-URL steht deshalb nicht im Code
+ * verstreut, sondern gesammelt in {@link EFA_NETWORKS} – ein weiterer Verbund ist ein
+ * Eintrag dort plus ein Eintrag im Profil-Dropdown des Admin-Tabs.
  */
 import type * as Hafas from 'hafas-client';
 import type { PublicTransport } from '../../main';
@@ -46,18 +47,56 @@ const EFA_REQUEST_TIMEZONE = 'Europe/Berlin';
  */
 const EFA_MAX_DEPARTURE_RESULTS = 50;
 
+/**
+ * Basis-URLs der unterstützten EFA-Verbünde, ausgewählt über den Profilnamen aus der
+ * Adapter-Konfiguration (`efa:<profil>` im Dropdown des Admin-Tabs).
+ *
+ * Die Adresse ist bewusst **nicht** konfigurierbar: Ein Verbund verlangt in der Regel eine
+ * eigene Nutzungsvereinbarung, die der Adapter für seine Anwender mit abbildet (beim VRR
+ * etwa Attribution mit Logo und Link). Ein frei eingetragener Fremdserver würde dieses
+ * Einvernehmen still aushebeln. Ein neuer Verbund ist deshalb eine Code-Änderung – nach
+ * Klärung der Nutzungsbedingungen – und keine Einstellung.
+ */
+const EFA_NETWORKS: Record<string, string> = {
+    /** Verkehrsverbund Rhein-Ruhr – Open Service API, registrierungsfrei nutzbar. */
+    vrr: 'https://openservice.vrr.de/openservice',
+};
+
 export class EfaService extends BaseTransportService {
-    /** Basis-URL des EFA-Systems, z. B. `https://openservice.vrr.de/openservice/`. */
-    private readonly endpoint: string;
+    /** Profilname des Verbunds, z. B. `vrr`. Bestimmt die Basis-URL, s. {@link EFA_NETWORKS}. */
+    private readonly profile: string;
 
     /**
      * @param adapter Die Adapter-Instanz
      * @param clientName Name/User-Agent, der an den Server übergeben wird
-     * @param endpoint Basis-URL des EFA-Systems (aus der Instanz-Konfiguration)
+     * @param profile Profilname des Verbunds aus der Instanz-Konfiguration (z. B. `vrr`)
      */
-    constructor(adapter: PublicTransport, clientName: string, endpoint: string) {
+    constructor(adapter: PublicTransport, clientName: string, profile: string) {
         super(adapter, clientName);
-        this.endpoint = endpoint.trim().replace(/\/+$/, '');
+        this.profile = profile.trim();
+    }
+
+    /**
+     * Löst einen Profilnamen in die Basis-URL des Verbunds auf. Fail-fast wie bei HAFAS: ohne
+     * bzw. mit unbekanntem Profil startet der Adapter bewusst NICHT mit einem stillen Default,
+     * weil sonst Fahrplandaten einer völlig anderen Region ausgeliefert würden.
+     *
+     * @returns die Basis-URL ohne abschließenden Schrägstrich
+     */
+    private resolveEndpoint(): string {
+        const available = Object.keys(EFA_NETWORKS)
+            .map(name => `'${name}'`)
+            .join(', ');
+        if (!this.profile) {
+            throw new Error(
+                `No EFA network configured. Please select an EFA network (${available}) in the adapter settings.`,
+            );
+        }
+        const endpoint = EFA_NETWORKS[this.profile];
+        if (!endpoint) {
+            throw new Error(`unknown EFA network: ${this.profile}. available networks: ${available}.`);
+        }
+        return endpoint.replace(/\/+$/, '');
     }
 
     protected get serviceName(): string {
@@ -66,15 +105,11 @@ export class EfaService extends BaseTransportService {
 
     /**
      * Baut den Shim. Ein echter Client wird nicht erzeugt – die Prüfung beschränkt sich
-     * deshalb darauf, dass eine brauchbare Basis-URL konfiguriert ist (fail-fast beim Start
-     * statt erst beim ersten Poll).
+     * deshalb darauf, dass das konfigurierte Profil einem bekannten Verbund entspricht
+     * (fail-fast beim Start statt erst beim ersten Poll).
      */
     protected createClient(): Hafas.HafasClient {
-        if (!this.endpoint || !/^https?:\/\//i.test(this.endpoint)) {
-            throw new Error(
-                `No valid EFA endpoint configured (got '${this.endpoint}'). Please enter the base URL in the instance settings.`,
-            );
-        }
+        this.resolveEndpoint();
         const client: Hafas.HafasClient = {
             departures: (station, options) => this.requestDepartures(station, options, false),
             arrivals: async (station, options) => ({
@@ -104,7 +139,7 @@ export class EfaService extends BaseTransportService {
             version: EFA_INTERFACE_VERSION,
             ...params,
         });
-        const url = `${this.endpoint}/${path}?${query.toString()}`;
+        const url = `${this.resolveEndpoint()}/${path}?${query.toString()}`;
         this.adapter.log.debug(`[EFA] GET ${url}`);
 
         const response = await fetch(url, {

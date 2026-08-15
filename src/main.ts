@@ -150,11 +150,13 @@ export class PublicTransport extends utils.Adapter {
                 this.activeService = this.vService;
                 this.log.info(`VendoService initialized with ClientName: ${clientName}`);
             } else if (serviceType === 'efa') {
-                // EfaService initialisieren (EFA-JSON, z.B. VRR)
-                this.eService = new EfaService(this, clientName, this.config.efaEndpoint || '');
+                // EfaService initialisieren (EFA-JSON, z.B. VRR). Wie bei HAFAS bestimmt das
+                // Profil den Verbund; die zugehörige Basis-URL steht fest im EfaService.
+                const efaNetwork = this.config.profile || '';
+                this.eService = new EfaService(this, clientName, efaNetwork);
                 this.eService.init();
                 this.activeService = this.eService;
-                this.log.info(`EFA client initialized with endpoint: ${this.config.efaEndpoint}`);
+                this.log.info(`EFA client initialized with network: ${efaNetwork}`);
             } else if (serviceType === 'motis') {
                 // MotisService (Transitous) initialisieren
                 this.mService = new MotisService(this, clientName);

@@ -34,7 +34,8 @@ function validateClientProfile(configuredServiceType, configuredProfile, client_
       `Wrong client type: Expected '${expectedServiceType}', but '${currentServiceType}' is initialized (client_profile: ${client_profile})`
     );
   }
-  if (expectedServiceType === "hafas" && expectedProfile) {
+  const profileSelectsRegion = expectedServiceType === "hafas" || expectedServiceType === "efa";
+  if (profileSelectsRegion && expectedProfile) {
     const currentProfile = configuredProfile || "";
     if (currentProfile !== expectedProfile) {
       throw new Error(

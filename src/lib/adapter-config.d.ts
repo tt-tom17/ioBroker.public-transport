@@ -6,11 +6,6 @@ declare global {
 		interface AdapterConfig {
 			serviceType: 'hafas' | 'vendo' | 'motis' | 'efa';
 			profile?: string;
-			/**
-			 * Basis-URL des EFA-Systems (nur bei serviceType 'efa'), z.B.
-			 * https://openservice.vrr.de/openservice/ — der Pfad je Verbund unterscheidet sich.
-			 */
-			efaEndpoint?: string;
 			clientName?: string;
 			stationConfig?: StationConfig[];
 			journeyConfig?: JourneyConfig[];

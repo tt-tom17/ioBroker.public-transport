@@ -42,6 +42,7 @@ __export(library_exports, {
 });
 module.exports = __toCommonJS(library_exports);
 var import_node_fs = __toESM(require("node:fs"));
+var import_node_path = __toESM(require("node:path"));
 var import_definition = require("../const/definition");
 var _adapter, _prefix;
 class BaseClass {
@@ -787,10 +788,23 @@ class Library extends BaseClass {
     "zh-cn"
   ];
   standardTranslationPath(language) {
-    return `../../../admin/i18n/${language}.json`;
+    return import_node_path.default.join(__dirname, `../../../admin/i18n/${language}.json`);
   }
   customTranslationPath(language) {
-    return `../../../admin/custom/i18n/${language}.json`;
+    return import_node_path.default.join(__dirname, `../../../admin/custom/i18n/${language}.json`);
+  }
+  /**
+   * Liest eine Sprachdatei von der Platte.
+   *
+   * Bewusst `readFileSync` statt `await import()`: Ein dynamischer JSON-Import verhält sich je
+   * nach Modulsystem verschieden – im gebauten CommonJS wird er zu `require` (funktioniert),
+   * unter ts-node/ESM verlangt er dagegen ein `with { type: 'json' }` und wirft sonst. Der
+   * Dateizugriff ist in beiden Welten identisch und damit auch im Test prüfbar.
+   *
+   * @param path Absoluter Pfad der Sprachdatei
+   */
+  loadTranslationFile(path) {
+    return JSON.parse(import_node_fs.default.readFileSync(path, "utf8"));
   }
   /**
    * Lädt die Übersetzungen aller unterstützten Sprachen einmalig in den Cache.
@@ -798,15 +812,13 @@ class Library extends BaseClass {
    * nur diese Sprache fehlen, statt die gesamte Übersetzung abzubrechen.
    */
   async loadAllTranslations() {
-    var _a;
     if (this.allTranslations) {
       return;
     }
     const cache = {};
     for (const l of Library.SUPPORTED_LANGUAGES) {
       try {
-        const i = await Promise.resolve().then(() => __toESM(require(this.standardTranslationPath(l))));
-        cache[l] = (_a = i.default) != null ? _a : i;
+        cache[l] = this.loadTranslationFile(this.standardTranslationPath(l));
       } catch {
         this.log.warn(`Translations for language '${l}' not found`);
       }
@@ -834,13 +846,13 @@ class Library extends BaseClass {
   async checkLanguage() {
     try {
       this.log.debug(`Load language ${this.adapter.language}`);
-      this.translation.standard = await Promise.resolve().then(() => __toESM(require(this.standardTranslationPath(this.adapter.language))));
+      this.translation.standard = this.loadTranslationFile(this.standardTranslationPath(this.adapter.language));
     } catch {
       this.log.warn(`Standard: Language ${this.adapter.language} not exist!`);
     }
     try {
       this.log.debug(`Load language ${this.adapter.language} from custom`);
-      this.translation.custom = await Promise.resolve().then(() => __toESM(require(this.customTranslationPath(this.adapter.language))));
+      this.translation.custom = this.loadTranslationFile(this.customTranslationPath(this.adapter.language));
     } catch {
       this.log.warn(`Custom: Language ${this.adapter.language} not exist!`);
     }

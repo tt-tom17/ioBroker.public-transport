@@ -18,6 +18,15 @@ The public-transport adapter enables seamless integration of real-time public tr
 [🇬🇧 English documentation](https://github.com/tt-tom17/ioBroker.public-transport/wiki/en-Home)  
 [🇩🇪 Deutsche Dokumentation](https://github.com/tt-tom17/ioBroker.public-transport/wiki)
 
+## Data sources
+
+The adapter itself does not host any timetable data — it queries the interface of the transport network you select in the settings. The terms of the respective operator apply.
+
+<a href="https://www.vrr.de"><img src="admin/vrr-logo.svg" alt="Verkehrsverbund Rhein-Ruhr" height="70" align="left" hspace="12"></a>
+
+**EFA – VRR:** Timetable data for the Rhine-Ruhr region is provided by the [Verkehrsverbund Rhein-Ruhr (VRR)](https://www.vrr.de) through its Open Service API. The VRR asks applications using this interface to link to www.vrr.de and to display its logo — the adapter therefore shows both in the instance settings.
+
+<br clear="left">
 
 ## Changelog
 <!--
@@ -26,6 +35,8 @@ The public-transport adapter enables seamless integration of real-time public tr
 -->
 ### **WORK IN PROGRESS**
 * (tt-tom17) added EFA as a new backend with VRR (Rhein-Ruhr) as the first network
+* (tt-tom17) added the VRR attribution (logo and link) to the instance settings and the documentation
+* (tt-tom17) removed the EFA base URL from the settings; it now belongs to the selected network
 * (tt-tom17) fixed object names no longer being translated since the language files were renamed
 
 ### 1.1.0 (2026-08-21)
