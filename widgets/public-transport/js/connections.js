@@ -5,6 +5,28 @@
 */
 'use strict';
 
+/*
+    Diagnose-Ausgaben sind standardmäßig AUS, damit die Browser-Konsole im Normalbetrieb
+    ruhig bleibt (die Tabelle wird bei jedem Poll neu gerendert).
+
+    Einschalten im Browser: Konsole öffnen (F12), `publicTransportDebug = true` eingeben,
+    danach die vis-Ansicht neu laden. Ausschalten mit `publicTransportDebug = false`.
+
+    Echte Fehler (console.error) erscheinen IMMER, unabhängig von diesem Schalter.
+
+    Die beiden Helfer stehen bewusst auch in deptt.js: So bleibt jede Widget-Datei für sich
+    lauffähig und hängt nicht an der Reihenfolge der <script>-Tags in public-transport.html.
+*/
+function ptDebugEnabled() {
+    return typeof window !== 'undefined' && window.publicTransportDebug === true;
+}
+
+function ptLog() {
+    if (ptDebugEnabled()) {
+        console.log.apply(console, arguments);
+    }
+}
+
 // Übersetzungen für den Edit-Modus
 $.extend(true, systemDictionary, {
     headerTextConn: { en: 'Headline', de: 'Überschrift' },
@@ -15,7 +37,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportConnections'] = {
-    version: '0.0.9',
+    version: '0.0.10',
 
     showVersion: function () {
         if (vis.binds['public-transportConnections'].version) {
@@ -397,7 +419,7 @@ vis.binds['public-transportConnections'] = {
             // Begrenze auf maxConnections
             const displayJourneys = journeys.slice(0, maxConnections);
 
-            console.log('[Connections Render] Anzahl Verbindungen zu rendern:', displayJourneys.length);
+            ptLog('[Connections Render] Anzahl Verbindungen zu rendern:', displayJourneys.length);
 
             let html = '';
             displayJourneys.forEach(function (journey, index) {
@@ -493,12 +515,12 @@ vis.binds['public-transportConnections'] = {
             const $content = $('#content-conn-' + widgetID);
 
             if (!data || !data.journeys || data.journeys.length === 0) {
-                console.log('[Connections] Keine Verbindungen verfügbar');
+                ptLog('[Connections] Keine Verbindungen verfügbar');
                 $content.html('<div class="pub-trans-conn-no-data">Keine Verbindungen verfügbar</div>');
                 return;
             }
 
-            console.log('[Connections] Geladene Verbindungen:', data.journeys.length);
+            ptLog('[Connections] Geladene Verbindungen:', data.journeys.length);
             renderConnections(data.journeys);
         }
 
