@@ -787,7 +787,7 @@ class Library extends BaseClass {
     "zh-cn"
   ];
   standardTranslationPath(language) {
-    return `../../../admin/i18n/${language}/translations.json`;
+    return `../../../admin/i18n/${language}.json`;
   }
   customTranslationPath(language) {
     return `../../../admin/custom/i18n/${language}.json`;

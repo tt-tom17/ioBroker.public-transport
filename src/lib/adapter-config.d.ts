@@ -29,6 +29,7 @@ declare global {
 			availableProducts?: Products;
 			client_profile: string;
 			nspanel?: boolean;
+			createDetailDatapoints?: boolean;
 		}
 
 		interface Products {
@@ -64,6 +65,7 @@ declare global {
 			accessibility?: 'partial' | 'complete';
 			bike?: boolean;
 			nspanel?: boolean;
+			createDetailDatapoints?: boolean;
 		}
 	}
 }

@@ -39,6 +39,7 @@ interface Journey {
     availableProducts?: Partial<Products>; // Produkte die für diese Route verfügbar sind
     client_profile?: string;
     nspanel?: boolean;
+    createDetailDatapoints?: boolean;
 }
 
 interface JourneyConfigProps {
@@ -70,6 +71,12 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
     const handleNsPanelChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         if (journey && onUpdate) {
             onUpdate(journey.id, { nspanel: event.target.checked });
+        }
+    };
+
+    const handleCreateDetailDatapointsChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        if (journey && onUpdate) {
+            onUpdate(journey.id, { createDetailDatapoints: event.target.checked });
         }
     };
 
@@ -211,6 +218,21 @@ const JourneyConfig: React.FC<JourneyConfigProps> = ({ journey, onUpdate, oConte
                                 }
                                 label={I18n.t('enabled')}
                             />
+
+                            {/* Set Datapoints Switch */}
+                            <Box>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={journey.createDetailDatapoints === true}
+                                            onChange={handleCreateDetailDatapointsChange}
+                                            disabled={!alive}
+                                        />
+                                    }
+                                    label={I18n.t('set_datapoints')}
+                                />
+                                <FormHelperText>{I18n.t('set_datapoints_hint')}</FormHelperText>
+                            </Box>
 
                             {/* NSPanel Channel Switch */}
                             <Box>

@@ -5,6 +5,43 @@
 */
 'use strict';
 
+/*
+    Diagnose-Ausgaben sind standardmäßig AUS, damit die Browser-Konsole im Normalbetrieb
+    ruhig bleibt (die Abfahrtstafel wird bei jedem Poll neu gerendert).
+
+    Einschalten im Browser: Konsole öffnen (F12), `publicTransportDebug = true` eingeben,
+    danach die vis-Ansicht neu laden. Ausschalten mit `publicTransportDebug = false`.
+
+    Echte Fehler (console.error) erscheinen IMMER, unabhängig von diesem Schalter.
+*/
+function ptDebugEnabled() {
+    return typeof window !== 'undefined' && window.publicTransportDebug === true;
+}
+
+function ptLog() {
+    if (ptDebugEnabled()) {
+        console.log.apply(console, arguments);
+    }
+}
+
+/**
+ * Wandelt einen Produktnamen der API (kebab-case, z.B. "regional-express") in den
+ * camelCase-Schlüssel der Adapter-Konfiguration um ("regionalExpress").
+ *
+ * Muss identisch zu kebabToCamel() in src/lib/tools/library.ts bleiben — der Adapter
+ * filtert nach derselben Regel. Ein einfaches toLowerCase() reicht NICHT: Es macht aus
+ * "regional-express" nicht "regionalexpress", sondern lässt den Bindestrich stehen, und
+ * die Config kennt weder den einen noch den anderen Schlüssel.
+ *
+ * @param    str - Produktname der API
+ * @returns  Der passende Config-Schlüssel
+ */
+function ptKebabToCamel(str) {
+    return String(str).replace(/-([a-z])/g, function (_, char) {
+        return char.toUpperCase();
+    });
+}
+
 // Übersetzungen für den Edit-Modus
 $.extend(true, systemDictionary, {
     headerText: { en: 'Headline', de: 'Überschrift' },
@@ -19,7 +56,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportDepTt'] = {
-    version: '0.0.6',
+    version: '0.0.7',
 
     showVersion: function () {
         if (vis.binds['public-transportDepTt'].version) {
@@ -80,10 +117,10 @@ vis.binds['public-transportDepTt'] = {
         // Spaltenüberschriften
 
         if (hasRemarks) {
-            console.log('[DepTt] Mindestens eine Remark aktiviert - zeige Info-Spalte');
+            ptLog('[DepTt] Mindestens eine Remark aktiviert - zeige Info-Spalte');
             html += '<div class="pub-trans-deptt-column-header remarks">';
         } else {
-            console.log('[DepTt] Keine Remark aktiviert - zeige keine Info-Spalte');
+            ptLog('[DepTt] Keine Remark aktiviert - zeige keine Info-Spalte');
             html += '<div class="pub-trans-deptt-column-header no-remarks">';
         }
         html += '<div class="col-time">Zeit</div>';
@@ -91,10 +128,10 @@ vis.binds['public-transportDepTt'] = {
         html += '<div class="col-delay">Verspätung</div>';
         html += '<div class="col-platform">Gleis</div>';
         if (hasRemarks) {
-            console.log('[DepTt] Remark aktiviert - zeige Info-Überschrift');
+            ptLog('[DepTt] Remark aktiviert - zeige Info-Überschrift');
             html += '<div class="col-info">Info</div>';
         } else {
-            console.log('[DepTt] Keine Remark aktiviert - zeige keine Info-Überschrift');
+            ptLog('[DepTt] Keine Remark aktiviert - zeige keine Info-Überschrift');
         }
         html += '</div>';
 
@@ -241,7 +278,7 @@ vis.binds['public-transportDepTt'] = {
                 return time && new Date(time).getTime() >= Date.now() - 60 * 1000;
             }).slice(0, maxDepartures);
 
-            console.log('[DepTt Render] Anzahl Abfahrten zu rendern:', displayDepartures.length);
+            ptLog('[DepTt Render] Anzahl Abfahrten zu rendern:', displayDepartures.length);
 
             const remarkDataList = [];
             let html = '';
@@ -290,10 +327,10 @@ vis.binds['public-transportDepTt'] = {
                 }
 
                 if (hasRemark) {
-                    console.log('[DepTt - Zeilen] Remark aktiviert - zeige Info-Spalte');
+                    ptLog('[DepTt - Zeilen] Remark aktiviert - zeige Info-Spalte');
                     html += '<div class="pub-trans-deptt-row remarks">';
                 } else {
-                    console.log('[DepTt - Zeilen] Keine Remark aktiviert - zeige keine Info-Spalte');
+                    ptLog('[DepTt - Zeilen] Keine Remark aktiviert - zeige keine Info-Spalte');
                     html += '<div class="pub-trans-deptt-row no-remarks">';
                 }
                 html += '<div class="pub-trans-deptt-time">' + displayTime + '</div>';
@@ -309,10 +346,10 @@ vis.binds['public-transportDepTt'] = {
                     '</div>';
                 html += '<div class="pub-trans-deptt-platform' + (changedPlatform ? ' changed' : '') + '">' + platform + '</div>';
                 if (hasRemark) {
-                    console.log('[DepTt - Zeilen] Remark aktiviert - zeige Info-Spalte');
+                    ptLog('[DepTt - Zeilen] Remark aktiviert - zeige Info-Spalte');
                     html += '<div class="pub-trans-deptt-info-cell" data-remark-idx="' + depIdx + '">' + (cancelled ? '<span class="pub-trans-deptt-delay cancelled">Fällt aus</span>' : iconsHtml) + '</div>';
                 } else {
-                    console.log('[DepTt - Zeilen] Keine Remark aktiviert - zeige keine Info-Spalte');
+                    ptLog('[DepTt - Zeilen] Keine Remark aktiviert - zeige keine Info-Spalte');
                 }
                 html += '</div>';
             });
@@ -350,20 +387,20 @@ vis.binds['public-transportDepTt'] = {
             const $content = $('#content-' + widgetID);
 
             if (!departures || departures.length === 0) {
-                console.log('[DepTt] Keine Abfahrten verfügbar');
+                ptLog('[DepTt] Keine Abfahrten verfügbar');
                 $content.html('<div class="pub-trans-deptt-no-data">Keine Abfahrten verfügbar</div>');
                 return;
             }
 
-            console.log('[DepTt] Geladene Abfahrten (roh):', departures.length);
+            ptLog('[DepTt] Geladene Abfahrten (roh):', departures.length);
 
             if (useFilter && data.oidDepartures) {
-                console.log('[DepTt Filter] Filter ist aktiviert (useFilter=true)');
+                ptLog('[DepTt Filter] Filter ist aktiviert (useFilter=true)');
                 
                 // Instanz aus der OID ableiten: "public-transport.0.xxx" → "0"
                 const match = data.oidDepartures.match(/^public-transport\.(\d+)\./);
                 const instance = match ? match[1] : '0';
-                console.log('[DepTt Filter] Instanz:', instance, 'OID:', data.oidDepartures);
+                ptLog('[DepTt Filter] Instanz:', instance, 'OID:', data.oidDepartures);
 
                 vis.conn.getObject('system.adapter.public-transport.' + instance, function (err, obj) {
                     if (err) {
@@ -372,63 +409,95 @@ vis.binds['public-transportDepTt'] = {
                         return;
                     }
                     
-                    console.log('[DepTt Filter] Adapter-Objekt geladen:', obj ? 'OK' : 'NULL');
+                    ptLog('[DepTt Filter] Adapter-Objekt geladen:', obj ? 'OK' : 'NULL');
                     
                     if (obj && obj.native && obj.native.stationConfig) {
                         const allStations = obj.native.stationConfig || [];
-                        console.log('[DepTt Filter] Anzahl Stationen in Config:', allStations.length);
-                        console.log('[DepTt Filter] Alle Stationen:', allStations.map(s => s.id + ' (' + s.name + ')'));
+                        ptLog('[DepTt Filter] Anzahl Stationen in Config:', allStations.length);
+                        ptLog('[DepTt Filter] Alle Stationen:', allStations.map(s => s.id + ' (' + s.name + ')'));
                         
                         // StationID anhand der OID finden und Filter anwenden
                         const stationMatch = data.oidDepartures.match(/\.Stations\.([^.]+)\./);
                         const stationID = stationMatch ? stationMatch[1] : null;
-                        console.log('[DepTt Filter] Extrahierte StationID:', stationID);
+                        ptLog('[DepTt Filter] Extrahierte StationID:', stationID);
                         
                         if (stationID) {
                             const stationConfig = allStations.find(station => station.id === stationID);
-                            console.log('[DepTt Filter] Gefundene Station-Config:', stationConfig);
+                            ptLog('[DepTt Filter] Gefundene Station-Config:', stationConfig);
                             
                             if (stationConfig && stationConfig.products) {
-                                console.log('[DepTt Filter] Products-Config:', stationConfig.products);
-                                console.log('[DepTt Filter] Type of products:', typeof stationConfig.products);
-                                console.log('[DepTt Filter] Is Array?', Array.isArray(stationConfig.products));
-                                
-                                // WICHTIG: products ist ein Objekt {bus: true, tram: false, ...}, KEIN Array!
+                                // products ist ein Objekt {bus: true, tram: false, ...}, KEIN Array.
+                                const products = stationConfig.products;
+                                const enabledKeys = Object.keys(products).filter(function (key) {
+                                    return products[key] === true;
+                                });
+                                ptLog('[DepTt Filter] Aktivierte Produkte laut Config:', enabledKeys.join(', ') || '(keine)');
+
                                 const beforeFilterCount = departures.length;
-                                
-                                departures = departures.filter(dep => {
-                                    const productFromLine = dep.line && dep.line.product ? dep.line.product : null;
-                                    const productFromProductName = dep.line && dep.line.productName ? dep.line.productName : null;
-                                    const product = (productFromLine || productFromProductName || '').toLowerCase();
-                                    
-                                    // Prüfe ob das Produkt in der Config aktiviert ist
-                                    const isEnabled = stationConfig.products[product] === true;
-                                    
-                                    console.log('[DepTt Filter] Abfahrt:', dep.line?.name, 
-                                                '| Product:', product, 
-                                                '| Enabled:', isEnabled,
-                                                '| Config-Wert:', stationConfig.products[product]);
-                                    
+                                // Produkte, für die die Config gar keinen Schlüssel kennt. Das ist der
+                                // wichtigste Diagnosefall: Solche Abfahrten verschwinden, ohne dass der
+                                // Anwender sie je abgewählt hätte.
+                                const unknownProducts = {};
+
+                                departures = departures.filter(function (dep) {
+                                    const rawProduct =
+                                        (dep.line && (dep.line.product || dep.line.productName)) || '';
+                                    const product = ptKebabToCamel(rawProduct);
+                                    const configuredValue = products[product];
+                                    const isKnown = Object.prototype.hasOwnProperty.call(products, product);
+                                    const isEnabled = configuredValue === true;
+
+                                    if (!isKnown) {
+                                        unknownProducts[product || '(leer)'] =
+                                            (unknownProducts[product || '(leer)'] || 0) + 1;
+                                    }
+
+                                    ptLog(
+                                        '[DepTt Filter] Abfahrt:', dep.line && dep.line.name,
+                                        '| roh:', rawProduct || '(leer)',
+                                        '| Config-Schlüssel:', product || '(leer)',
+                                        '| Config-Wert:', isKnown ? configuredValue : 'KEIN SOLCHER SCHLÜSSEL',
+                                        '| angezeigt:', isEnabled,
+                                    );
+
                                     return isEnabled;
                                 });
-                                
-                                console.log('[DepTt Filter] Gefiltert:', beforeFilterCount, '→', departures.length, 'Abfahrten');
+
+                                ptLog('[DepTt Filter] Ergebnis:', beforeFilterCount, '→', departures.length, 'Abfahrten');
+
+                                const unknownNames = Object.keys(unknownProducts);
+                                if (unknownNames.length) {
+                                    // Bewusst als Warnung und OHNE Debug-Schalter: Hier stimmen
+                                    // Produktname und Config-Schlüssel nicht überein, das ist immer
+                                    // ein Fehler und keine Anwender-Entscheidung.
+                                    console.warn(
+                                        '[DepTt Filter] Diese Produkte kennt die Stations-Konfiguration nicht — ' +
+                                            'die betroffenen Abfahrten werden ausgeblendet: ' +
+                                            unknownNames
+                                                .map(function (name) {
+                                                    return name + ' (' + unknownProducts[name] + 'x)';
+                                                })
+                                                .join(', ') +
+                                            '. Bekannte Schlüssel: ' + Object.keys(products).join(', ') +
+                                            '. Bitte mit diesen Angaben ein Issue melden.',
+                                    );
+                                }
                             } else {
-                                console.log('[DepTt Filter] Keine products-Config gefunden oder stationConfig ist null');
+                                ptLog('[DepTt Filter] Keine products-Config gefunden oder stationConfig ist null');
                             }
                         } else {
-                            console.log('[DepTt Filter] Konnte StationID nicht aus OID extrahieren');
+                            ptLog('[DepTt Filter] Konnte StationID nicht aus OID extrahieren');
                         }
                         
                         // Rendern NACH dem Filtern
                         renderDepartures(departures);
                     } else {
-                        console.log('[DepTt Filter] Keine stationConfig in native gefunden');
+                        ptLog('[DepTt Filter] Keine stationConfig in native gefunden');
                         renderDepartures(departures);
                     }
                 });
             } else {
-                console.log('[DepTt Filter] Filter nicht aktiv - useFilter:', useFilter, 'oidDepartures:', data.oidDepartures);
+                ptLog('[DepTt Filter] Filter nicht aktiv - useFilter:', useFilter, 'oidDepartures:', data.oidDepartures);
                 // Ohne Filter direkt rendern
                 renderDepartures(departures);
             }
