@@ -69,6 +69,7 @@
     "translate": "translate-adapter",
     "release": "release-script",
     "npm": "npm i && cd src-admin && npm i",
+    "prebuild:admin": "clean-dir ./src-admin/build && clean-dir ./admin/custom",
     "build:admin": "cd src-admin && npm run build",
     "build:all": "npm run build && npm run build:admin",
     "lint:admin": "cd src-admin && npm run lint",
