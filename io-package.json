@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "news": {
       "1.1.0": {
         "en": "The detail datapoints per departure and journey are now optional — the switch is off by default\n(Widget) Fix: S-Bahn, U-Bahn, RE and ICE were hidden when the product filter was enabled",
@@ -93,19 +93,6 @@
         "pl": "(widget) elastyczna wysokość z pionowym przewijaniem\n(widget) elastyczna szerokość: czcionka skaluje się z szerokością widżetu do minimalnego rozmiaru, poniżej przewijanie poziome",
         "uk": "(віджет) гнучка висота з вертикальним прокручуванням\n(віджет) гнучка ширина: шрифт масштабується за шириною віджета до мінімального розміру, нижче — горизонтальне прокручування",
         "zh-cn": "(部件) 灵活高度，支持垂直滚动\n(部件) 灵活宽度：字体随部件宽度缩放至最小尺寸，更窄时显示水平滚动条"
-      },
-      "0.8.3": {
-        "en": "fixed HAFAS \"Premature close\" errors (vbb/oebb) by requesting uncompressed responses (Accept-Encoding: identity)\nupdated @iobroker/adapter-core to ^3.4.1",
-        "de": "HAFAS-\"Premature close\"-Fehler (vbb/oebb) durch Anfordern unkomprimierter Antworten (Accept-Encoding: identity) behoben\n@iobroker/adapter-core auf ^3.4.1 aktualisiert",
-        "ru": "исправлены ошибки HAFAS \"Premature close\" (vbb/oebb) путём запроса несжатых ответов (Accept-Encoding: identity)\nобновлён @iobroker/adapter-core до ^3.4.1",
-        "pt": "corrigidos erros HAFAS \"Premature close\" (vbb/oebb) solicitando respostas não comprimidas (Accept-Encoding: identity)\natualizado @iobroker/adapter-core para ^3.4.1",
-        "nl": "HAFAS \"Premature close\"-fouten (vbb/oebb) opgelost door niet-gecomprimeerde antwoorden op te vragen (Accept-Encoding: identity)\n@iobroker/adapter-core bijgewerkt naar ^3.4.1",
-        "fr": "correction des erreurs HAFAS \"Premature close\" (vbb/oebb) en demandant des réponses non compressées (Accept-Encoding: identity)\nmise à jour de @iobroker/adapter-core vers ^3.4.1",
-        "it": "corretti gli errori HAFAS \"Premature close\" (vbb/oebb) richiedendo risposte non compresse (Accept-Encoding: identity)\naggiornato @iobroker/adapter-core a ^3.4.1",
-        "es": "corregidos los errores HAFAS \"Premature close\" (vbb/oebb) solicitando respuestas sin comprimir (Accept-Encoding: identity)\nactualizado @iobroker/adapter-core a ^3.4.1",
-        "pl": "naprawiono błędy HAFAS \"Premature close\" (vbb/oebb) przez żądanie nieskompresowanych odpowiedzi (Accept-Encoding: identity)\nzaktualizowano @iobroker/adapter-core do ^3.4.1",
-        "uk": "виправлено помилки HAFAS \"Premature close\" (vbb/oebb) шляхом запиту нестиснених відповідей (Accept-Encoding: identity)\nоновлено @iobroker/adapter-core до ^3.4.1",
-        "zh-cn": "通过请求未压缩的响应(Accept-Encoding: identity)修复了 HAFAS \"Premature close\"(vbb/oebb)错误\n将 @iobroker/adapter-core 更新至 ^3.4.1"
       }
     },
     "messages": [
