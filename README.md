@@ -35,7 +35,6 @@ The adapter itself does not host any timetable data — it queries the interface
 -->
 ### **WORK IN PROGRESS**
 * (tt-tom17) added EFA as a new backend with VRR (Rhein-Ruhr) as the first network
-* (tt-tom17) fixed object names no longer being translated since the language files were renamed
 
 ### 1.1.0 (2026-08-21)
 * (tt-tom17) added a "Create detail data points" switch per station and journey. The switch is off by default
