@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "1.1.0",
     "news": {
+      "1.2.0": {
+        "en": "New: EFA as an additional backend, with the VRR (Rhine-Ruhr) as the first network",
+        "de": "Neu: EFA als weiteres Backend, mit dem VRR (Rhein-Ruhr) als erstem Verkehrsverbund",
+        "ru": "Новинка: EFA как дополнительный бэкенд, с VRR (Рейн-Рур) в качестве первой транспортной сети",
+        "pt": "Novo: EFA como backend adicional, com a VRR (Reno-Ruhr) como primeira rede de transportes",
+        "nl": "Nieuw: EFA als extra backend, met de VRR (Rijn-Roergebied) als eerste vervoersnetwerk",
+        "fr": "Nouveau : EFA comme backend supplémentaire, avec le VRR (Rhin-Ruhr) comme premier réseau de transport",
+        "it": "Novità: EFA come backend aggiuntivo, con il VRR (Reno-Ruhr) come prima rete di trasporto",
+        "es": "Novedad: EFA como backend adicional, con el VRR (Rin-Ruhr) como primera red de transporte",
+        "pl": "Nowość: EFA jako dodatkowy backend, z VRR (Ren-Zagłębie Ruhry) jako pierwszą siecią transportową",
+        "uk": "Нове: EFA як додатковий бекенд, із VRR (Рейн-Рур) як першою транспортною мережею",
+        "zh-cn": "新增：EFA 作为额外的后端，首个交通联盟为 VRR（莱茵-鲁尔）"
+      },
       "1.1.0": {
         "en": "The detail datapoints per departure and journey are now optional — the switch is off by default\n(Widget) Fix: S-Bahn, U-Bahn, RE and ICE were hidden when the product filter was enabled",
         "de": "Die Detail-Datenpunkte je Abfahrt und Verbindung sind jetzt optional — der Schalter ist standardmäßig aus\n(Widget) Fix: bei aktivem Produktfilter wurden S-Bahn, U-Bahn, RE und ICE ausgeblendet",
