@@ -239,6 +239,73 @@ class BaseTransportService {
   async getStop(stationId, options) {
     return this.call((client) => client.stop(stationId, options));
   }
+  /**
+   * Filtert Abfahrten auf die in der Konfiguration aktivierten Produkte.
+   *
+   * Gedacht für Backends ohne eigenen Client (EFA, TRIAS): Dort baut der Service die
+   * Abfahrtsliste selbst und muss den Produktfilter nachbilden, den ein echter
+   * hafas-client bereits serverseitig anwendet.
+   *
+   * Abfahrten **ohne** erkanntes Produkt bleiben bewusst erhalten – sie ganz auszublenden
+   * hieße, eine Lücke in der Zuordnungstabelle als Anwenderwunsch auszugeben.
+   *
+   * @param departures Die bereits gemappten Abfahrten
+   * @param products Der Produktfilter aus den Abfrage-Optionen
+   */
+  filterByProducts(departures, products) {
+    const active = Object.entries(products != null ? products : {});
+    if (active.length === 0) {
+      return departures;
+    }
+    const allowed = new Set(active.filter(([, enabled]) => enabled).map(([id]) => id));
+    if (allowed.size === 0) {
+      return departures;
+    }
+    return departures.filter((departure) => {
+      var _a;
+      const product = (_a = departure.line) == null ? void 0 : _a.product;
+      return !product || allowed.has(product);
+    });
+  }
+  /**
+   * Begrenzt Abfahrten auf das gewünschte Zeitfenster.
+   *
+   * @param departures Die bereits gemappten Abfahrten
+   * @param when Beginn des Fensters (Standard: jetzt)
+   * @param duration Länge des Fensters in Minuten
+   */
+  filterByDuration(departures, when, duration) {
+    if (!duration || duration <= 0) {
+      return departures;
+    }
+    const start = when ? new Date(when).getTime() : Date.now();
+    const end = start + duration * 6e4;
+    return departures.filter((departure) => {
+      var _a, _b;
+      const time = Date.parse((_b = (_a = departure.when) != null ? _a : departure.plannedWhen) != null ? _b : "");
+      return !Number.isFinite(time) || time <= end;
+    });
+  }
+  /**
+   * Sortiert nach der **tatsächlichen** Zeit (Ist vor Soll).
+   *
+   * Grund ist ein realer Datenfall: Verbünde liefern die Liste nach der Sollzeit sortiert,
+   * einzelne Nachtfahrten tragen aber Soll 00:00 mit einer Ist-Zeit Stunden später. Nach
+   * Soll sortiert stünden sie oben in der Abfahrtstafel. Die Werte selbst bleiben unberührt.
+   *
+   * @param departures Die bereits gemappten Abfahrten
+   */
+  sortByEffectiveTime(departures) {
+    return [...departures].sort((a, b) => {
+      var _a, _b, _c, _d;
+      const timeA = Date.parse((_b = (_a = a.when) != null ? _a : a.plannedWhen) != null ? _b : "");
+      const timeB = Date.parse((_d = (_c = b.when) != null ? _c : b.plannedWhen) != null ? _d : "");
+      if (!Number.isFinite(timeA) || !Number.isFinite(timeB)) {
+        return 0;
+      }
+      return timeA - timeB;
+    });
+  }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
