@@ -23,6 +23,7 @@
     "clientConfig_suppressInfoLogs_helper": "Включите, чтобы отключить журналы расширенной информации.",
     "clientConfig_suppressInfoLogs_label": "Подавить журналы расширенной информации",
     "clientConfig_title": "Конфигурация клиента",
+    "clientConfig_vrrAttribution_text": "Данные расписания: Verkehrsverbund Rhein-Ruhr (VRR)",
     "client_config": "Конфигурация",
     "client_unavailable": "в настоящее время недоступно",
     "configuration_for_station": "Конфигурация станции",

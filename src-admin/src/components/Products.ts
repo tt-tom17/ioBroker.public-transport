@@ -184,6 +184,18 @@ export const PROFILE_PRODUCTS: Record<string, Partial<Products>> = {
         subway: true,
         tram: true,
     },
+    // EFA – VRR (Rhein-Ruhr). Die Schlüssel entsprechen exakt den Produkten, die der
+    // efaMapper aus den EFA-MOT-Klassen erzeugt – sonst würde der Filter ins Leere greifen.
+    vrr: {
+        national: true,
+        regional: true,
+        suburban: true,
+        subway: true,
+        tram: true,
+        bus: true,
+        ferry: true,
+        cableCar: true,
+    },
 };
 
 /**

@@ -202,3 +202,41 @@ describe('Library container metadata refresh', () => {
         expect(extendObject.callCount, 'changed name must extend once').to.equal(1);
     });
 });
+
+describe('Library i18n file lookup', () => {
+    /**
+     * Adapter stub with a configured language; getTranslation() needs it, getTranslationObj() does not.
+     *
+     * @param language Language the adapter is configured with
+     */
+    function createAdapterMockWithLanguage(language: ioBroker.Languages): AdapterClassDefinition {
+        return {
+            name: 'public-transport',
+            instance: 0,
+            namespace: 'public-transport.0',
+            language,
+            config: {},
+            log: { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} },
+            setState: sinon.stub().resolves(),
+            extendObject: sinon.stub().resolves(),
+        } as unknown as AdapterClassDefinition;
+    }
+
+    it('finds the shipped language files, so object names are translated instead of returned raw', async () => {
+        const library = new Library(createAdapterMockWithLanguage('en'));
+
+        const translated = await library.getTranslationObj('active');
+
+        expect(translated, 'key returned unchanged - no language file was found').to.not.equal('active');
+        expect(translated).to.have.property('en', 'Active');
+        expect(translated).to.have.property('de', 'Aktiv');
+    });
+
+    it('loads the standard file of the configured language', async () => {
+        const library = new Library(createAdapterMockWithLanguage('de'));
+
+        await library.checkLanguage();
+
+        expect(library.getTranslation('active')).to.equal('Aktiv');
+    });
+});

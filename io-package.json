@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "1.1.0",
     "news": {
+      "1.2.0": {
+        "en": "New: EFA as an additional backend, with the VRR (Rhine-Ruhr) as the first network",
+        "de": "Neu: EFA als weiteres Backend, mit dem VRR (Rhein-Ruhr) als erstem Verkehrsverbund",
+        "ru": "Новинка: EFA как дополнительный бэкенд, с VRR (Рейн-Рур) в качестве первой транспортной сети",
+        "pt": "Novo: EFA como backend adicional, com a VRR (Reno-Ruhr) como primeira rede de transportes",
+        "nl": "Nieuw: EFA als extra backend, met de VRR (Rijn-Roergebied) als eerste vervoersnetwerk",
+        "fr": "Nouveau : EFA comme backend supplémentaire, avec le VRR (Rhin-Ruhr) comme premier réseau de transport",
+        "it": "Novità: EFA come backend aggiuntivo, con il VRR (Reno-Ruhr) come prima rete di trasporto",
+        "es": "Novedad: EFA como backend adicional, con el VRR (Rin-Ruhr) como primera red de transporte",
+        "pl": "Nowość: EFA jako dodatkowy backend, z VRR (Ren-Zagłębie Ruhry) jako pierwszą siecią transportową",
+        "uk": "Нове: EFA як додатковий бекенд, із VRR (Рейн-Рур) як першою транспортною мережею",
+        "zh-cn": "新增：EFA 作为额外的后端，首个交通联盟为 VRR（莱茵-鲁尔）"
+      },
       "1.1.0": {
         "en": "The detail datapoints per departure and journey are now optional — the switch is off by default\n(Widget) Fix: S-Bahn, U-Bahn, RE and ICE were hidden when the product filter was enabled",
         "de": "Die Detail-Datenpunkte je Abfahrt und Verbindung sind jetzt optional — der Schalter ist standardmäßig aus\n(Widget) Fix: bei aktivem Produktfilter wurden S-Bahn, U-Bahn, RE und ICE ausgeblendet",
@@ -80,19 +93,6 @@
         "pl": "nieaktualne punkty danych są teraz niezawodnie czyszczone, zarówno po ponownym uruchomieniu, jak i podczas pracy (#82)",
         "uk": "застарілі точки даних тепер надійно очищаються — як після перезапуску, так і під час роботи (#82)",
         "zh-cn": "过时的数据点现在会被可靠地清除，无论是在重启后还是在运行期间 (#82)"
-      },
-      "0.9.0": {
-        "en": "(widget) flexible height with vertical scroll\n(widget) flexible width: font scales with widget width down to a minimum, horizontal scroll below",
-        "de": "(Widget) flexible Höhe mit vertikalem Scrollen\n(Widget) flexible Breite: Schrift skaliert mit der Widget-Breite bis zu einer Mindestgröße, darunter horizontales Scrollen",
-        "ru": "(виджет) гибкая высота с вертикальной прокруткой\n(виджет) гибкая ширина: шрифт масштабируется по ширине виджета до минимального размера, ниже — горизонтальная прокрутка",
-        "pt": "(widget) altura flexível com rolagem vertical\n(widget) largura flexível: a fonte escala com a largura do widget até um tamanho mínimo, abaixo disso rolagem horizontal",
-        "nl": "(widget) flexibele hoogte met verticaal scrollen\n(widget) flexibele breedte: lettergrootte schaalt mee met de widgetbreedte tot een minimum, daaronder horizontaal scrollen",
-        "fr": "(widget) hauteur flexible avec défilement vertical\n(widget) largeur flexible : la police s'adapte à la largeur du widget jusqu'à une taille minimale, en dessous défilement horizontal",
-        "it": "(widget) altezza flessibile con scorrimento verticale\n(widget) larghezza flessibile: il carattere si adatta alla larghezza del widget fino a una dimensione minima, sotto la quale appare lo scorrimento orizzontale",
-        "es": "(widget) altura flexible con desplazamiento vertical\n(widget) ancho flexible: la fuente se escala con el ancho del widget hasta un tamaño mínimo, por debajo desplazamiento horizontal",
-        "pl": "(widget) elastyczna wysokość z pionowym przewijaniem\n(widget) elastyczna szerokość: czcionka skaluje się z szerokością widżetu do minimalnego rozmiaru, poniżej przewijanie poziome",
-        "uk": "(віджет) гнучка висота з вертикальним прокручуванням\n(віджет) гнучка ширина: шрифт масштабується за шириною віджета до мінімального розміру, нижче — горизонтальне прокручування",
-        "zh-cn": "(部件) 灵活高度，支持垂直滚动\n(部件) 灵活宽度：字体随部件宽度缩放至最小尺寸，更窄时显示水平滚动条"
       }
     },
     "messages": [

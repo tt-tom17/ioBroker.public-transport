@@ -23,6 +23,7 @@
     "clientConfig_suppressInfoLogs_helper": "Aktivieren, um erweiterte Informations-Logs zu unterdrücken.",
     "clientConfig_suppressInfoLogs_label": "erweiterte Info-Logs unterdrücken",
     "clientConfig_title": "Client Konfiguration",
+    "clientConfig_vrrAttribution_text": "Fahrplandaten: Verkehrsverbund Rhein-Ruhr (VRR)",
     "client_config": "Konfiguration",
     "client_unavailable": "zurzeit nicht verfügbar",
     "configuration_for_station": "Konfiguration für Station",

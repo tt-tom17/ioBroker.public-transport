@@ -23,6 +23,7 @@
     "clientConfig_suppressInfoLogs_helper": "启用抑制高级信息日志。",
     "clientConfig_suppressInfoLogs_label": "禁止高级信息日志",
     "clientConfig_title": "客户端配置",
+    "clientConfig_vrrAttribution_text": "时刻表数据：Verkehrsverbund Rhein-Ruhr (VRR)",
     "client_config": "配置",
     "client_unavailable": "当前不可用",
     "configuration_for_station": "站配置",

@@ -8,6 +8,7 @@ import {
     FormControlLabel,
     FormHelperText,
     InputLabel,
+    Link,
     MenuItem,
     Select,
     TextField,
@@ -15,11 +16,12 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { withConfigGeneric, type ConfigComponentProps } from './ConfigGenericWrapper';
+import { VrrLogo } from './VrrLogo';
 
 interface ServiceOption {
     value: string;
     label: string;
-    serviceType: 'hafas' | 'vendo' | 'motis';
+    serviceType: 'hafas' | 'vendo' | 'motis' | 'efa';
     profile: string;
     disabled?: boolean;
 }
@@ -36,6 +38,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     // 'vendo:db' (Deutsche Bahn) deaktiviert: db-vendo-Endpoint liefert aktuell OPS_BLOCKED (serverseitige Sperre).
     { value: 'vendo:db', label: 'Vendo - Deutsche Bahn', serviceType: 'vendo', profile: 'db', disabled: true },
     { value: 'motis:compat', label: 'MOTIS - Transitous (DE & Europa)', serviceType: 'motis', profile: 'compat' },
+    { value: 'efa:vrr', label: 'EFA - VRR (Rhein-Ruhr)', serviceType: 'efa', profile: 'vrr' },
 ];
 
 const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, onChange, alive, disabled }) => {
@@ -175,6 +178,49 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
                     />
                 </FormControl>
             </Box>
+
+            {/*
+                Datenquellen-Hinweis des VRR. Der Verbund gibt seine Open Service API unter der
+                Bedingung frei, dass Anwendungen auf www.vrr.de verweisen und das Logo führen
+                (Auskunft VRR vom 14.08.2026) – der Hinweis ist deshalb fester Bestandteil der
+                Oberfläche und nicht abschaltbar. Bewusst an das Profil gebunden, nicht nur an
+                den Service-Typ: Ein künftiger zweiter EFA-Verbund darf hier nicht mit dem
+                VRR-Logo erscheinen.
+            */}
+            {serviceType === 'efa' && profile === 'vrr' && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                    {/*
+                        Helles Plättchen als Schutzraum: Das Signet ist dunkelgrün (#007e32) und
+                        hätte auf dem dunklen Admin-Hintergrund kaum Kontrast. Am Logo selbst darf
+                        dafür nichts verändert werden.
+                    */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexShrink: 0,
+                            p: 0.75,
+                            borderRadius: 1,
+                            backgroundColor: '#ffffff',
+                        }}
+                    >
+                        <VrrLogo height={36} />
+                    </Box>
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                    >
+                        {I18n.t('clientConfig_vrrAttribution_text')}{' '}
+                        <Link
+                            href="https://www.vrr.de"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            www.vrr.de
+                        </Link>
+                    </Typography>
+                </Box>
+            )}
+
             <Typography
                 variant="h5"
                 sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}

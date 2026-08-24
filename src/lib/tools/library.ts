@@ -1,4 +1,5 @@
 import _fs from 'node:fs';
+import _path from 'node:path';
 import { genericStateObjects, type ObjectDefinitionTree } from '../const/definition';
 import type { PublicTransport } from '../types/Adapter';
 // only change this for other adapters
@@ -956,10 +957,27 @@ export class Library extends BaseClass {
         'zh-cn',
     ];
     private standardTranslationPath(language: ioBroker.Languages | undefined): string {
-        return `../../../admin/i18n/${language}.json`;
+        // Kurzform `<lang>.json`. Der frühere Pfad `<lang>/translations.json` zeigte seit dem
+        // Umbau auf kurze Dateinamen ins Leere: Es fand sich KEINE Sprachdatei mehr, also warnte
+        // der Adapter für alle 11 Sprachen und getTranslationObj() gab jeden Schlüssel roh zurück.
+        return _path.join(__dirname, `../../../admin/i18n/${language}.json`);
     }
     private customTranslationPath(language: ioBroker.Languages | undefined): string {
-        return `../../../admin/custom/i18n/${language}.json`;
+        return _path.join(__dirname, `../../../admin/custom/i18n/${language}.json`);
+    }
+
+    /**
+     * Liest eine Sprachdatei von der Platte.
+     *
+     * Bewusst `readFileSync` statt `await import()`: Ein dynamischer JSON-Import verhält sich je
+     * nach Modulsystem verschieden – im gebauten CommonJS wird er zu `require` (funktioniert),
+     * unter ts-node/ESM verlangt er dagegen ein `with { type: 'json' }` und wirft sonst. Der
+     * Dateizugriff ist in beiden Welten identisch und damit auch im Test prüfbar.
+     *
+     * @param path Absoluter Pfad der Sprachdatei
+     */
+    private loadTranslationFile(path: string): Record<string, string> {
+        return JSON.parse(_fs.readFileSync(path, 'utf8')) as Record<string, string>;
     }
 
     /**
@@ -974,8 +992,7 @@ export class Library extends BaseClass {
         const cache: Partial<Record<ioBroker.Languages, Record<string, string>>> = {};
         for (const l of Library.SUPPORTED_LANGUAGES) {
             try {
-                const i = await import(this.standardTranslationPath(l));
-                cache[l] = (i.default ?? i) as Record<string, string>;
+                cache[l] = this.loadTranslationFile(this.standardTranslationPath(l));
             } catch {
                 this.log.warn(`Translations for language '${l}' not found`);
             }
@@ -1004,13 +1021,13 @@ export class Library extends BaseClass {
     async checkLanguage(): Promise<void> {
         try {
             this.log.debug(`Load language ${this.adapter.language}`);
-            this.translation.standard = await import(this.standardTranslationPath(this.adapter.language));
+            this.translation.standard = this.loadTranslationFile(this.standardTranslationPath(this.adapter.language));
         } catch {
             this.log.warn(`Standard: Language ${this.adapter.language} not exist!`);
         }
         try {
             this.log.debug(`Load language ${this.adapter.language} from custom`);
-            this.translation.custom = await import(this.customTranslationPath(this.adapter.language));
+            this.translation.custom = this.loadTranslationFile(this.customTranslationPath(this.adapter.language));
         } catch {
             this.log.warn(`Custom: Language ${this.adapter.language} not exist!`);
         }

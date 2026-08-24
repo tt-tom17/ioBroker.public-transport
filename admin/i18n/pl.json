@@ -23,6 +23,7 @@
     "clientConfig_suppressInfoLogs_helper": "Włącz, aby ukryć zaawansowane dzienniki informacyjne.",
     "clientConfig_suppressInfoLogs_label": "Pomiń zaawansowane dzienniki informacyjne",
     "clientConfig_title": "Konfiguracja klienta",
+    "clientConfig_vrrAttribution_text": "Dane rozkładowe: Verkehrsverbund Rhein-Ruhr (VRR)",
     "client_config": "Konfiguracja",
     "client_unavailable": "obecnie niedostępne",
     "configuration_for_station": "Konfiguracja stacji",

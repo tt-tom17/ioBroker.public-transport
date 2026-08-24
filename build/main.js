@@ -35,6 +35,7 @@ var utils = __toESM(require("@iobroker/adapter-core"));
 var import_dbVendoService = require("./lib/class/dbVendoService");
 var import_departure = require("./lib/class/departure");
 var import_departurePolling = require("./lib/class/departurePolling");
+var import_efaService = require("./lib/class/efaService");
 var import_hafasService = require("./lib/class/hafasService");
 var import_journeyPolling = require("./lib/class/journeyPolling");
 var import_journeys = require("./lib/class/journeys");
@@ -48,6 +49,7 @@ class PublicTransport extends utils.Adapter {
   hService;
   vService;
   mService;
+  eService;
   activeService;
   depRequest;
   journeysRequest;
@@ -157,6 +159,12 @@ class PublicTransport extends utils.Adapter {
         this.vService.init();
         this.activeService = this.vService;
         this.log.info(`VendoService initialized with ClientName: ${clientName}`);
+      } else if (serviceType === "efa") {
+        const efaNetwork = this.config.profile || "";
+        this.eService = new import_efaService.EfaService(this, clientName, efaNetwork);
+        this.eService.init();
+        this.activeService = this.eService;
+        this.log.info(`EFA client initialized with network: ${efaNetwork}`);
       } else if (serviceType === "motis") {
         this.mService = new import_motisService.MotisService(this, clientName);
         this.mService.init();

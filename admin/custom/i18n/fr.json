@@ -23,6 +23,7 @@
     "clientConfig_suppressInfoLogs_helper": "Activer la suppression des journaux d’informations avancées.",
     "clientConfig_suppressInfoLogs_label": "Supprimer les journaux d'informations avancées",
     "clientConfig_title": "Configuration client",
+    "clientConfig_vrrAttribution_text": "Données horaires : Verkehrsverbund Rhein-Ruhr (VRR)",
     "client_config": "Configuration",
     "client_unavailable": "actuellement indisponible",
     "configuration_for_station": "Configuration pour la station",

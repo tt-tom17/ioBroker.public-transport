@@ -23,6 +23,7 @@
     "clientConfig_suppressInfoLogs_helper": "Schakel dit in om geavanceerde informatielogboeken te onderdrukken.",
     "clientConfig_suppressInfoLogs_label": "Onderdruk geavanceerde infologboeken",
     "clientConfig_title": "Clientconfiguratie",
+    "clientConfig_vrrAttribution_text": "Dienstregelingsgegevens: Verkehrsverbund Rhein-Ruhr (VRR)",
     "client_config": "Configuratie",
     "client_unavailable": "momenteel niet beschikbaar",
     "configuration_for_station": "Configuratie voor station",
