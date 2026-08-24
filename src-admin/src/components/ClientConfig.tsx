@@ -21,7 +21,7 @@ import { VrrLogo } from './VrrLogo';
 interface ServiceOption {
     value: string;
     label: string;
-    serviceType: 'hafas' | 'vendo' | 'motis' | 'efa';
+    serviceType: 'hafas' | 'vendo' | 'motis' | 'efa' | 'trias';
     profile: string;
     disabled?: boolean;
 }
@@ -39,6 +39,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     { value: 'vendo:db', label: 'Vendo - Deutsche Bahn', serviceType: 'vendo', profile: 'db', disabled: true },
     { value: 'motis:compat', label: 'MOTIS - Transitous (DE & Europa)', serviceType: 'motis', profile: 'compat' },
     { value: 'efa:vrr', label: 'EFA - VRR (Rhein-Ruhr)', serviceType: 'efa', profile: 'vrr' },
+    { value: 'trias:bw', label: 'TRIAS - MobiData BW (Baden-Württemberg)', serviceType: 'trias', profile: 'bw' },
 ];
 
 const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, onChange, alive, disabled }) => {
@@ -47,6 +48,7 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
     const combinedValue = `${serviceType || 'hafas'}:${profile || 'vbb'}`;
 
     const clientName = ConfigGeneric.getValue(data, 'clientName') as string;
+    const triasRequestorRef = ConfigGeneric.getValue(data, 'triasRequestorRef') as string;
     const pollInterval = ConfigGeneric.getValue(data, 'pollInterval') as number;
     const suppressInfoLogs = ConfigGeneric.getValue(data, 'suppressInfoLogs') as boolean;
     const delayOffset = ConfigGeneric.getValue(data, 'delayOffset') as number;
@@ -114,6 +116,10 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
         await onChange('clientName', event.target.value);
     };
 
+    const handleTriasRequestorRefChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+        await onChange('triasRequestorRef', event.target.value.trim());
+    };
+
     const handleSuppressInfoLogsChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
         await onChange('suppressInfoLogs', event.target.checked);
     };
@@ -178,6 +184,59 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
                     />
                 </FormControl>
             </Box>
+
+            {/*
+                Zugangsschlüssel für TRIAS. Er ist der einzige Konfigurationswert des Adapters, der
+                ein personengebundenes Geheimnis ist: TRIAS-Anbieter vergeben je Anwender einen
+                eigenen `RequestorRef`. Deshalb ein Passwortfeld — der Wert liegt verschlüsselt in
+                der Instanz-Konfiguration (`encryptedNative`) und wird auch im Debug-Log maskiert.
+                An den Service-Typ gebunden, nicht ans Profil: Jedes TRIAS-Netz braucht einen Key.
+            */}
+            {serviceType === 'trias' && (
+                <FormControl
+                    sx={{ mb: 3 }}
+                    disabled={isDisabled}
+                    fullWidth
+                >
+                    <TextField
+                        id="trias-requestor-ref-input"
+                        type="password"
+                        autoComplete="off"
+                        label={I18n.t('clientConfig_triasKey_label')}
+                        value={triasRequestorRef || ''}
+                        onChange={handleTriasRequestorRefChange}
+                        error={!triasRequestorRef}
+                        helperText={I18n.t('clientConfig_triasKey_helper')}
+                        disabled={isDisabled}
+                        fullWidth
+                    />
+                </FormControl>
+            )}
+
+            {/*
+                Datenquellen-Hinweis der NVBW. Die Nutzungsbedingungen von MobiData BW verlangen
+                die Angabe „Daten der NVBW" mit Verlinkung auf die NVBW-Webseite (Auskunft NVBW
+                vom 06.08.2026); ein Logo wird — anders als beim VRR — nicht gefordert. Wie dort
+                ans Profil gebunden, damit ein künftiges zweites TRIAS-Netz nicht die Attribution
+                der NVBW erbt.
+            */}
+            {serviceType === 'trias' && profile === 'bw' && (
+                <Box sx={{ mb: 3 }}>
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                    >
+                        {I18n.t('clientConfig_nvbwAttribution_text')}{' '}
+                        <Link
+                            href="https://www.nvbw.de"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            www.nvbw.de
+                        </Link>
+                    </Typography>
+                </Box>
+            )}
 
             {/*
                 Datenquellen-Hinweis des VRR. Der Verbund gibt seine Open Service API unter der

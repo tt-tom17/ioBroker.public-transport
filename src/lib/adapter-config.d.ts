@@ -4,8 +4,14 @@
 declare global {
 	namespace ioBroker {
 		interface AdapterConfig {
-			serviceType: 'hafas' | 'vendo' | 'motis' | 'efa';
+			serviceType: 'hafas' | 'vendo' | 'motis' | 'efa' | 'trias';
 			profile?: string;
+			/**
+			 * Zugangsschlüssel für TRIAS-Netze (`RequestorRef`). Anders als bei den übrigen
+			 * Backends braucht **jeder Anwender einen eigenen**, den er beim Anbieter beantragt.
+			 * Steht in `encryptedNative`, liegt also verschlüsselt in der Instanz-Konfiguration.
+			 */
+			triasRequestorRef?: string;
 			clientName?: string;
 			stationConfig?: StationConfig[];
 			journeyConfig?: JourneyConfig[];

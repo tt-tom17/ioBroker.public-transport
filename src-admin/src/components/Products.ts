@@ -184,6 +184,23 @@ export const PROFILE_PRODUCTS: Record<string, Partial<Products>> = {
         subway: true,
         tram: true,
     },
+    // TRIAS – MobiData BW (NVBW). Die Schlüssel entsprechen den Produkten, die der triasMapper
+    // aus den PtMode-/Submode-Werten des VDV-Standards erzeugt.
+    // ⚠️ `aircraft` fehlt bewusst: Der Standard kennt `PtMode=air`, und der Mapper bildet es auch
+    // ab — die Produktliste des Adapters hat dafür aber keinen Schlüssel, und eine Erhebung über
+    // acht Stationen (320 Abfahrten, 24.08.2026) lieferte keinen einzigen Flug. Sollte je einer
+    // auftauchen, würde er vom Produktfilter ausgeblendet; das ist der bewusst in Kauf genommene
+    // Randfall gegenüber einer Erweiterung des adapterweiten Produkt-Typs.
+    bw: {
+        national: true,
+        regional: true,
+        suburban: true,
+        subway: true,
+        tram: true,
+        bus: true,
+        ferry: true,
+        cableCar: true,
+    },
     // EFA – VRR (Rhein-Ruhr). Die Schlüssel entsprechen exakt den Produkten, die der
     // efaMapper aus den EFA-MOT-Klassen erzeugt – sonst würde der Filter ins Leere greifen.
     vrr: {

@@ -4,6 +4,7 @@ import { DepartureRequest } from './lib/class/departure';
 import { DeparturePolling } from './lib/class/departurePolling';
 import { EfaService } from './lib/class/efaService';
 import { HafasService } from './lib/class/hafasService';
+import { TriasService } from './lib/class/triasService';
 import { JourneyPolling } from './lib/class/journeyPolling';
 import { JourneysRequest } from './lib/class/journeys';
 import { MotisService } from './lib/class/motisService';
@@ -21,6 +22,7 @@ export class PublicTransport extends utils.Adapter {
     vService!: VendoService;
     mService!: MotisService;
     eService!: EfaService;
+    tService!: TriasService;
     activeService!: ITransportService | undefined;
     depRequest!: DepartureRequest;
     journeysRequest!: JourneysRequest;
@@ -139,7 +141,7 @@ export class PublicTransport extends utils.Adapter {
         await this.applyObjectsWarnLimit();
 
         // Service basierend auf Konfiguration auswählen
-        const serviceType = this.config.serviceType || 'hafas'; // 'hafas', 'vendo', 'motis' oder 'efa'
+        const serviceType = this.config.serviceType || 'hafas'; // 'hafas', 'vendo', 'motis', 'efa' oder 'trias'
         const clientName = `${this.config.clientName || 'iobroker-public-transport'}-${Math.floor(Math.random() * 1001)}`;
 
         try {
@@ -157,6 +159,16 @@ export class PublicTransport extends utils.Adapter {
                 this.eService.init();
                 this.activeService = this.eService;
                 this.log.info(`EFA client initialized with network: ${efaNetwork}`);
+            } else if (serviceType === 'trias') {
+                // TriasService initialisieren (VDV 431-2, z.B. MobiData BW). Wie bei EFA bestimmt
+                // das Profil das Netz und damit die Basis-URL. Zusätzlich braucht TRIAS einen
+                // anwendereigenen Zugangsschlüssel — ohne ihn antwortet der Server mit HTTP 403,
+                // deshalb prüft der Service ihn schon beim Start.
+                const triasNetwork = this.config.profile || '';
+                this.tService = new TriasService(this, clientName, triasNetwork, this.config.triasRequestorRef || '');
+                this.tService.init();
+                this.activeService = this.tService;
+                this.log.info(`TRIAS client initialized with network: ${triasNetwork}`);
             } else if (serviceType === 'motis') {
                 // MotisService (Transitous) initialisieren
                 this.mService = new MotisService(this, clientName);
