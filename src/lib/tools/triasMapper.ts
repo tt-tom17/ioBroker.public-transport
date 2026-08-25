@@ -469,6 +469,33 @@ export function readError(messages?: TriasErrorMessage[]): string | undefined {
 }
 
 /**
+ * Codes, die keinen Fehler bezeichnen, sondern ein leeres Ergebnis.
+ *
+ * TRIAS kennt keine leere Antwort: Statt einer leeren Ergebnisliste kommt eine `ErrorMessage`.
+ * Gemessen am 25.08.2026 gegen `efa-bw.de/trias`: Freiburg im Breisgau Bad
+ * (`de:08311:30605`) meldet um 02:30 Uhr im 60-Minuten-Fenster `-4030`, dieselbe Anfrage mit
+ * 480 Minuten liefert zehn Abfahrten. Wer diese Codes als Fehler behandelt, protokolliert jede
+ * Nachtstunde als Störung — HAFAS und EFA geben in derselben Lage eine leere Liste zurück.
+ *
+ * `-8014` und `-8020` kommen aus der Ortssuche, solange die Eingabe zu keinem Treffer führt.
+ */
+const EMPTY_RESULT_CODES = new Set(['-4000', '-4030', '-8014', '-8020']);
+
+/**
+ * Prüft, ob eine Fehlermeldung nur „nichts gefunden" bedeutet.
+ *
+ * Nur wenn **alle** gemeldeten Codes bekannt harmlos sind: Eine unbekannte Meldung in derselben
+ * Antwort macht sie wieder zum Fehler, damit ein echter Defekt nicht neben einem `-4030`
+ * untergeht.
+ *
+ * @param messages Die Fehlermeldungen der Antwort
+ */
+export function isEmptyResult(messages?: TriasErrorMessage[]): boolean {
+    const relevant = (messages ?? []).filter(message => message.Code !== undefined || textOf(message.Text));
+    return relevant.length > 0 && relevant.every(message => EMPTY_RESULT_CODES.has(String(message.Code)));
+}
+
+/**
  * Ordnet die abweichenden Submodes ihrem `PtMode` zu.
  *
  * Nötig für den Rückschluss vom Produkt auf den PtMode: Ein Submode kann ein Produkt in einen

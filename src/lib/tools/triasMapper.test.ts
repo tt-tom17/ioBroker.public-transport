@@ -3,6 +3,7 @@ import type { TriasLocationResult, TriasService, TriasStopEventResult, TriasTrip
 import {
     delayInSeconds,
     durationInMinutes,
+    isEmptyResult,
     mapJourney,
     mapLine,
     mapLocation,
@@ -121,6 +122,24 @@ describe('triasMapper => Fehler und Attribute', () => {
     it('liest eine echte Fehlermeldung samt Code und Text', () => {
         const text = readError([{ Code: '-4000', Text: { Text: 'TRIP_NOTRIPFOUND' } }]);
         expect(text).to.equal('-4000: TRIP_NOTRIPFOUND');
+    });
+
+    it('erkennt „nichts gefunden" als leeres Ergebnis, nicht als Fehler', () => {
+        // Gemessen am 25.08.2026: nachts liefert der Abfahrtsmonitor -4030 statt einer leeren
+        // Liste, die Ortssuche -8014/-8020 bei Eingaben ohne Treffer.
+        expect(isEmptyResult([{ Code: '-4030', Text: { Text: 'STOPEVENT_NOEVENTFOUND' } }])).to.equal(true);
+        expect(isEmptyResult([{ Code: '-8014', Text: { Text: 'LOCATION_NORESULTS' } }])).to.equal(true);
+        expect(isEmptyResult([{ Code: '-8020', Text: { Text: 'LOCATION_NORESULTS' } }])).to.equal(true);
+        expect(isEmptyResult([{ Code: '-4000', Text: { Text: 'TRIP_NOTRIPFOUND' } }])).to.equal(true);
+    });
+
+    it('lässt unbekannte Codes weiterhin Fehler sein', () => {
+        expect(isEmptyResult([{ Code: '-9999', Text: { Text: 'TRIP_CANCELLED' } }])).to.equal(false);
+        // Eine harmlose Meldung deckt die übrigen nicht zu.
+        expect(isEmptyResult([{ Code: '-4030' }, { Code: '-1234' }])).to.equal(false);
+        // Ohne Meldung gibt es nichts zu unterdrücken.
+        expect(isEmptyResult([])).to.equal(false);
+        expect(isEmptyResult(undefined)).to.equal(false);
     });
 });
 

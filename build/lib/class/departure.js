@@ -60,8 +60,9 @@ class DepartureRequest extends import_library.BaseClass {
         this.log.debug(JSON.stringify(response.departures, null, 1));
       }
       if (!response.departures || response.departures.length === 0) {
+        const window = mergedOptions.duration ? ` within the next ${mergedOptions.duration} minutes` : "";
         this.log.info(
-          `No departures found for station ${stationId}, client_profile: ${client_profile || "kein Profil angegeben"}`
+          `No departures found for station ${stationId}${window}, client_profile: ${client_profile || "none"}`
         );
       }
       await this.writeDepartureStates(stationId, response.departures, countEntries);

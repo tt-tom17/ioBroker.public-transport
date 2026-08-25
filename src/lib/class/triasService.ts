@@ -19,7 +19,14 @@
 import type * as Hafas from 'hafas-client';
 import { XMLParser } from 'fast-xml-parser';
 import type { PublicTransport } from '../../main';
-import { mapJourney, mapLocation, mapStopEvent, ptModesForProducts, readError } from '../tools/triasMapper';
+import {
+    isEmptyResult,
+    mapJourney,
+    mapLocation,
+    mapStopEvent,
+    ptModesForProducts,
+    readError,
+} from '../tools/triasMapper';
 import type { TriasEnvelope, TriasLocationResult, TriasStopEventResult, TriasTripResult } from '../types/trias';
 import { BaseTransportService } from './baseTransportService';
 
@@ -273,6 +280,10 @@ export class TriasService extends BaseTransportService {
      * Ein Fehler mit vorhandenen Daten wird nur protokolliert: TRIAS meldet z. B. `-4006`
      * („nur Fußweg gefunden") zusammen mit einem verwertbaren Ergebnis.
      *
+     * Ebenso wenig ist ein leeres Ergebnis ein Fehler: TRIAS antwortet auf „keine Abfahrten im
+     * Zeitfenster" mit `-4030` statt mit einer leeren Liste (s. {@link isEmptyResult}). Diese
+     * Codes landen im Debug-Log, der Aufrufer bekommt sein leeres Ergebnis.
+     *
      * @param messages Die Fehlermeldungen aus dem passenden Response-Element
      * @param hasResults true, wenn die Antwort trotzdem verwertbare Daten enthält
      */
@@ -283,6 +294,10 @@ export class TriasService extends BaseTransportService {
         }
         if (hasResults) {
             this.adapter.log.debug(`[TRIAS] Server message: ${text}`);
+            return;
+        }
+        if (isEmptyResult(messages)) {
+            this.adapter.log.debug(`[TRIAS] empty result: ${text}`);
             return;
         }
         throw new Error(`TRIAS server reported: ${text}`);

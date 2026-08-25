@@ -207,6 +207,10 @@ class TriasService extends import_baseTransportService.BaseTransportService {
    * Ein Fehler mit vorhandenen Daten wird nur protokolliert: TRIAS meldet z. B. `-4006`
    * („nur Fußweg gefunden") zusammen mit einem verwertbaren Ergebnis.
    *
+   * Ebenso wenig ist ein leeres Ergebnis ein Fehler: TRIAS antwortet auf „keine Abfahrten im
+   * Zeitfenster" mit `-4030` statt mit einer leeren Liste (s. {@link isEmptyResult}). Diese
+   * Codes landen im Debug-Log, der Aufrufer bekommt sein leeres Ergebnis.
+   *
    * @param messages Die Fehlermeldungen aus dem passenden Response-Element
    * @param hasResults true, wenn die Antwort trotzdem verwertbare Daten enthält
    */
@@ -217,6 +221,10 @@ class TriasService extends import_baseTransportService.BaseTransportService {
     }
     if (hasResults) {
       this.adapter.log.debug(`[TRIAS] Server message: ${text}`);
+      return;
+    }
+    if ((0, import_triasMapper.isEmptyResult)(messages)) {
+      this.adapter.log.debug(`[TRIAS] empty result: ${text}`);
       return;
     }
     throw new Error(`TRIAS server reported: ${text}`);

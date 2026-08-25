@@ -64,7 +64,7 @@ export class JourneysRequest extends BaseClass {
             }
             if (!response.journeys || response.journeys.length === 0) {
                 this.log.info(
-                    `No journeys found from station ${from} to ${to}, client_profile: ${client_profile || 'kein Profil angegeben'}`,
+                    `No journeys found from station ${from} to ${to}, client_profile: ${client_profile || 'none'}`,
                 );
             }
             // Schreibe die Verbindungen in die States
@@ -82,7 +82,7 @@ export class JourneysRequest extends BaseClass {
                         ? ` (no connection with max. ${transfers} transfer(s) - increase "Number of transfers")`
                         : '';
                 this.log.warn(
-                    `No journeys found from station ${from} to ${to}${hint}, client_profile: ${client_profile || 'kein Profil angegeben'}`,
+                    `No journeys found from station ${from} to ${to}${hint}, client_profile: ${client_profile || 'none'}`,
                 );
                 try {
                     await this.writeJourneysStates(journeyId, { journeys: [] }, countEntries, client_profile);
