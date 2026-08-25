@@ -22,11 +22,17 @@ The public-transport adapter enables seamless integration of real-time public tr
 
 The adapter itself does not host any timetable data — it queries the interface of the transport network you select in the settings. The terms of the respective operator apply.
 
+The queries themselves are built with open-source clients: [hafas-client](https://github.com/public-transport/hafas-client) of the [public-transport](https://github.com/public-transport) project speaks to the HAFAS endpoints of the various operators, [motis-fptf-client](https://github.com/motis-project/motis-fptf-client) to MOTIS. Both are ISC-licensed. The EFA and TRIAS backends have no ready-made client and are implemented in the adapter itself.
+
 <a href="https://www.vrr.de"><img src="admin/vrr-logo.svg" alt="Verkehrsverbund Rhein-Ruhr" height="70" align="left" hspace="12"></a>
 
 **EFA – VRR:** Timetable data for the Rhine-Ruhr region is provided by the [Verkehrsverbund Rhein-Ruhr (VRR)](https://www.vrr.de) through its Open Service API. The VRR asks applications using this interface to link to www.vrr.de and to display its logo — the adapter therefore shows both in the instance settings.
 
 <br clear="left">
+
+**TRIAS – MobiData BW:** Timetable data for Baden-Württemberg (including VVS, KVV, naldo and DING) is provided by the [Nahverkehrsgesellschaft Baden-Württemberg (NVBW)](https://www.nvbw.de) via MobiData BW. The NVBW asks applications to credit the source as "Daten der NVBW" with a link to its website — the adapter therefore shows both in the instance settings.
+
+> **This backend needs your own access key.** Unlike every other backend, TRIAS providers issue an individual key (`RequestorRef`) per user; a shared key supplied with the adapter is not permitted. For MobiData BW, send an informal e-mail to `mobidata-bw@nvbw.de` stating your full name, your address, a contact e-mail address and a short description of what you intend to do with the data. You will receive your key by e-mail — enter it in the instance settings under "TRIAS access key".
 
 ## Changelog
 <!--
