@@ -208,11 +208,18 @@
     "serviceType": "hafas",
     "profile": "vbb",
     "clientName": "",
+    "triasRequestorRef": "",
     "pollInterval": 5,
     "logUnknownTokens": false,
     "suppressInfoLogs": false,
     "logCompletelyJSON": false
   },
+  "encryptedNative": [
+    "triasRequestorRef"
+  ],
+  "protectedNative": [
+    "triasRequestorRef"
+  ],
   "objects": [],
   "instanceObjects": []
 }
