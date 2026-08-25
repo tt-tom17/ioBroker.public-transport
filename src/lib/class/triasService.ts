@@ -26,6 +26,7 @@ import {
     mapStopEvent,
     ptModesForProducts,
     readError,
+    tripStartTime,
 } from '../tools/triasMapper';
 import type { TriasEnvelope, TriasLocationResult, TriasStopEventResult, TriasTripResult } from '../types/trias';
 import { BaseTransportService } from './baseTransportService';
@@ -456,9 +457,16 @@ export class TriasService extends BaseTransportService {
         const results: TriasTripResult[] = payload?.TripResult ?? [];
         this.checkError(payload?.ErrorMessage, results.length > 0);
 
+        // ⚠️ Erst das Vergangene aussortieren, dann kürzen. Die EFA-BW beantwortet eine Anfrage
+        // ab „jetzt" auch mit Trips, die davor abgefahren sind (gemessen 25.08.2026: nachts 3 von
+        // 13, tagsüber 1 von 7). Wer nur kürzt, füllt die ersten Plätze mit Verbindungen von
+        // gestern. Ein Trip ohne verwertbare Startzeit bleibt drin, statt still zu verschwinden.
+        const abZeit = new Date(this.formatTime(options?.departure)).getTime();
+        const kommende = results.filter(result => (tripStartTime(result) ?? abZeit) >= abZeit);
+
         // Selbst kürzen: Der Server lieferte im Test mehr Verbindungen als angefordert, und bei
         // einem Anbieter ohne diese Erweiterung kommt die volle Liste.
-        return { journeys: results.slice(0, requested).map(mapJourney) };
+        return { journeys: kommende.slice(0, requested).map(mapJourney) };
     }
 
     /**

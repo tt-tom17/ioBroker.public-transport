@@ -149,6 +149,12 @@ export interface TriasContinuousLeg {
     LegEnd?: TriasCallAtStop & { LocationName?: TriasText };
     /** ISO-8601-Dauer, z. B. `PT8M`. */
     Duration?: string;
+    /** Beginn des Fußwegs – hier stehen die Zeiten, nicht in `LegStart`. */
+    TimeWindowStart?: string;
+    /** Ende des Fußwegs. */
+    TimeWindowEnd?: string;
+    /** Weglänge in Metern, z. B. `358`. */
+    Length?: string;
     Service?: { IndividualMode?: string };
 }
 
@@ -156,9 +162,18 @@ export interface TriasContinuousLeg {
 export interface TriasInterchangeLeg {
     LegStart?: TriasCallAtStop & { LocationName?: TriasText };
     LegEnd?: TriasCallAtStop & { LocationName?: TriasText };
+    /** Gesamtdauer des Umstiegs, Gehzeit **und** Puffer, z. B. `PT14M`. */
     Duration?: string;
+    /** Beginn des Umstiegs – wie beim Fußweg stehen die Zeiten hier, nicht in `LegStart`. */
+    TimeWindowStart?: string;
+    /** Ende des Umstiegs. */
+    TimeWindowEnd?: string;
+    /** Reine Gehzeit ohne Puffer, z. B. `PT7M`. */
+    WalkDuration?: string;
     /** Pufferzeit für den Umstieg. */
     BufferTime?: string;
+    /** Weglänge in Metern. */
+    Length?: string;
     InterchangeMode?: string;
 }
 

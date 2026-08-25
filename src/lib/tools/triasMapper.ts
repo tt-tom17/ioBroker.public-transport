@@ -404,12 +404,19 @@ export function mapLeg(leg: TriasTripLeg): Hafas.Leg | undefined {
         return undefined;
     }
     // Fußweg bzw. Umstieg: FPTF kennzeichnet beides über `walking: true`; eine Linie gibt es
-    // nicht. TRIAS liefert hier nur Start, Ziel und Dauer.
+    // nicht.
+    //
+    // ⚠️ Die Zeiten stehen in `TimeWindowStart`/`TimeWindowEnd` — `ServiceDeparture` und
+    // `ServiceArrival` gehören zum `TimedLeg` und fehlen hier immer. Gemessen am 25.08.2026:
+    // ein `ContinuousLeg` führt `TimeWindowStart`, `TimeWindowEnd`, `Duration` und `Length`,
+    // ein `InterchangeLeg` zusätzlich `WalkDuration` und `BufferTime`. Ohne diese Zeiten bleibt
+    // eine Verbindung, die mit einem Fußweg beginnt oder endet, ohne Abfahrt, Ankunft und Dauer.
     const minutes = durationInMinutes(continuous.Duration);
     const start = continuous.LegStart;
     const end = continuous.LegEnd;
-    const departure = start?.ServiceDeparture?.TimetabledTime;
-    const arrival = end?.ServiceArrival?.TimetabledTime;
+    const departure = continuous.TimeWindowStart ?? start?.ServiceDeparture?.TimetabledTime;
+    const arrival = continuous.TimeWindowEnd ?? end?.ServiceArrival?.TimetabledTime;
+    const length = Number(continuous.Length);
     return {
         origin: mapStop(start),
         destination: mapStop(end),
@@ -418,9 +425,8 @@ export function mapLeg(leg: TriasTripLeg): Hafas.Leg | undefined {
         arrival: arrival,
         plannedArrival: arrival,
         walking: true,
-        // Die Dauer gehört nicht ins FPTF-Schema, ist aber die einzige belastbare Angabe, wenn
-        // TRIAS für den Fußweg keine Zeiten mitliefert.
-        distance: undefined,
+        // FPTF sieht die Weglänge in Metern für Fußwege vor; TRIAS liefert sie als `Length`.
+        distance: Number.isFinite(length) ? length : undefined,
         public: false,
         remarks: minutes ? ([{ type: 'hint', text: `${minutes} min` }] as Hafas.Hint[]) : undefined,
     };
@@ -439,11 +445,42 @@ export function mapLeg(leg: TriasTripLeg): Hafas.Leg | undefined {
 export function mapJourney(result: TriasTripResult): Hafas.Journey {
     const trip = result.Trip;
     const legs = (trip?.TripLeg ?? []).map(mapLeg).filter((leg): leg is Hafas.Leg => Boolean(leg));
+
+    // Rückfallebene für die Ränder: Der Adapter bildet Abfahrt, Ankunft und Dauer der Verbindung
+    // aus `legs[0].departure` und `legs[n].arrival` (journeys.ts). Fehlt dort die Zeit — ein
+    // Abschnitt ohne `TimeWindow* ` —, stünde die Verbindung ohne Zeiten und mit Dauer `-1` da.
+    // `Trip/StartTime` und `Trip/EndTime` gelten für die gesamte Verbindung und schließen die Lücke.
+    const erster = legs[0];
+    if (erster && !erster.departure && trip?.StartTime) {
+        erster.departure = trip.StartTime;
+        erster.plannedDeparture ??= trip.StartTime;
+    }
+    const letzter = legs[legs.length - 1];
+    if (letzter && !letzter.arrival && trip?.EndTime) {
+        letzter.arrival = trip.EndTime;
+        letzter.plannedArrival ??= trip.EndTime;
+    }
+
     return {
         type: 'journey',
         refreshToken: trip?.TripId ?? result.ResultId,
         legs: legs,
     };
+}
+
+/**
+ * Abfahrtszeitpunkt einer Verbindung in Millisekunden.
+ *
+ * Gebraucht, um vergangene Verbindungen auszusortieren: Die EFA-BW liefert zu einer Anfrage ab
+ * „jetzt" auch Trips, die davor liegen (gemessen 25.08.2026 nachts: 3 von 13, tagsüber 1 von 7).
+ * Wer die Liste einfach kürzt, zeigt dem Anwender Verbindungen von gestern.
+ *
+ * @param result Das Ergebnis einer Verbindungsauskunft
+ */
+export function tripStartTime(result: TriasTripResult): number | undefined {
+    const start = result.Trip?.StartTime;
+    const zeit = start ? new Date(start).getTime() : Number.NaN;
+    return Number.isFinite(zeit) ? zeit : undefined;
 }
 
 /**

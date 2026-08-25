@@ -347,7 +347,12 @@ class TriasService extends import_baseTransportService.BaseTransportService {
     const payload = (_d = (_c = (_b = response.Trias) == null ? void 0 : _b.ServiceDelivery) == null ? void 0 : _c.DeliveryPayload) == null ? void 0 : _d.TripResponse;
     const results = (_e = payload == null ? void 0 : payload.TripResult) != null ? _e : [];
     this.checkError(payload == null ? void 0 : payload.ErrorMessage, results.length > 0);
-    return { journeys: results.slice(0, requested).map(import_triasMapper.mapJourney) };
+    const abZeit = new Date(this.formatTime(options == null ? void 0 : options.departure)).getTime();
+    const kommende = results.filter((result) => {
+      var _a2;
+      return ((_a2 = (0, import_triasMapper.tripStartTime)(result)) != null ? _a2 : abZeit) >= abZeit;
+    });
+    return { journeys: kommende.slice(0, requested).map(import_triasMapper.mapJourney) };
   }
   /**
    * Ortssuche (`LocationInformationRequest`).

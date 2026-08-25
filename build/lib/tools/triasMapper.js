@@ -31,7 +31,8 @@ __export(triasMapper_exports, {
   mapStopEvent: () => mapStopEvent,
   ptModesForProducts: () => ptModesForProducts,
   readError: () => readError,
-  textOf: () => textOf
+  textOf: () => textOf,
+  tripStartTime: () => tripStartTime
 });
 module.exports = __toCommonJS(triasMapper_exports);
 const PT_MODE_MAP = {
@@ -223,7 +224,7 @@ function mapStopEvent(result, arrival = false) {
   };
 }
 function mapLeg(leg) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
   if (leg.TimedLeg) {
     const timed = leg.TimedLeg;
     const board = timed.LegBoard;
@@ -271,8 +272,9 @@ function mapLeg(leg) {
   const minutes = durationInMinutes(continuous.Duration);
   const start = continuous.LegStart;
   const end = continuous.LegEnd;
-  const departure = (_l = start == null ? void 0 : start.ServiceDeparture) == null ? void 0 : _l.TimetabledTime;
-  const arrival = (_m = end == null ? void 0 : end.ServiceArrival) == null ? void 0 : _m.TimetabledTime;
+  const departure = (_m = continuous.TimeWindowStart) != null ? _m : (_l = start == null ? void 0 : start.ServiceDeparture) == null ? void 0 : _l.TimetabledTime;
+  const arrival = (_o = continuous.TimeWindowEnd) != null ? _o : (_n = end == null ? void 0 : end.ServiceArrival) == null ? void 0 : _n.TimetabledTime;
+  const length = Number(continuous.Length);
   return {
     origin: mapStop(start),
     destination: mapStop(end),
@@ -281,22 +283,37 @@ function mapLeg(leg) {
     arrival,
     plannedArrival: arrival,
     walking: true,
-    // Die Dauer gehört nicht ins FPTF-Schema, ist aber die einzige belastbare Angabe, wenn
-    // TRIAS für den Fußweg keine Zeiten mitliefert.
-    distance: void 0,
+    // FPTF sieht die Weglänge in Metern für Fußwege vor; TRIAS liefert sie als `Length`.
+    distance: Number.isFinite(length) ? length : void 0,
     public: false,
     remarks: minutes ? [{ type: "hint", text: `${minutes} min` }] : void 0
   };
 }
 function mapJourney(result) {
-  var _a, _b;
+  var _a, _b, _c, _d;
   const trip = result.Trip;
   const legs = ((_a = trip == null ? void 0 : trip.TripLeg) != null ? _a : []).map(mapLeg).filter((leg) => Boolean(leg));
+  const erster = legs[0];
+  if (erster && !erster.departure && (trip == null ? void 0 : trip.StartTime)) {
+    erster.departure = trip.StartTime;
+    (_b = erster.plannedDeparture) != null ? _b : erster.plannedDeparture = trip.StartTime;
+  }
+  const letzter = legs[legs.length - 1];
+  if (letzter && !letzter.arrival && (trip == null ? void 0 : trip.EndTime)) {
+    letzter.arrival = trip.EndTime;
+    (_c = letzter.plannedArrival) != null ? _c : letzter.plannedArrival = trip.EndTime;
+  }
   return {
     type: "journey",
-    refreshToken: (_b = trip == null ? void 0 : trip.TripId) != null ? _b : result.ResultId,
+    refreshToken: (_d = trip == null ? void 0 : trip.TripId) != null ? _d : result.ResultId,
     legs
   };
+}
+function tripStartTime(result) {
+  var _a;
+  const start = (_a = result.Trip) == null ? void 0 : _a.StartTime;
+  const zeit = start ? new Date(start).getTime() : Number.NaN;
+  return Number.isFinite(zeit) ? zeit : void 0;
 }
 function readError(messages) {
   const relevant = (messages != null ? messages : []).filter((message) => message.Code !== void 0 || textOf(message.Text));
@@ -363,6 +380,7 @@ function ptModesForProducts(products) {
   mapStopEvent,
   ptModesForProducts,
   readError,
-  textOf
+  textOf,
+  tripStartTime
 });
 //# sourceMappingURL=triasMapper.js.map

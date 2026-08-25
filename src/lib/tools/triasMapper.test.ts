@@ -12,6 +12,7 @@ import {
     mapStopEvent,
     ptModesForProducts,
     readError,
+    tripStartTime,
 } from './triasMapper';
 
 /**
@@ -297,6 +298,74 @@ describe('triasMapper => Verbindungen', () => {
         const leg = mapJourney(trip).legs[0];
         expect(leg.walking).to.equal(true);
         expect(leg.public).to.equal(false);
+    });
+
+    it('liest die Zeiten eines Fußwegs aus dem Zeitfenster, nicht aus ServiceDeparture', () => {
+        // Gemessen am 25.08.2026: ContinuousLeg führt TimeWindowStart/TimeWindowEnd und Length.
+        // Vorher blieben Abfahrt und Ankunft leer, weil die TimedLeg-Felder abgefragt wurden.
+        const trip: TriasTripResult = {
+            Trip: {
+                TripLeg: [
+                    {
+                        LegId: '4',
+                        ContinuousLeg: {
+                            Duration: 'PT6M',
+                            TimeWindowStart: '2026-08-24T23:06:00Z',
+                            TimeWindowEnd: '2026-08-24T23:12:00Z',
+                            Length: '358',
+                            LegStart: { LocationName: { Text: 'BAD Leopoldsplatz' } },
+                            LegEnd: { LocationName: { Text: 'Baden-Baden, Kurhaus' } },
+                        },
+                    },
+                ],
+            },
+        };
+        const leg = mapJourney(trip).legs[0];
+        expect(leg.departure).to.equal('2026-08-24T23:06:00Z');
+        expect(leg.plannedDeparture).to.equal('2026-08-24T23:06:00Z');
+        expect(leg.arrival).to.equal('2026-08-24T23:12:00Z');
+        expect(leg.distance).to.equal(358);
+    });
+
+    it('füllt fehlende Randzeiten aus Trip/StartTime und Trip/EndTime', () => {
+        // Ohne diese Rückfallebene stünde eine Verbindung, die mit einem Fußweg ohne Zeitfenster
+        // beginnt, ohne Abfahrt da — und journeys.ts schriebe DurationMinutes = -1.
+        const trip: TriasTripResult = {
+            Trip: {
+                StartTime: '2026-08-25T02:02:00Z',
+                EndTime: '2026-08-25T03:26:00Z',
+                TripLeg: [
+                    {
+                        LegId: '1',
+                        ContinuousLeg: {
+                            Duration: 'PT5M',
+                            LegStart: { LocationName: { Text: 'Karlsruhe West' } },
+                            LegEnd: { LocationName: { Text: 'Karlsruhe Hornisgrindestraße' } },
+                        },
+                    },
+                    {
+                        LegId: '2',
+                        ContinuousLeg: {
+                            Duration: 'PT4M',
+                            LegStart: { LocationName: { Text: 'BAD Leopoldsplatz' } },
+                            LegEnd: { LocationName: { Text: 'Baden-Baden, Kurhaus' } },
+                        },
+                    },
+                ],
+            },
+        };
+        const legs = mapJourney(trip).legs;
+        expect(legs[0].departure).to.equal('2026-08-25T02:02:00Z');
+        expect(legs[legs.length - 1].arrival).to.equal('2026-08-25T03:26:00Z');
+    });
+
+    it('liefert den Startzeitpunkt einer Verbindung für den Vergangenheitsfilter', () => {
+        expect(tripStartTime({ Trip: { StartTime: '2026-08-25T02:02:00Z' } })).to.equal(
+            Date.parse('2026-08-25T02:02:00Z'),
+        );
+        // Ohne verwertbare Zeit lieber nichts sagen, als eine Verbindung still zu verwerfen.
+        expect(tripStartTime({ Trip: {} })).to.equal(undefined);
+        expect(tripStartTime({ Trip: { StartTime: 'kaputt' } })).to.equal(undefined);
     });
 });
 
