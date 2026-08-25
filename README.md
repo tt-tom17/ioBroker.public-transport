@@ -33,7 +33,7 @@ The adapter itself does not host any timetable data — it queries the interface
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.2.0 (2026-08-25)
 * (tt-tom17) added EFA as a new backend with VRR (Rhein-Ruhr) as the first network
 
 ### 1.1.0 (2026-08-21)

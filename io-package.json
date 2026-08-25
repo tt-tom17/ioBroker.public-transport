@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "news": {
       "1.2.0": {
         "en": "New: EFA as an additional backend, with the VRR (Rhine-Ruhr) as the first network",
