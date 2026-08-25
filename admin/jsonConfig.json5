@@ -8,10 +8,10 @@
             "items": {
                 "clientConfig": {
                     "type": "custom",
+                    "guiApi": 2,
                     "i18n": true,
                     "url": "custom/customComponents.js",
-                    "name": "AdminComponentEasyAccessSet/Components/ClientConfig",
-                    "bundlerType": "module"
+                    "name": "AdminComponentEasyAccessSet/Components/ClientConfig"
                 }
             }
         },
@@ -21,10 +21,10 @@
             "items": {
                 "departures": {
                     "type": "custom",
+                    "guiApi": 2,
                     "i18n": true,
                     "url": "custom/customComponents.js",
-                    "name": "AdminComponentEasyAccessSet/Components/DepartureManager",
-                    "bundlerType": "module"
+                    "name": "AdminComponentEasyAccessSet/Components/DepartureManager"
                 }
             }
         },
@@ -34,10 +34,10 @@
             "items": {
                 "journeys": {
                     "type": "custom",
+                    "guiApi": 2,
                     "i18n": true,
                     "url": "custom/customComponents.js",
-                    "name": "AdminComponentEasyAccessSet/Components/JourneyManager",
-                    "bundlerType": "module"
+                    "name": "AdminComponentEasyAccessSet/Components/JourneyManager"
                 }
             }
         }
