@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "1.2.0",
     "news": {
+      "1.3.0": {
+        "en": "New: TRIAS as an additional backend, with MobiData BW (Baden-Württemberg) as the first network",
+        "de": "Neu: TRIAS als weiteres Backend, mit MobiData BW (Baden-Württemberg) als erstem Verkehrsnetz",
+        "ru": "Новинка: TRIAS как дополнительный бэкенд, с MobiData BW (Баден-Вюртемберг) в качестве первой транспортной сети",
+        "pt": "Novo: TRIAS como backend adicional, com o MobiData BW (Baden-Württemberg) como primeira rede de transportes",
+        "nl": "Nieuw: TRIAS als extra backend, met MobiData BW (Baden-Württemberg) als eerste vervoersnetwerk",
+        "fr": "Nouveau : TRIAS comme backend supplémentaire, avec MobiData BW (Bade-Wurtemberg) comme premier réseau de transport",
+        "it": "Novità: TRIAS come backend aggiuntivo, con MobiData BW (Baden-Württemberg) come prima rete di trasporto",
+        "es": "Novedad: TRIAS como backend adicional, con MobiData BW (Baden-Wurtemberg) como primera red de transporte",
+        "pl": "Nowość: TRIAS jako dodatkowy backend, z MobiData BW (Badenia-Wirtembergia) jako pierwszą siecią transportową",
+        "uk": "Нове: TRIAS як додатковий бекенд, із MobiData BW (Баден-Вюртемберг) як першою транспортною мережею",
+        "zh-cn": "新增：TRIAS 作为额外的后端，首个交通网络为 MobiData BW（巴登-符腾堡州）"
+      },
       "1.2.0": {
         "en": "New: EFA as an additional backend, with the VRR (Rhine-Ruhr) as the first network",
         "de": "Neu: EFA als weiteres Backend, mit dem VRR (Rhein-Ruhr) als erstem Verkehrsverbund",

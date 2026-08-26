@@ -39,6 +39,9 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) added TRIAS as a new backend with MobiData BW (Baden-Württemberg) as the first network
+
 ### 1.2.0 (2026-08-25)
 * (tt-tom17) added EFA as a new backend with VRR (Rhein-Ruhr) as the first network
 
