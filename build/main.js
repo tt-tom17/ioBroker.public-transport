@@ -37,6 +37,7 @@ var import_departure = require("./lib/class/departure");
 var import_departurePolling = require("./lib/class/departurePolling");
 var import_efaService = require("./lib/class/efaService");
 var import_hafasService = require("./lib/class/hafasService");
+var import_triasService = require("./lib/class/triasService");
 var import_journeyPolling = require("./lib/class/journeyPolling");
 var import_journeys = require("./lib/class/journeys");
 var import_motisService = require("./lib/class/motisService");
@@ -50,6 +51,7 @@ class PublicTransport extends utils.Adapter {
   vService;
   mService;
   eService;
+  tService;
   activeService;
   depRequest;
   journeysRequest;
@@ -165,6 +167,12 @@ class PublicTransport extends utils.Adapter {
         this.eService.init();
         this.activeService = this.eService;
         this.log.info(`EFA client initialized with network: ${efaNetwork}`);
+      } else if (serviceType === "trias") {
+        const triasNetwork = this.config.profile || "";
+        this.tService = new import_triasService.TriasService(this, clientName, triasNetwork, this.config.triasRequestorRef || "");
+        this.tService.init();
+        this.activeService = this.tService;
+        this.log.info(`TRIAS client initialized with network: ${triasNetwork}`);
       } else if (serviceType === "motis") {
         this.mService = new import_motisService.MotisService(this, clientName);
         this.mService.init();

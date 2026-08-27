@@ -306,4 +306,75 @@ export abstract class BaseTransportService implements ITransportService {
     ): Promise<Hafas.Station | Hafas.Stop | Hafas.Location> {
         return this.call(client => client.stop(stationId, options));
     }
+
+    /**
+     * Filtert Abfahrten auf die in der Konfiguration aktivierten Produkte.
+     *
+     * Gedacht für Backends ohne eigenen Client (EFA, TRIAS): Dort baut der Service die
+     * Abfahrtsliste selbst und muss den Produktfilter nachbilden, den ein echter
+     * hafas-client bereits serverseitig anwendet.
+     *
+     * Abfahrten **ohne** erkanntes Produkt bleiben bewusst erhalten – sie ganz auszublenden
+     * hieße, eine Lücke in der Zuordnungstabelle als Anwenderwunsch auszugeben.
+     *
+     * @param departures Die bereits gemappten Abfahrten
+     * @param products Der Produktfilter aus den Abfrage-Optionen
+     */
+    protected filterByProducts(departures: Hafas.Alternative[], products?: Hafas.Products): Hafas.Alternative[] {
+        const active = Object.entries(products ?? {});
+        if (active.length === 0) {
+            return departures;
+        }
+        const allowed = new Set(active.filter(([, enabled]) => enabled).map(([id]) => id));
+        if (allowed.size === 0) {
+            return departures;
+        }
+        return departures.filter(departure => {
+            const product = departure.line?.product;
+            return !product || allowed.has(product);
+        });
+    }
+
+    /**
+     * Begrenzt Abfahrten auf das gewünschte Zeitfenster.
+     *
+     * @param departures Die bereits gemappten Abfahrten
+     * @param when Beginn des Fensters (Standard: jetzt)
+     * @param duration Länge des Fensters in Minuten
+     */
+    protected filterByDuration(
+        departures: Hafas.Alternative[],
+        when?: Date | string | number,
+        duration?: number,
+    ): Hafas.Alternative[] {
+        if (!duration || duration <= 0) {
+            return departures;
+        }
+        const start = when ? new Date(when).getTime() : Date.now();
+        const end = start + duration * 60_000;
+        return departures.filter(departure => {
+            const time = Date.parse(departure.when ?? departure.plannedWhen ?? '');
+            return !Number.isFinite(time) || time <= end;
+        });
+    }
+
+    /**
+     * Sortiert nach der **tatsächlichen** Zeit (Ist vor Soll).
+     *
+     * Grund ist ein realer Datenfall: Verbünde liefern die Liste nach der Sollzeit sortiert,
+     * einzelne Nachtfahrten tragen aber Soll 00:00 mit einer Ist-Zeit Stunden später. Nach
+     * Soll sortiert stünden sie oben in der Abfahrtstafel. Die Werte selbst bleiben unberührt.
+     *
+     * @param departures Die bereits gemappten Abfahrten
+     */
+    protected sortByEffectiveTime(departures: Hafas.Alternative[]): Hafas.Alternative[] {
+        return [...departures].sort((a, b) => {
+            const timeA = Date.parse(a.when ?? a.plannedWhen ?? '');
+            const timeB = Date.parse(b.when ?? b.plannedWhen ?? '');
+            if (!Number.isFinite(timeA) || !Number.isFinite(timeB)) {
+                return 0;
+            }
+            return timeA - timeB;
+        });
+    }
 }

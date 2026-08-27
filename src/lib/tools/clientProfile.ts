@@ -9,11 +9,12 @@
  * Prüft, ob das in der Eintrags-Konfiguration angegebene `client_profile` zum aktuell
  * initialisierten Transport-Service passt, und wirft bei Abweichung einen Fehler.
  *
- * Format von `client_profile`: `"<serviceType>:<profile>"`, z.B. `"hafas:vbb"`, `"efa:vrr"`.
+ * Format von `client_profile`: `"<serviceType>:<profile>"`, z.B. `"hafas:vbb"`, `"efa:vrr"`,
+ * `"trias:bw"`.
  * - Der `serviceType` muss dem konfigurierten Service entsprechen.
- * - Das Profil wird bei **HAFAS und EFA** geprüft: dort wählt es das Verkehrsgebiet aus (bei
- *   EFA über den Verbund auch dessen Basis-URL), ein Fehlbezug lieferte also still die Daten
- *   einer ganz anderen Region.
+ * - Das Profil wird bei **HAFAS, EFA und TRIAS** geprüft: dort wählt es das Verkehrsgebiet aus
+ *   (bei EFA und TRIAS über das Netz auch dessen Basis-URL), ein Fehlbezug lieferte also still
+ *   die Daten einer ganz anderen Region.
  * - `vendo` und `motis` kennen keine Profil-Auswahl – bei ihnen entscheidet allein der
  *   Service-Typ, ein evtl. angegebener Profil-Teil wird ignoriert.
  *
@@ -32,7 +33,7 @@ export function validateClientProfile(
 
     // Parse client_profile (z.B. "hafas:vbb" -> serviceType: "hafas", profile: "vbb")
     const parts = client_profile.split(':');
-    const expectedServiceType = parts[0]; // 'hafas', 'vendo', 'motis' oder 'efa'
+    const expectedServiceType = parts[0]; // 'hafas', 'vendo', 'motis', 'efa' oder 'trias'
     const expectedProfile = parts[1] || ''; // z.B. 'vbb', 'oebb', 'db'
 
     // Prüfe, ob der richtige Service-Typ initialisiert ist
@@ -44,7 +45,8 @@ export function validateClientProfile(
     }
 
     // Prüfe das Profil (relevant bei HAFAS und EFA; vendo/motis haben ein festes Profil)
-    const profileSelectsRegion = expectedServiceType === 'hafas' || expectedServiceType === 'efa';
+    const profileSelectsRegion =
+        expectedServiceType === 'hafas' || expectedServiceType === 'efa' || expectedServiceType === 'trias';
     if (profileSelectsRegion && expectedProfile) {
         const currentProfile = configuredProfile || '';
         if (currentProfile !== expectedProfile) {

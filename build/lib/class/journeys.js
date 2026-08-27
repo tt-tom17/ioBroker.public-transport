@@ -66,7 +66,7 @@ class JourneysRequest extends import_library.BaseClass {
       }
       if (!response.journeys || response.journeys.length === 0) {
         this.log.info(
-          `No journeys found from station ${from} to ${to}, client_profile: ${client_profile || "kein Profil angegeben"}`
+          `No journeys found from station ${from} to ${to}, client_profile: ${client_profile || "none"}`
         );
       }
       await this.writeJourneysStates(journeyId, response, countEntries, client_profile);
@@ -76,7 +76,7 @@ class JourneysRequest extends import_library.BaseClass {
         const transfers = options.transfers;
         const hint = typeof transfers === "number" && transfers >= 0 ? ` (no connection with max. ${transfers} transfer(s) - increase "Number of transfers")` : "";
         this.log.warn(
-          `No journeys found from station ${from} to ${to}${hint}, client_profile: ${client_profile || "kein Profil angegeben"}`
+          `No journeys found from station ${from} to ${to}${hint}, client_profile: ${client_profile || "none"}`
         );
         try {
           await this.writeJourneysStates(journeyId, { journeys: [] }, countEntries, client_profile);
