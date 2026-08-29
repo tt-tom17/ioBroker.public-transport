@@ -45,6 +45,13 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
     const profile = ConfigGeneric.getValue(data, 'profile') as string;
     const combinedValue = `${serviceType || 'hafas'}:${profile || 'vbb'}`;
 
+    // Eine gespeicherte Instanz kann einen Dienst nennen, den es nicht mehr gibt - etwa das mit
+    // 2.0.0 entfernte 'vendo:db'. Ohne Sonderbehandlung zeigt MUI dafür ein leeres Auswahlfeld
+    // und warnt nur auf der Konsole ("out-of-range value"); am Bildschirm wäre nicht zu erkennen,
+    // warum nichts ausgewählt ist. Deshalb wird der unbekannte Wert als deaktivierter Eintrag
+    // sichtbar gemacht und der Hilfetext sagt, was zu tun ist.
+    const isKnownService = SERVICE_OPTIONS.some(opt => opt.value === combinedValue);
+
     const clientName = ConfigGeneric.getValue(data, 'clientName') as string;
     const triasRequestorRef = ConfigGeneric.getValue(data, 'triasRequestorRef') as string;
     const pollInterval = ConfigGeneric.getValue(data, 'pollInterval') as number;
@@ -141,6 +148,7 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
                 <FormControl
                     sx={{ flex: { sm: '1 1 0' }, minWidth: { xs: '100%', sm: 200 } }}
                     disabled={isDisabled}
+                    error={!isKnownService}
                     fullWidth
                 >
                     <InputLabel id="client-profile-label">{I18n.t('clientConfig_profile_label')}</InputLabel>
@@ -161,8 +169,21 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
                                 {option.disabled ? `${option.label} (${I18n.t('client_unavailable')})` : option.label}
                             </MenuItem>
                         ))}
+                        {!isKnownService && (
+                            <MenuItem
+                                key={combinedValue}
+                                value={combinedValue}
+                                disabled
+                            >
+                                {`${combinedValue} (${I18n.t('client_removed')})`}
+                            </MenuItem>
+                        )}
                     </Select>
-                    <FormHelperText>{I18n.t('clientConfig_profile_helper')}</FormHelperText>
+                    <FormHelperText>
+                        {isKnownService
+                            ? I18n.t('clientConfig_profile_helper')
+                            : I18n.t('clientConfig_profile_removed_helper')}
+                    </FormHelperText>
                 </FormControl>
 
                 {/* Optionaler Name für den Client */}
