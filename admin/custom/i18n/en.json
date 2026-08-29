@@ -186,7 +186,6 @@
     "msg_stationWriteError": "Error writing station data: %s",
     "msg_transportServiceInitFailed": "Transport service (client) could not be initialized. Error message: %s",
     "msg_transportServiceNotInitialized": "Transport service has not been initialized.",
-    "msg_vendoServiceInitialized": "VendoService initialized with ClientName: %s",
     "msg_waitingForNextJourneyQuery": "Waiting for next journey query in %s minutes...",
     "msg_waitingForNextQuery": "Waiting for next query in %s minutes...",
     "msg_wrongClientType": "Wrong client type: Expected '%s', but '%s' is initialized (client_profile: %s)",

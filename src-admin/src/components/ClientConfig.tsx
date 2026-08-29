@@ -21,7 +21,7 @@ import { VrrLogo } from './VrrLogo';
 interface ServiceOption {
     value: string;
     label: string;
-    serviceType: 'hafas' | 'vendo' | 'motis' | 'efa' | 'trias';
+    serviceType: 'hafas' | 'motis' | 'efa' | 'trias';
     profile: string;
     disabled?: boolean;
 }
@@ -35,8 +35,6 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     { value: 'hafas:vbn', label: 'HAFAS - VBN (Bremen/Niedersachsen)', serviceType: 'hafas', profile: 'vbn' },
     { value: 'hafas:rmv', label: 'HAFAS - RMV (Rhein-Main/Mainz)', serviceType: 'hafas', profile: 'rmv' },
     { value: 'hafas:vmt', label: 'HAFAS - VMT (Thüringen)', serviceType: 'hafas', profile: 'vmt' },
-    // 'vendo:db' (Deutsche Bahn) deaktiviert: db-vendo-Endpoint liefert aktuell OPS_BLOCKED (serverseitige Sperre).
-    { value: 'vendo:db', label: 'Vendo - Deutsche Bahn', serviceType: 'vendo', profile: 'db', disabled: true },
     { value: 'motis:compat', label: 'MOTIS - Transitous (DE & Europa)', serviceType: 'motis', profile: 'compat' },
     { value: 'efa:vrr', label: 'EFA - VRR (Rhein-Ruhr)', serviceType: 'efa', profile: 'vrr' },
     { value: 'trias:bw', label: 'TRIAS - MobiData BW (Baden-Württemberg)', serviceType: 'trias', profile: 'bw' },

@@ -186,7 +186,6 @@
     "msg_stationWriteError": "写入站数据时出错：%s",
     "msg_transportServiceInitFailed": "传输服务（客户端）无法初始化。错误消息：%s",
     "msg_transportServiceNotInitialized": "传输服务尚未初始化。",
-    "msg_vendoServiceInitialized": "VendoService 已使用 ClientName 初始化：%s",
     "msg_waitingForNextJourneyQuery": "等待 %s 分钟后下一次旅程查询...",
     "msg_waitingForNextQuery": "等待 %s 分钟后的下一个查询...",
     "msg_wrongClientType": "客户端类型错误：应为“%s”，但已初始化“%s”（client_profile：%s）",

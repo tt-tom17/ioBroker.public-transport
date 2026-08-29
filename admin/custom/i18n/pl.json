@@ -186,7 +186,6 @@
     "msg_stationWriteError": "Błąd podczas zapisywania danych stacji: %s",
     "msg_transportServiceInitFailed": "Nie można zainicjować usługi transportowej (klienta). Komunikat o błędzie: %s",
     "msg_transportServiceNotInitialized": "Usługa transportowa nie została zainicjowana.",
-    "msg_vendoServiceInitialized": "Zainicjowano usługę VendoService nazwą klienta: %s",
     "msg_waitingForNextJourneyQuery": "Oczekiwanie na zapytanie o następną podróż za %s minut...",
     "msg_waitingForNextQuery": "Oczekiwanie na następne zapytanie za %s minut...",
     "msg_wrongClientType": "Zły typ klienta: oczekiwano „%s”, ale zainicjowano „%s” (profil_klienta: %s)",

@@ -186,7 +186,6 @@
     "msg_stationWriteError": "Fout bij het schrijven van stationgegevens: %s",
     "msg_transportServiceInitFailed": "Transportservice (klant) kan niet worden geïnitialiseerd. Foutmelding: %s",
     "msg_transportServiceNotInitialized": "Transportservice is niet geïnitialiseerd.",
-    "msg_vendoServiceInitialized": "VendoService geïnitialiseerd met ClientName: %s",
     "msg_waitingForNextJourneyQuery": "Wachten op de volgende reisvraag over %s minuten...",
     "msg_waitingForNextQuery": "Wachten op de volgende vraag over %s minuten...",
     "msg_wrongClientType": "Verkeerd clienttype: '%s' verwacht, maar '%s' is geïnitialiseerd (client_profile: %s)",

@@ -186,7 +186,6 @@
     "msg_stationWriteError": "Ошибка записи данных станции: %s",
     "msg_transportServiceInitFailed": "Транспортную службу (клиент) не удалось инициализировать. Сообщение об ошибке: %s",
     "msg_transportServiceNotInitialized": "Транспортная служба не инициализирована.",
-    "msg_vendoServiceInitialized": "VendoService инициализирован с именем клиента: %s",
     "msg_waitingForNextJourneyQuery": "Ожидание следующего запроса на поездку через %s минут...",
     "msg_waitingForNextQuery": "Ожидание следующего запроса через %s минут...",
     "msg_wrongClientType": "Неправильный тип клиента: ожидается «%s», но инициализируется «%s» (client_profile: %s)",

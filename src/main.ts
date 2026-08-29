@@ -1,5 +1,4 @@
 import * as utils from '@iobroker/adapter-core';
-import { VendoService } from './lib/class/dbVendoService';
 import { DepartureRequest } from './lib/class/departure';
 import { DeparturePolling } from './lib/class/departurePolling';
 import { EfaService } from './lib/class/efaService';
@@ -19,7 +18,6 @@ export class PublicTransport extends utils.Adapter {
     library: Library;
     unload: boolean = false;
     hService!: HafasService;
-    vService!: VendoService;
     mService!: MotisService;
     eService!: EfaService;
     tService!: TriasService;
@@ -141,17 +139,23 @@ export class PublicTransport extends utils.Adapter {
         await this.applyObjectsWarnLimit();
 
         // Service basierend auf Konfiguration auswählen
-        const serviceType = this.config.serviceType || 'hafas'; // 'hafas', 'vendo', 'motis', 'efa' oder 'trias'
+        const serviceType = this.config.serviceType || 'hafas'; // 'hafas', 'motis', 'efa' oder 'trias'
         const clientName = `${this.config.clientName || 'iobroker-public-transport'}-${Math.floor(Math.random() * 1001)}`;
 
+        // Der db-vendo-Client ist mit 2.0.0 entfernt worden: sein Endpunkt antwortet seit #85
+        // mit OPS_BLOCKED, und in der Oberfläche war die Option schon vorher deaktiviert.
+        // Eine gespeicherte Alt-Konfiguration wird bewusst NICHT still auf einen anderen Dienst
+        // umgebogen - eine andere Datenquelle liefert andere Fahrten. Der Cast ist nötig, weil
+        // der Typ 'vendo' nicht mehr kennt, gespeicherte Instanzen den Wert aber weiterhin tragen.
+        if ((serviceType as string) === 'vendo') {
+            this.log.error(
+                'The "Vendo - Deutsche Bahn" client has been removed in version 2.0.0 because its endpoint is blocked (OPS_BLOCKED). Please open the instance settings and select another service, for example "MOTIS - Transitous (DE & Europa)".',
+            );
+            return;
+        }
+
         try {
-            if (serviceType === 'vendo') {
-                // VendoService initialisieren
-                this.vService = new VendoService(this, clientName);
-                this.vService.init();
-                this.activeService = this.vService;
-                this.log.info(`VendoService initialized with ClientName: ${clientName}`);
-            } else if (serviceType === 'efa') {
+            if (serviceType === 'efa') {
                 // EfaService initialisieren (EFA-JSON, z.B. VRR). Wie bei HAFAS bestimmt das
                 // Profil den Verbund; die zugehörige Basis-URL steht fest im EfaService.
                 const efaNetwork = this.config.profile || '';
@@ -289,7 +293,7 @@ export class PublicTransport extends utils.Adapter {
 
         if (obj.message) {
             if (obj.command === 'location') {
-                // Stationssuche für Admin-UI (nutzt VendoService für DB-kompatible IDs)
+                // Stationssuche für Admin-UI (nutzt den aktiven Transport-Service)
                 try {
                     const message = obj.message as { query: string };
                     const query = message.query;
