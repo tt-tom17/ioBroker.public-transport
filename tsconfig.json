@@ -35,6 +35,10 @@
 		// Uncomment this if you want the old behavior of catch variables being `any`
 		// "useUnknownInCatchVariables": false,
 
+        // @tsconfig/node22 >= 22.0.6 sets "types": ["node"], which turns off the automatic
+        // inclusion of all @types packages. Mocha globals (describe/it) must be listed here.
+        "types": ["node", "mocha"],
+
 		"sourceMap": true,
 		"inlineSourceMap": false
 	},
