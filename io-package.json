@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "news": {
       "1.3.0": {
         "en": "New: TRIAS as an additional backend, with MobiData BW (Baden-Württemberg) as the first network",
@@ -93,19 +93,6 @@
         "pl": "dodano konfigurowalne okno czasowe (czas trwania w minutach) dla każdej stacji, aby pobierać odjazdy poza domyślnymi 60 minutami (#85)\nwyłączono opcję klienta \"Vendo - Deutsche Bahn\", ponieważ punkt końcowy db-vendo obecnie zwraca OPS_BLOCKED (#85)\nnaprawiono ostrzeżenia wykryte przez repository checker (#80): przetłumaczono nieprzetłumaczone ciągi i18n panelu administracyjnego (zh-cn, es)",
         "uk": "додано налаштовуване часове вікно (тривалість у хвилинах) для кожної станції, щоб отримувати відправлення поза стандартними 60 хвилинами (#85)\nвимкнено опцію клієнта \"Vendo - Deutsche Bahn\", оскільки ендпойнт db-vendo наразі повертає OPS_BLOCKED (#85)\nвиправлено попередження, виявлені репозиторій-чекером (#80): перекладено неперекладені рядки admin i18n (zh-cn, es)",
         "zh-cn": "为每个车站添加了可配置的时间范围（时长，以分钟为单位），以获取超出默认 60 分钟的出发信息 (#85)\n禁用了\"Vendo - Deutsche Bahn\"客户端选项，因为 db-vendo 端点当前返回 OPS_BLOCKED (#85)\n修复了存储库检查器报告的警告 (#80)：翻译了未翻译的管理界面 i18n 字符串 (zh-cn, es)"
-      },
-      "0.9.1": {
-        "en": "fixed stale data points not being cleared, both after a restart and during operation (#82)",
-        "de": "veraltete Datenpunkte werden nun zuverlässig geleert – sowohl nach einem Neustart als auch im laufenden Betrieb (#82)",
-        "ru": "устаревшие точки данных теперь надёжно очищаются — как после перезапуска, так и во время работы (#82)",
-        "pt": "pontos de dados desatualizados agora são limpos de forma confiável, tanto após uma reinicialização quanto durante a operação (#82)",
-        "nl": "verouderde datapunten worden nu betrouwbaar gewist, zowel na een herstart als tijdens bedrijf (#82)",
-        "fr": "les points de données obsolètes sont désormais effacés de manière fiable, aussi bien après un redémarrage que pendant le fonctionnement (#82)",
-        "it": "i punti dati obsoleti ora vengono cancellati in modo affidabile, sia dopo un riavvio sia durante il funzionamento (#82)",
-        "es": "los puntos de datos obsoletos ahora se borran de forma fiable, tanto tras un reinicio como durante el funcionamiento (#82)",
-        "pl": "nieaktualne punkty danych są teraz niezawodnie czyszczone, zarówno po ponownym uruchomieniu, jak i podczas pracy (#82)",
-        "uk": "застарілі точки даних тепер надійно очищаються — як після перезапуску, так і під час роботи (#82)",
-        "zh-cn": "过时的数据点现在会被可靠地清除，无论是在重启后还是在运行期间 (#82)"
       }
     },
     "messages": [
