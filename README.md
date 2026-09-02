@@ -32,7 +32,7 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 
 **TRIAS – MobiData BW:** Timetable data for Baden-Württemberg (including VVS, KVV, naldo and DING) is provided by the [Nahverkehrsgesellschaft Baden-Württemberg (NVBW)](https://www.nvbw.de) via MobiData BW. The NVBW asks applications to credit the source as "Daten der NVBW" with a link to its website — the adapter therefore shows both in the instance settings.
 
-> **This backend needs your own access key.** Unlike every other backend, TRIAS providers issue an individual key (`RequestorRef`) per user; a shared key supplied with the adapter is not permitted. For MobiData BW, send an informal e-mail to `mobidata-bw@nvbw.de` stating your full name, your address, a contact e-mail address and a short description of what you intend to do with the data. You will receive your key by e-mail — enter it in the instance settings under "TRIAS access key".
+> **This backend needs your own access key.** Unlike every other backend, TRIAS is accessed with an individual key (`RequestorRef`). MobiData BW issues one per user and does not allow a shared key shipped with the adapter; other TRIAS providers may handle this differently. For MobiData BW, send an informal e-mail to `mobidata-bw@nvbw.de` stating your full name, your address, a contact e-mail address and a short description of what you intend to do with the data. You will receive your key by e-mail — enter it in the instance settings under "TRIAS access key".
 
 ## Changelog
 <!--
