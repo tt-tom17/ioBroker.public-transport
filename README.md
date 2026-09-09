@@ -32,14 +32,14 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 
 **TRIAS – MobiData BW:** Timetable data for Baden-Württemberg (including VVS, KVV, naldo and DING) is provided by the [Nahverkehrsgesellschaft Baden-Württemberg (NVBW)](https://www.nvbw.de) via MobiData BW. The NVBW asks applications to credit the source as "Daten der NVBW" with a link to its website — the adapter therefore shows both in the instance settings.
 
-> **This backend needs your own access key.** Unlike every other backend, TRIAS providers issue an individual key (`RequestorRef`) per user; a shared key supplied with the adapter is not permitted. For MobiData BW, send an informal e-mail to `mobidata-bw@nvbw.de` stating your full name, your address, a contact e-mail address and a short description of what you intend to do with the data. You will receive your key by e-mail — enter it in the instance settings under "TRIAS access key".
+> **This backend needs your own access key.** Unlike every other backend, TRIAS is accessed with an individual key (`RequestorRef`). MobiData BW issues one per user and does not allow a shared key shipped with the adapter; other TRIAS providers may handle this differently. For MobiData BW, send an informal e-mail to `mobidata-bw@nvbw.de` stating your full name, your address, a contact e-mail address and a short description of what you intend to do with the data. You will receive your key by e-mail — enter it in the instance settings under "TRIAS access key".
 
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.3.0 (2026-09-02)
 * (tt-tom17) added TRIAS as a new backend with MobiData BW (Baden-Württemberg) as the first network
 
 ### 1.2.0 (2026-08-25)
@@ -64,9 +64,6 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 * (tt-tom17) added a configurable time window (duration, in minutes) per station to fetch departures beyond the default 60 minutes (#85)
 * (tt-tom17) disabled the "Vendo - Deutsche Bahn" client option, as the db-vendo endpoint currently returns OPS_BLOCKED (#85)
 * (tt-tom17) fixed repository checker warnings (#80): translated untranslated admin i18n strings (zh-cn, es)
-
-### 0.9.1 (2026-07-05)
-* (tt-tom17) fixed stale data points not being cleared, both after a restart and during operation (#82)
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

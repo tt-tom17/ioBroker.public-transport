@@ -1,4 +1,7 @@
 # Older changes
+## 0.9.1 (2026-07-05)
+* (tt-tom17) fixed stale data points not being cleared, both after a restart and during operation (#82)
+
 ## 0.9.0 (2026-07-02)
 * (tt-tom17) (widget) flexible height with vertical scroll
 * (tt-tom17) (widget) flexible width: font scales with widget width down to a minimum, horizontal scroll below
