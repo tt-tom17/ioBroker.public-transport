@@ -15,8 +15,8 @@
  * - Das Profil wird bei **HAFAS, EFA und TRIAS** geprüft: dort wählt es das Verkehrsgebiet aus
  *   (bei EFA und TRIAS über das Netz auch dessen Basis-URL), ein Fehlbezug lieferte also still
  *   die Daten einer ganz anderen Region.
- * - `vendo` und `motis` kennen keine Profil-Auswahl – bei ihnen entscheidet allein der
- *   Service-Typ, ein evtl. angegebener Profil-Teil wird ignoriert.
+ * - `motis` kennt keine Profil-Auswahl – dort entscheidet allein der Service-Typ, ein evtl.
+ *   angegebener Profil-Teil wird ignoriert.
  *
  * @param configuredServiceType Der konfigurierte Service-Typ (`adapter.config.serviceType`)
  * @param configuredProfile Das konfigurierte HAFAS-Profil (`adapter.config.profile`)
@@ -33,7 +33,7 @@ export function validateClientProfile(
 
     // Parse client_profile (z.B. "hafas:vbb" -> serviceType: "hafas", profile: "vbb")
     const parts = client_profile.split(':');
-    const expectedServiceType = parts[0]; // 'hafas', 'vendo', 'motis', 'efa' oder 'trias'
+    const expectedServiceType = parts[0]; // 'hafas', 'motis', 'efa' oder 'trias'
     const expectedProfile = parts[1] || ''; // z.B. 'vbb', 'oebb', 'db'
 
     // Prüfe, ob der richtige Service-Typ initialisiert ist
@@ -44,7 +44,7 @@ export function validateClientProfile(
         );
     }
 
-    // Prüfe das Profil (relevant bei HAFAS und EFA; vendo/motis haben ein festes Profil)
+    // Prüfe das Profil (relevant bei HAFAS, EFA und TRIAS; motis hat ein festes Profil)
     const profileSelectsRegion =
         expectedServiceType === 'hafas' || expectedServiceType === 'efa' || expectedServiceType === 'trias';
     if (profileSelectsRegion && expectedProfile) {

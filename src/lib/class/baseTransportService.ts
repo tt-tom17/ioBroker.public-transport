@@ -1,6 +1,6 @@
 /**
  * BaseTransportService - gemeinsame Basisklasse für alle ÖPNV-Backend-Services
- * (HAFAS, db-vendo, MOTIS).
+ * (HAFAS, MOTIS).
  *
  * Alle drei Backends sprechen dieselbe `hafas-client`-kompatible API. Diese Klasse
  * bündelt daher den kompletten gemeinsamen Code (Client-Lebenszyklus + die vier

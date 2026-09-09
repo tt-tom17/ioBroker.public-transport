@@ -32,7 +32,6 @@ __export(main_exports, {
 });
 module.exports = __toCommonJS(main_exports);
 var utils = __toESM(require("@iobroker/adapter-core"));
-var import_dbVendoService = require("./lib/class/dbVendoService");
 var import_departure = require("./lib/class/departure");
 var import_departurePolling = require("./lib/class/departurePolling");
 var import_efaService = require("./lib/class/efaService");
@@ -48,7 +47,6 @@ class PublicTransport extends utils.Adapter {
   library;
   unload = false;
   hService;
-  vService;
   mService;
   eService;
   tService;
@@ -155,13 +153,14 @@ class PublicTransport extends utils.Adapter {
     await this.applyObjectsWarnLimit();
     const serviceType = this.config.serviceType || "hafas";
     const clientName = `${this.config.clientName || "iobroker-public-transport"}-${Math.floor(Math.random() * 1001)}`;
+    if (serviceType === "vendo") {
+      this.log.error(
+        'The "Vendo - Deutsche Bahn" client has been removed in version 1.4.0 because its endpoint is blocked (OPS_BLOCKED). Please open the instance settings and select another service, for example "MOTIS - Transitous (DE & Europa)".'
+      );
+      return;
+    }
     try {
-      if (serviceType === "vendo") {
-        this.vService = new import_dbVendoService.VendoService(this, clientName);
-        this.vService.init();
-        this.activeService = this.vService;
-        this.log.info(`VendoService initialized with ClientName: ${clientName}`);
-      } else if (serviceType === "efa") {
+      if (serviceType === "efa") {
         const efaNetwork = this.config.profile || "";
         this.eService = new import_efaService.EfaService(this, clientName, efaNetwork);
         this.eService.init();

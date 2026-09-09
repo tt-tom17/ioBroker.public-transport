@@ -4,7 +4,7 @@
 declare global {
 	namespace ioBroker {
 		interface AdapterConfig {
-			serviceType: 'hafas' | 'vendo' | 'motis' | 'efa' | 'trias';
+			serviceType: 'hafas' | 'motis' | 'efa' | 'trias';
 			profile?: string;
 			/**
 			 * Zugangsschlüssel für TRIAS-Netze (`RequestorRef`). Anders als bei den übrigen

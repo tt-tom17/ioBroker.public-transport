@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "1.3.0",
     "news": {
+      "1.4.0": {
+        "en": "removed the \"Vendo - Deutsche Bahn\" client (endpoint blocked)",
+        "de": "Client \"Vendo - Deutsche Bahn\" entfernt (Endpunkt gesperrt)",
+        "ru": "удалён клиент \"Vendo - Deutsche Bahn\" (эндпоинт заблокирован)",
+        "pt": "removido o cliente \"Vendo - Deutsche Bahn\" (endpoint bloqueado)",
+        "nl": "client \"Vendo - Deutsche Bahn\" verwijderd (eindpunt geblokkeerd)",
+        "fr": "client \"Vendo - Deutsche Bahn\" supprimé (point de terminaison bloqué)",
+        "it": "rimosso il client \"Vendo - Deutsche Bahn\" (endpoint bloccato)",
+        "es": "eliminado el cliente \"Vendo - Deutsche Bahn\" (endpoint bloqueado)",
+        "pl": "usunięto klienta \"Vendo - Deutsche Bahn\" (punkt końcowy zablokowany)",
+        "uk": "видалено клієнт \"Vendo - Deutsche Bahn\" (ендпойнт заблоковано)",
+        "zh-cn": "移除了\"Vendo - Deutsche Bahn\"客户端（端点已被屏蔽）"
+      },
       "1.3.0": {
         "en": "New: TRIAS as an additional backend, with MobiData BW (Baden-Württemberg) as the first network",
         "de": "Neu: TRIAS als weiteres Backend, mit MobiData BW (Baden-Württemberg) als erstem Verkehrsnetz",

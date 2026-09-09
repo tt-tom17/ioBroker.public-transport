@@ -159,19 +159,6 @@ export const PROFILE_PRODUCTS: Record<string, Partial<Products>> = {
         tram: true,
         bus: true,
     },
-    // Vendo – Deutsche Bahn
-    db: {
-        nationalExpress: true,
-        national: true,
-        regionalExpress: true,
-        regional: true,
-        suburban: true,
-        bus: true,
-        ferry: true,
-        subway: true,
-        tram: true,
-        taxi: true,
-    },
     // MOTIS – Transitous (compat-Profil, GTFS-basiert)
     compat: {
         nationalExpress: true,
@@ -219,7 +206,7 @@ export const PROFILE_PRODUCTS: Record<string, Partial<Products>> = {
  * Gibt alle Produkte (alle auf `true` gesetzt) für ein gegebenes Profil zurück.
  * Fällt auf `defaultProducts` zurück, wenn das Profil unbekannt ist.
  *
- * @param serviceType - Dienst-Typ ('hafas' oder 'vendo')
+ * @param serviceType - Dienst-Typ ('hafas', 'motis', 'efa' oder 'trias')
  * @param profile - Profilname ('vbb', 'vbn', 'oebb', 'db', ...)
  */
 export const getProductsForProfile = (serviceType: string, profile: string): Partial<Products> => {
