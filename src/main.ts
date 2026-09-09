@@ -142,14 +142,14 @@ export class PublicTransport extends utils.Adapter {
         const serviceType = this.config.serviceType || 'hafas'; // 'hafas', 'motis', 'efa' oder 'trias'
         const clientName = `${this.config.clientName || 'iobroker-public-transport'}-${Math.floor(Math.random() * 1001)}`;
 
-        // Der db-vendo-Client ist mit 2.0.0 entfernt worden: sein Endpunkt antwortet seit #85
+        // Der db-vendo-Client ist mit 1.4.0 entfernt worden: sein Endpunkt antwortet seit #85
         // mit OPS_BLOCKED, und in der Oberfläche war die Option schon vorher deaktiviert.
         // Eine gespeicherte Alt-Konfiguration wird bewusst NICHT still auf einen anderen Dienst
         // umgebogen - eine andere Datenquelle liefert andere Fahrten. Der Cast ist nötig, weil
         // der Typ 'vendo' nicht mehr kennt, gespeicherte Instanzen den Wert aber weiterhin tragen.
         if ((serviceType as string) === 'vendo') {
             this.log.error(
-                'The "Vendo - Deutsche Bahn" client has been removed in version 2.0.0 because its endpoint is blocked (OPS_BLOCKED). Please open the instance settings and select another service, for example "MOTIS - Transitous (DE & Europa)".',
+                'The "Vendo - Deutsche Bahn" client has been removed in version 1.4.0 because its endpoint is blocked (OPS_BLOCKED). Please open the instance settings and select another service, for example "MOTIS - Transitous (DE & Europa)".',
             );
             return;
         }

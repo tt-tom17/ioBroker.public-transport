@@ -155,7 +155,7 @@ class PublicTransport extends utils.Adapter {
     const clientName = `${this.config.clientName || "iobroker-public-transport"}-${Math.floor(Math.random() * 1001)}`;
     if (serviceType === "vendo") {
       this.log.error(
-        'The "Vendo - Deutsche Bahn" client has been removed in version 2.0.0 because its endpoint is blocked (OPS_BLOCKED). Please open the instance settings and select another service, for example "MOTIS - Transitous (DE & Europa)".'
+        'The "Vendo - Deutsche Bahn" client has been removed in version 1.4.0 because its endpoint is blocked (OPS_BLOCKED). Please open the instance settings and select another service, for example "MOTIS - Transitous (DE & Europa)".'
       );
       return;
     }

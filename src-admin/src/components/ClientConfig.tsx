@@ -46,7 +46,7 @@ const ClientConfigContent: React.FC<ConfigComponentProps> = ({ oContext, data, o
     const combinedValue = `${serviceType || 'hafas'}:${profile || 'vbb'}`;
 
     // Eine gespeicherte Instanz kann einen Dienst nennen, den es nicht mehr gibt - etwa das mit
-    // 2.0.0 entfernte 'vendo:db'. Ohne Sonderbehandlung zeigt MUI dafür ein leeres Auswahlfeld
+    // 1.4.0 entfernte 'vendo:db'. Ohne Sonderbehandlung zeigt MUI dafür ein leeres Auswahlfeld
     // und warnt nur auf der Konsole ("out-of-range value"); am Bildschirm wäre nicht zu erkennen,
     // warum nichts ausgewählt ist. Deshalb wird der unbekannte Wert als deaktivierter Eintrag
     // sichtbar gemacht und der Hilfetext sagt, was zu tun ist.
