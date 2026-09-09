@@ -39,6 +39,9 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) removed the "Vendo - Deutsche Bahn" client (endpoint blocked)
+
 ### 1.3.0 (2026-09-02)
 * (tt-tom17) added TRIAS as a new backend with MobiData BW (Baden-Württemberg) as the first network
 
