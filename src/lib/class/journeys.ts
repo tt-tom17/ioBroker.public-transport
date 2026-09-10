@@ -409,9 +409,12 @@ export class JourneysRequest extends BaseClass {
                             },
                         );
                         // Arrival Delay
+                        // Ohne Echtzeit vom Backend ist der Delay undefined. writedp schreibt undefined nicht,
+                        // der Datenpunkt behielte seinen alten Zeitstempel und garbageColleting setzte ihn auf -1.
+                        // Deshalb hier ausdrücklich null: "keine Echtzeitdaten" statt einer scheinbaren Verspätung.
                         await this.library.writedp(
                             `${journeyPath}.ArrivalDelay`,
-                            journey.legs[journey.legs.length - 1].arrivalDelay,
+                            journey.legs[journey.legs.length - 1].arrivalDelay ?? null,
                             {
                                 _id: 'nicht_definieren',
                                 type: 'state',
@@ -482,18 +485,22 @@ export class JourneysRequest extends BaseClass {
                             },
                         );
                         // Departure Delay
-                        await this.library.writedp(`${journeyPath}.DepartureDelay`, journey.legs[0].departureDelay, {
-                            _id: 'nicht_definieren',
-                            type: 'state',
-                            common: {
-                                name: this.library.translate('journey_departure_delay'),
-                                type: 'number',
-                                role: 'time',
-                                read: true,
-                                write: false,
+                        await this.library.writedp(
+                            `${journeyPath}.DepartureDelay`,
+                            journey.legs[0].departureDelay ?? null,
+                            {
+                                _id: 'nicht_definieren',
+                                type: 'state',
+                                common: {
+                                    name: this.library.translate('journey_departure_delay'),
+                                    type: 'number',
+                                    role: 'time',
+                                    read: true,
+                                    write: false,
+                                },
+                                native: {},
                             },
-                            native: {},
-                        });
+                        );
                         // Departure Delayed
                         await this.library.writedp(`${journeyPath}.DepartureDelayed`, departureDelayed, {
                             _id: 'nicht_definieren',
@@ -644,7 +651,7 @@ export class JourneysRequest extends BaseClass {
                             native: {},
                         });
                         // Arrival Delay
-                        await this.library.writedp(`${legPath}.ArrivalDelay`, leg.arrivalDelay, {
+                        await this.library.writedp(`${legPath}.ArrivalDelay`, leg.arrivalDelay ?? null, {
                             _id: 'nicht_definieren',
                             type: 'state',
                             common: {
@@ -709,7 +716,7 @@ export class JourneysRequest extends BaseClass {
                             native: {},
                         });
                         // Departure Delay
-                        await this.library.writedp(`${legPath}.DepartureDelay`, leg.departureDelay, {
+                        await this.library.writedp(`${legPath}.DepartureDelay`, leg.departureDelay ?? null, {
                             _id: 'nicht_definieren',
                             type: 'state',
                             common: {
