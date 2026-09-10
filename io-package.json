@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "news": {
+      "1.3.1": {
+        "en": "journey delay data points are now `null` instead of `-1` when the backend delivers no realtime data for that trip",
+        "de": "Wenn das Backend keine Echtzeitdaten für die Reise liefert, sind jetzt `Null` statt `-1`",
+        "ru": "точки данных о задержке поездки теперь равны нулю, а не «-1», когда серверная часть не предоставляет данных об этой поездке в реальном времени",
+        "pt": "Os pontos de atraso agora são `nulos` em vez de `-1` quando o backend não fornece dados em tempo real",
+        "nl": "De datapunten voor reisvertragingen zijn nu `null` in plaats van `-1` wanneer de backend geen realtime gegevens voor die rit levert",
+        "fr": "les points de données de retard sont désormais « nuls » au lieu de « -1 » alors que le backend ne fournit aucune donnée en temps réel",
+        "it": "i dati di ritardo ora sono «nulli» anziché «-1» quando il backend non fornisce dati in tempo reale",
+        "es": "los puntos de datos de retraso del viaje ahora son «nulos» en lugar de «-1» cuando el backend no ofrece datos en tiempo real de ese viaje",
+        "pl": "Punkty danych opóźnienia podróży są teraz „zerowe” zamiast „-1”, gdy zaplecze nie dostarcza danych w czasie rzeczywistym dla tej podróży",
+        "uk": "Точки даних затримки подорожі тепер `нуль` замість `-1`, коли бекенд не надає даних у режимі реального часу для цієї поїздки",
+        "zh-cn": "当后端没有提供该行程的实时数据时，行程延误数据点现在为 “空” 而不是 “-1”"
+      },
       "1.3.0": {
         "en": "New: TRIAS as an additional backend, with MobiData BW (Baden-Württemberg) as the first network",
         "de": "Neu: TRIAS als weiteres Backend, mit MobiData BW (Baden-Württemberg) als erstem Verkehrsnetz",
@@ -80,19 +93,6 @@
         "pl": "stałe punkty danych o wyjazdach i podróżach czyszczone podczas powolnych sondaży (#87)",
         "uk": "виправлено очищення точок даних про відправлення та подорожі під час повільних опитувань (#87)",
         "zh-cn": "慢速轮询期间清除固定出发和行程数据点（#87）"
-      },
-      "0.10.0": {
-        "en": "added a configurable time window (duration, in minutes) per station to fetch departures beyond the default 60 minutes (#85)\ndisabled the \"Vendo - Deutsche Bahn\" client option, as the db-vendo endpoint currently returns OPS_BLOCKED (#85)\nfixed repository checker warnings (#80): translated untranslated admin i18n strings (zh-cn, es)",
-        "de": "konfigurierbares Zeitfenster (Dauer in Minuten) pro Station hinzugefügt, um Abfahrten über die standardmäßigen 60 Minuten hinaus abzurufen (#85)\nClient-Option \"Vendo - Deutsche Bahn\" deaktiviert, da der db-vendo-Endpoint aktuell OPS_BLOCKED zurückgibt (#85)\nvom Repository-Checker gemeldete Warnungen behoben (#80): nicht übersetzte Admin-i18n-Strings übersetzt (zh-cn, es)",
-        "ru": "добавлено настраиваемое временное окно (длительность в минутах) для каждой станции, чтобы получать отправления за пределами стандартных 60 минут (#85)\nотключена опция клиента \"Vendo - Deutsche Bahn\", так как эндпоинт db-vendo сейчас возвращает OPS_BLOCKED (#85)\nисправлены предупреждения репозиторий-чекера (#80): переведены непереведённые строки admin i18n (zh-cn, es)",
-        "pt": "adicionada uma janela de tempo configurável (duração, em minutos) por estação para obter partidas além dos 60 minutos padrão (#85)\ndesativada a opção de cliente \"Vendo - Deutsche Bahn\", pois o endpoint db-vendo atualmente retorna OPS_BLOCKED (#85)\ncorrigidos os avisos detectados pelo verificador de repositório (#80): traduzidas as strings de i18n do admin não traduzidas (zh-cn, es)",
-        "nl": "configureerbaar tijdvenster (duur in minuten) per station toegevoegd om vertrekken buiten de standaard 60 minuten op te halen (#85)\nclientoptie \"Vendo - Deutsche Bahn\" uitgeschakeld, omdat het db-vendo-eindpunt momenteel OPS_BLOCKED teruggeeft (#85)\ndoor de repository-checker gemelde waarschuwingen opgelost (#80): niet-vertaalde admin-i18n-strings vertaald (zh-cn, es)",
-        "fr": "ajout d'une fenêtre temporelle configurable (durée en minutes) par station pour récupérer les départs au-delà des 60 minutes par défaut (#85)\noption client \"Vendo - Deutsche Bahn\" désactivée, car le point de terminaison db-vendo renvoie actuellement OPS_BLOCKED (#85)\ncorrection des avertissements détectés par le vérificateur du dépôt (#80) : traduction des chaînes i18n d'administration non traduites (zh-cn, es)",
-        "it": "aggiunta una finestra temporale configurabile (durata in minuti) per stazione per recuperare le partenze oltre i 60 minuti predefiniti (#85)\ndisattivata l'opzione client \"Vendo - Deutsche Bahn\", poiché l'endpoint db-vendo attualmente restituisce OPS_BLOCKED (#85)\ncorretti gli avvisi rilevati dal repository checker (#80): tradotte le stringhe i18n dell'admin non tradotte (zh-cn, es)",
-        "es": "añadida una ventana de tiempo configurable (duración, en minutos) por estación para recuperar salidas más allá de los 60 minutos predeterminados (#85)\ndesactivada la opción de cliente \"Vendo - Deutsche Bahn\", ya que el endpoint db-vendo actualmente devuelve OPS_BLOCKED (#85)\ncorregidas las advertencias detectadas por el verificador de repositorio (#80): traducidas las cadenas i18n de administración sin traducir (zh-cn, es)",
-        "pl": "dodano konfigurowalne okno czasowe (czas trwania w minutach) dla każdej stacji, aby pobierać odjazdy poza domyślnymi 60 minutami (#85)\nwyłączono opcję klienta \"Vendo - Deutsche Bahn\", ponieważ punkt końcowy db-vendo obecnie zwraca OPS_BLOCKED (#85)\nnaprawiono ostrzeżenia wykryte przez repository checker (#80): przetłumaczono nieprzetłumaczone ciągi i18n panelu administracyjnego (zh-cn, es)",
-        "uk": "додано налаштовуване часове вікно (тривалість у хвилинах) для кожної станції, щоб отримувати відправлення поза стандартними 60 хвилинами (#85)\nвимкнено опцію клієнта \"Vendo - Deutsche Bahn\", оскільки ендпойнт db-vendo наразі повертає OPS_BLOCKED (#85)\nвиправлено попередження, виявлені репозиторій-чекером (#80): перекладено неперекладені рядки admin i18n (zh-cn, es)",
-        "zh-cn": "为每个车站添加了可配置的时间范围（时长，以分钟为单位），以获取超出默认 60 分钟的出发信息 (#85)\n禁用了\"Vendo - Deutsche Bahn\"客户端选项，因为 db-vendo 端点当前返回 OPS_BLOCKED (#85)\n修复了存储库检查器报告的警告 (#80)：翻译了未翻译的管理界面 i18n 字符串 (zh-cn, es)"
       }
     },
     "messages": [
