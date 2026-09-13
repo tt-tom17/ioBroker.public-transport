@@ -1,7 +1,7 @@
 /**
  * EfaService – Backend-Service für EFA-JSON-Systeme (Mentz, `outputFormat=rapidJSON`).
  *
- * Anders als HAFAS, db-vendo und MOTIS gibt es für EFA keinen fertigen Client im
+ * Anders als HAFAS und MOTIS gibt es für EFA keinen fertigen Client im
  * hafas-client-Format. `createClient()` liefert deshalb einen **Shim**: ein Objekt mit den
  * hafas-client-Methoden, das intern die drei EFA-Requests absetzt und die Antworten über
  * {@link ../tools/efaMapper} nach FPTF übersetzt. Timeout, Wiederholungen und die

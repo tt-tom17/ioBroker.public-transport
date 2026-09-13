@@ -25,7 +25,7 @@ export class DepartureRequest extends BaseClass {
      * @param options      Zusätzliche Optionen für die Abfrage.
      * @param countEntries Die maximale Anzahl der Einträge, die geschrieben werden sollen.
      * @param products     Die aktivierten Produkte (true = erlaubt)
-     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "vendo:db")
+     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "efa:vrr")
      * @returns             true bei Erfolg, sonst false.
      */
     public async getDepartures(

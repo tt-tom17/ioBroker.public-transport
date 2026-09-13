@@ -6,7 +6,7 @@ import { kebabToCamel } from './library';
  * Normalisiert die von einem Client/Profil gelieferten Produkte zu einheitlichen camelCase-Keys.
  *
  * Die Produkt-IDs unterscheiden sich je Profil: HAFAS vbn liefert kebab-case
- * ("express-train", "dial-a-ride"), oebb/db-vendo/MOTIS camelCase ("nationalExpress"),
+ * ("express-train", "dial-a-ride"), oebb/MOTIS camelCase ("nationalExpress"),
  * vbb einfaches lowercase. Statt feste Keys zu lesen, werden hier ALLE gelieferten Produkte
  * übernommen und ihre Keys per kebabToCamel vereinheitlicht. Dadurch werden auch Produkte
  * neuer/weiterer Profile automatisch erfasst (Gegenstück zum outbound-`camelToKebab`).

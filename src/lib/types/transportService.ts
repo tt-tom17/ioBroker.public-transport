@@ -1,7 +1,7 @@
 import type * as Hafas from 'hafas-client';
 
 /**
- * Gemeinsames Interface für Transport-Services (HAFAS, db-vendo und MOTIS)
+ * Gemeinsames Interface für Transport-Services (HAFAS, MOTIS, EFA und TRIAS)
  */
 export interface ITransportService {
     init(): void;

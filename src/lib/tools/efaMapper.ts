@@ -1,7 +1,7 @@
 /**
  * Übersetzt EFA-JSON (Mentz, `outputFormat=rapidJSON`) in das FPTF-/hafas-client-Format, das
  * der Adapter intern überall verwendet. Dadurch sieht der restliche Code keinen Unterschied
- * zwischen HAFAS, db-vendo, MOTIS und EFA.
+ * zwischen HAFAS, MOTIS und EFA.
  *
  * Grundlage: `claude:/home/tom/Claude/trias-docs/efa-json-fptf-mapping.md` (§2–§6), verifiziert
  * durch zwei PoC-Läufe gegen den VRR-Endpoint am 18.07.2026.

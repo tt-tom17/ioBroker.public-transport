@@ -23,7 +23,7 @@ export class StationRequest extends BaseClass {
      * @param stationId     Die ID der Station.
      * @param service       Der Service für die Abfrage.
      * @param options       Zusätzliche Optionen für die Abfrage.
-     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "vendo:db")
+     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "efa:vrr")
      * @returns             Die Informationen der Station oder Haltestelle.
      */
     public async getStation(

@@ -1,5 +1,4 @@
 import * as utils from '@iobroker/adapter-core';
-import type { VendoService } from '../class/dbVendoService';
 import type { DepartureRequest } from '../class/departure';
 import type { JourneysRequest } from '../class/journeys';
 import type { StationRequest } from '../class/station';
@@ -10,7 +9,6 @@ import type { ITransportService } from './transportService';
 export declare class PublicTransport extends utils.Adapter {
     library: Library;
     hService: HafasService;
-    vService: VendoService;
     depRequest: DepartureRequest;
     journeysRequest: JourneysRequest;
     stationRequest: StationRequest;

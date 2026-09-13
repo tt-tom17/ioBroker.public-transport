@@ -32,7 +32,7 @@ export class JourneysRequest extends BaseClass {
      * @param options       Zusätzliche Optionen für die Abfrage.
      * @param countEntries  Die maximale Anzahl der Verbindungen, die geschrieben werden sollen.
      * @param products      Die aktivierten Produkte (true = erlaubt)
-     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "vendo:db")
+     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "efa:vrr")
      * @returns             true bei Erfolg, sonst false.
      */
     public async getJourneys(
@@ -142,7 +142,7 @@ export class JourneysRequest extends BaseClass {
      * @param journeyId     Die ID der Verbindung, für die die Teilstrecken/Legs geschrieben werden sollen.
      * @param journeys      Die Verbindungen, die geschrieben werden sollen.
      * @param countEntries  Die maximale Anzahl der Verbindungen, die geschrieben werden sollen.
-     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "vendo:db")
+     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "efa:vrr")
      */
     async writeJourneysStates(
         journeyId: string,
@@ -244,7 +244,7 @@ export class JourneysRequest extends BaseClass {
      * @param basePath Basis-Pfad für die States
      * @param journeys Verbindungsdaten als Array von Hafas.Journeys
      * @param countEntries Anzahl der definierten Verbindungen
-     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "vendo:db")
+     * @param client_profile Das Client-Profil für die Abfrage (z.B. "hafas:vbb", "efa:vrr")
      * @param nspanel Ob der NSPanel-Channel angelegt werden soll.
      * @param createDetailDatapoints Ob alle Datenpunkte zur Verbindung angelegt werden sollen
      */
