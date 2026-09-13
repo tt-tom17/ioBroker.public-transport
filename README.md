@@ -39,7 +39,7 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.4.0 (2026-09-13)
 * (tt-tom17) removed the "Vendo - Deutsche Bahn" client (endpoint blocked)
 
 ### 1.3.1 (2026-09-10)
@@ -62,9 +62,6 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 ### 0.10.2 (2026-07-17)
 * (tt-tom17) fixed journey and departure channel names showing stale labels after a connection changed
 * (tt-tom17) added a "Number of transfers" dropdown per journey (-1 = backend decides, 0 = direct connections only); applies to both HAFAS and MOTIS
-
-### 0.10.1 (2026-07-11)
-* (tt-tom17) fixed departure and journey data points being cleared during slow polls (#87)
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

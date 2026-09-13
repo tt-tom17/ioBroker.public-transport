@@ -1,4 +1,7 @@
 # Older changes
+## 0.10.1 (2026-07-11)
+* (tt-tom17) fixed departure and journey data points being cleared during slow polls (#87)
+
 ## 0.10.0 (2026-07-07)
 * (tt-tom17) added a configurable time window (duration, in minutes) per station to fetch departures beyond the default 60 minutes (#85)
 * (tt-tom17) disabled the "Vendo - Deutsche Bahn" client option, as the db-vendo endpoint currently returns OPS_BLOCKED (#85)

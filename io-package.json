@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "1.3.1",
+    "version": "1.4.0",
     "news": {
       "1.4.0": {
         "en": "removed the \"Vendo - Deutsche Bahn\" client (endpoint blocked)",
@@ -93,19 +93,6 @@
         "pl": "Poprawiono: nazwy channel journey i departure pokazywały nieaktualne etykiety po zmianie połączenia — teraz są poprawnie aktualizowane",
         "uk": "Виправлено: імена channel journey і departure показували застарілі мітки після зміни з'єднання — тепер оновлюються коректно",
         "zh-cn": "修复：连接变化后 journey 和 departure channel 的名称显示过时标签——现在会正确更新"
-      },
-      "0.10.1": {
-        "en": "fixed departure and journey data points being cleared during slow polls (#87)",
-        "de": "Fix: Feste Abfahrts- und Reisedatenpunkte werden während langsamer Umfragen gelöscht (#87)",
-        "ru": "Неисправные точки данных об отправлении и маршруте удаляются во время медленных опросов (#87)",
-        "pt": "Pontos de dados fixos de partida e viagem sendo apagados durante votações lentas (#87)",
-        "nl": "Vaste vertrek- en reisgegevenspunten worden gewist tijdens langzame peilingen (#87)",
-        "fr": "Les points de données fixes de départ et de trajet sont effacés pendant les sondages lents (#87)",
-        "it": "I punti dati fissi di partenza e di viaggio vengono cancellati durante i sondaggi lenti (#87)",
-        "es": "Los puntos de datos fijos de salida y viaje se borran durante las encuestas lentas (#87)",
-        "pl": "stałe punkty danych o wyjazdach i podróżach czyszczone podczas powolnych sondaży (#87)",
-        "uk": "виправлено очищення точок даних про відправлення та подорожі під час повільних опитувань (#87)",
-        "zh-cn": "慢速轮询期间清除固定出发和行程数据点（#87）"
       }
     },
     "messages": [
