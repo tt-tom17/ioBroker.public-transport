@@ -267,6 +267,7 @@ class JourneysRequest extends import_library.BaseClass {
    * @param createDetailDatapoints Ob alle Datenpunkte zur Verbindung angelegt werden sollen
    */
   async writeJourneyStates(basePath, journeys, countEntries, nspanel, createDetailDatapoints) {
+    var _a, _b;
     try {
       if (Array.isArray(journeys.journeys) && journeys.journeys.length > 0) {
         for (const [index, journey] of journeys.journeys.entries()) {
@@ -346,7 +347,7 @@ class JourneysRequest extends import_library.BaseClass {
             );
             await this.library.writedp(
               `${journeyPath}.ArrivalDelay`,
-              journey.legs[journey.legs.length - 1].arrivalDelay,
+              (_a = journey.legs[journey.legs.length - 1].arrivalDelay) != null ? _a : null,
               {
                 _id: "nicht_definieren",
                 type: "state",
@@ -412,18 +413,22 @@ class JourneysRequest extends import_library.BaseClass {
                 native: {}
               }
             );
-            await this.library.writedp(`${journeyPath}.DepartureDelay`, journey.legs[0].departureDelay, {
-              _id: "nicht_definieren",
-              type: "state",
-              common: {
-                name: this.library.translate("journey_departure_delay"),
-                type: "number",
-                role: "time",
-                read: true,
-                write: false
-              },
-              native: {}
-            });
+            await this.library.writedp(
+              `${journeyPath}.DepartureDelay`,
+              (_b = journey.legs[0].departureDelay) != null ? _b : null,
+              {
+                _id: "nicht_definieren",
+                type: "state",
+                common: {
+                  name: this.library.translate("journey_departure_delay"),
+                  type: "number",
+                  role: "time",
+                  read: true,
+                  write: false
+                },
+                native: {}
+              }
+            );
             await this.library.writedp(`${journeyPath}.DepartureDelayed`, departureDelayed, {
               _id: "nicht_definieren",
               type: "state",
@@ -491,7 +496,7 @@ class JourneysRequest extends import_library.BaseClass {
    * @param legs     Teilstrecken/Legs der Verbindung
    */
   async writeLegStates(basePath, legs) {
-    var _a, _b;
+    var _a, _b, _c, _d;
     try {
       if (Array.isArray(legs) && legs.length > 0) {
         for (const [index, leg] of legs.entries()) {
@@ -555,7 +560,7 @@ class JourneysRequest extends import_library.BaseClass {
               },
               native: {}
             });
-            await this.library.writedp(`${legPath}.ArrivalDelay`, leg.arrivalDelay, {
+            await this.library.writedp(`${legPath}.ArrivalDelay`, (_c = leg.arrivalDelay) != null ? _c : null, {
               _id: "nicht_definieren",
               type: "state",
               common: {
@@ -615,7 +620,7 @@ class JourneysRequest extends import_library.BaseClass {
               },
               native: {}
             });
-            await this.library.writedp(`${legPath}.DepartureDelay`, leg.departureDelay, {
+            await this.library.writedp(`${legPath}.DepartureDelay`, (_d = leg.departureDelay) != null ? _d : null, {
               _id: "nicht_definieren",
               type: "state",
               common: {
