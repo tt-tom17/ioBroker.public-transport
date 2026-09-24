@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "news": {
+      "1.4.1": {
+        "en": "dependencies updated\nAdaptercheck for Node.js 26 added",
+        "de": "Abhängigkeiten aktualisiert\nAdaptercheck für Node.js 26 hinzugefügt",
+        "ru": "зависимости обновлены\nДобавлена проверка адаптеров для Node.js 26",
+        "pt": "dependências atualizadas\nAdição do Adaptercheck for Node.js 26",
+        "nl": "afhankelijkheden bijgewerkt\nAdaptercheck voor Node.js 26 toegevoegd",
+        "fr": "dépendances mises à jour\nAdaptercheck for Node.js 26 a été ajouté",
+        "it": "dipendenze aggiornate\nAdaptercheck per Node.js 26 aggiunto",
+        "es": "dependencias actualizadas\nAdaptercheck for Node.js 26 añadido",
+        "pl": "aktualizacja zależności\nAdaptercheck for Node.js 26 dodano",
+        "uk": "залежності оновлені\nПеревірка адаптера для Node.js 26 додано",
+        "zh-cn": "依赖关系已更新\n添加了 Node.js 26 的适配器检查"
+      },
       "1.4.0": {
         "en": "removed the \"Vendo - Deutsche Bahn\" client (endpoint blocked)",
         "de": "Client \"Vendo - Deutsche Bahn\" entfernt (Endpunkt gesperrt)",
@@ -80,19 +93,6 @@
         "pl": "Interfejs konfiguracji został przeniesiony na nowy interfejs admin (React 19, MUI 9) — od tej wersji wymagany jest admin 8.0.1 lub nowszy",
         "uk": "Інтерфейс налаштувань переведено на новий інтерфейс admin (React 19, MUI 9) — починаючи з цієї версії потрібен admin 8.0.1 або новіший",
         "zh-cn": "配置界面已迁移到新的 admin 界面（React 19、MUI 9）——此版本需要 admin 8.0.1 或更高版本"
-      },
-      "0.10.2": {
-        "en": "fixed journey and departure channel names showing stale labels after a connection changed",
-        "de": "Fix: journey- und departure-channel zeigten nach einer geänderten Verbindung veraltete Namen — werden jetzt korrekt aktualisiert",
-        "ru": "Исправлено: имена channel journey и departure показывали устаревшие метки после изменения соединения — теперь обновляются корректно",
-        "pt": "Corrigido: os nomes dos channel journey e departure mostravam rótulos desatualizados após a alteração de uma ligação — agora são atualizados corretamente",
-        "nl": "Opgelost: namen van journey- en departure-channel toonden verouderde labels nadat een verbinding was gewijzigd — worden nu correct bijgewerkt",
-        "fr": "Corrigé : les noms des channel journey et departure affichaient des libellés obsolètes après la modification d'une correspondance — ils sont désormais mis à jour correctement",
-        "it": "Corretto: i nomi dei channel journey e departure mostravano etichette obsolete dopo la modifica di una connessione — ora vengono aggiornati correttamente",
-        "es": "Corregido: los nombres de los channel journey y departure mostraban etiquetas obsoletas tras cambiar una conexión — ahora se actualizan correctamente",
-        "pl": "Poprawiono: nazwy channel journey i departure pokazywały nieaktualne etykiety po zmianie połączenia — teraz są poprawnie aktualizowane",
-        "uk": "Виправлено: імена channel journey і departure показували застарілі мітки після зміни з'єднання — тепер оновлюються коректно",
-        "zh-cn": "修复：连接变化后 journey 和 departure channel 的名称显示过时标签——现在会正确更新"
       }
     },
     "messages": [
