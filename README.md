@@ -39,6 +39,9 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) dependencies updated
+
 ### 1.4.1 (2026-09-24)
 * (tt-tom17) dependencies updated
 * (tt-tom17) Adaptercheck for Node.js 26 added
