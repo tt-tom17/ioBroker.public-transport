@@ -1,4 +1,7 @@
 # Older changes
+## 1.0.0 (2026-08-08)
+* (tt-tom17) migrated the admin configuration GUI to @iobroker/gui-components 10 (React 19, MUI 9); requires admin >= 8.0.1
+
 ## 0.10.2 (2026-07-17)
 * (tt-tom17) fixed journey and departure channel names showing stale labels after a connection changed
 * (tt-tom17) added a "Number of transfers" dropdown per journey (-1 = backend decides, 0 = direct connections only); applies to both HAFAS and MOTIS
