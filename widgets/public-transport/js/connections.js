@@ -27,17 +27,74 @@ function ptLog() {
     }
 }
 
+/**
+ * Setzt die Attribute der Editor-Gruppe "Darstellung" als CSS-Variablen inline am
+ * Widget-Container. Leere Felder (bzw. 0 bei Größen) entfernen die Variable wieder,
+ * damit der Standardwert aus css/style-vars.css bzw. die Automatik greift.
+ *
+ * Muss identisch zu ptApplyStyleVars() in deptt.js bleiben.
+ *
+ * @param    container - Das DOM-Element mit der Container-Klasse
+ * @param    data - Die Konfigurationsdaten des Widgets
+ * @param    map - Liste aus [Attributname, CSS-Variable, Einheit ('px' oder leer)]
+ */
+function ptApplyStyleVars(container, data, map) {
+    if (!container) {
+        return;
+    }
+    for (let i = 0; i < map.length; i++) {
+        const attr = map[i][0];
+        const cssVar = map[i][1];
+        const unit = map[i][2] || '';
+        const raw = data[attr];
+
+        if (unit === 'px') {
+            const num = parseFloat(raw);
+            if (!num || isNaN(num) || num <= 0) {
+                container.style.removeProperty(cssVar);
+            } else {
+                container.style.setProperty(cssVar, num + 'px');
+            }
+            continue;
+        }
+
+        if (raw === undefined || raw === null || raw === '') {
+            container.style.removeProperty(cssVar);
+        } else {
+            container.style.setProperty(cssVar, String(raw));
+        }
+    }
+}
+
 // Übersetzungen für den Edit-Modus
 $.extend(true, systemDictionary, {
     headerTextConn: { en: 'Headline', de: 'Überschrift' },
     oidConnections: { en: 'Connections Object ID', de: 'Verbindungen Objekt ID' },
     maxConnections: { en: 'Max. Connections', de: 'Max. Verbindungen' },
     showClockConn: { en: 'Show Clock', de: 'Uhr anzeigen' },
+    // Titel der Attributgruppe "Darstellung": vis sucht ihn als group_<name>
+    // (visEditInspect.js: groupName = _('group_' + group))
+    group_ptDisplay: { en: 'Appearance', de: 'Darstellung' },
+    fontSizeBaseConn: { en: 'Font size in px (0 = automatic)', de: 'Schriftgröße in px (0 = automatisch)' },
+    headerFontSizeConn: {
+        en: 'Headline font size in px (0 = automatic)',
+        de: 'Schriftgröße Überschrift in px (0 = automatisch)',
+    },
+    ptBgColorConn: { en: 'Background colour', de: 'Hintergrundfarbe' },
+    ptListBgColorConn: { en: 'Table background colour', de: 'Hintergrundfarbe Tabelle' },
+    ptHeaderColorConn: { en: 'Headline text colour', de: 'Textfarbe Überschrift' },
+    ptColHeadColorConn: { en: 'Column header colour', de: 'Textfarbe Spaltenkopf' },
+    ptTimeColorConn: { en: 'Time colour', de: 'Textfarbe Zeit' },
+    ptLineColorConn: { en: 'Line colour', de: 'Textfarbe Linie' },
+    ptTransfersColorConn: { en: 'Transfers colour', de: 'Textfarbe Umstiege' },
+    ptPlatformColorConn: { en: 'Platform colour', de: 'Textfarbe Gleis' },
+    ptOntimeColorConn: { en: 'Colour when on time', de: 'Textfarbe pünktlich' },
+    ptDelayedColorConn: { en: 'Colour when delayed', de: 'Textfarbe verspätet' },
 });
 
 // Widget Binding
 vis.binds['public-transportConnections'] = {
-    version: '0.0.10',
+    version: '0.0.11',
 
     showVersion: function () {
         if (vis.binds['public-transportConnections'].version) {
@@ -119,19 +176,41 @@ vis.binds['public-transportConnections'] = {
 
         $div.html(html);
 
+        // Darstellung aus den Editor-Attributen (Gruppe "Darstellung") als CSS-Variablen
+        // inline am Container setzen. Alles, was hier leer bleibt, behält den Standardwert
+        // aus css/style-vars.css - der sich zusätzlich per View-CSS überschreiben lässt.
+        const scaleContainer = $div.find('.pub-trans-conn-container').get(0);
+        ptApplyStyleVars(scaleContainer, data, [
+            ['fontSizeBaseConn', '--pt-base-size', 'px'],
+            ['headerFontSizeConn', '--pt-header-size', 'px'],
+            ['ptBgColorConn', '--pt-bg'],
+            ['ptListBgColorConn', '--pt-list-bg'],
+            ['ptHeaderColorConn', '--pt-header-color'],
+            ['ptColHeadColorConn', '--pt-colhead-color'],
+            ['ptTimeColorConn', '--pt-time-color'],
+            ['ptLineColorConn', '--pt-line-color'],
+            ['ptTransfersColorConn', '--pt-transfers-color'],
+            ['ptPlatformColorConn', '--pt-platform-color'],
+            ['ptOntimeColorConn', '--pt-delay-ontime-color'],
+            ['ptDelayedColorConn', '--pt-delay-delayed-color'],
+        ]);
+
         // Schrift skaliert mit der Widget-Breite (Variante 4): 1.75% der Breite, gedeckelt auf 10–14px.
         // Umsetzung per ResizeObserver statt CSS Container Queries, da letztere in vis 1.x nicht greifen.
-        const scaleContainer = $div.find('.pub-trans-conn-container').get(0);
-        if (scaleContainer && typeof ResizeObserver !== 'undefined') {
-            const prevObserver = $div.data('ptResizeObserver');
-            if (prevObserver) {
-                prevObserver.disconnect();
-            }
+        // Ist im Editor eine feste Schriftgröße eingestellt (fontSizeBaseConn > 0), bleibt die
+        // Automatik aus - sonst würde der Observer den eingestellten Wert sofort überschreiben.
+        const fixedFontSize = parseFloat(data.fontSizeBaseConn) > 0;
+        const prevObserver = $div.data('ptResizeObserver');
+        if (prevObserver) {
+            prevObserver.disconnect();
+            $div.removeData('ptResizeObserver');
+        }
+        if (scaleContainer && !fixedFontSize && typeof ResizeObserver !== 'undefined') {
             const applyFontScale = function () {
                 const width = scaleContainer.clientWidth;
                 if (!width) return;
                 const size = Math.max(10, Math.min(14, width * 0.0175));
-                scaleContainer.style.fontSize = size + 'px';
+                scaleContainer.style.setProperty('--pt-base-size', size + 'px');
             };
             const observer = new ResizeObserver(applyFontScale);
             observer.observe(scaleContainer);
@@ -207,9 +286,9 @@ vis.binds['public-transportConnections'] = {
         }
 
         // SVG-Icons für Remark-Typen
-        const SVG_WARNING = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" class="pub-trans-conn-remark-icon"><circle cx="12" cy="12" r="11" fill="#cc0000"/><text x="12" y="17" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="Arial,sans-serif">!</text></svg>';
-        const SVG_HINT    = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 26" width="18" height="16" class="pub-trans-conn-remark-icon"><polygon points="14,1 27,25 1,25" fill="#ffcc00"/><text x="14" y="22" text-anchor="middle" fill="#000000" font-size="13" font-weight="bold" font-family="Arial,sans-serif">!</text></svg>';
-        const SVG_STATUS  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" class="pub-trans-conn-remark-icon"><circle cx="12" cy="12" r="11" fill="#0066b3"/><text x="12" y="17" text-anchor="middle" fill="white" font-size="14" font-style="italic" font-weight="bold" font-family="Arial,sans-serif">i</text></svg>';
+        const SVG_WARNING = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" class="pub-trans-conn-remark-icon"><circle cx="12" cy="12" r="11" fill="#cc0000" style="fill: var(--pt-icon-warning-bg, #cc0000)"/><text x="12" y="17" text-anchor="middle" fill="white" style="fill: var(--pt-icon-warning-fg, #ffffff)" font-size="16" font-weight="bold" font-family="Arial,sans-serif">!</text></svg>';
+        const SVG_HINT    = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 26" width="18" height="16" class="pub-trans-conn-remark-icon"><polygon points="14,1 27,25 1,25" fill="#ffcc00" style="fill: var(--pt-icon-hint-bg, #ffcc00)"/><text x="14" y="22" text-anchor="middle" fill="#000000" style="fill: var(--pt-icon-hint-fg, #000000)" font-size="13" font-weight="bold" font-family="Arial,sans-serif">!</text></svg>';
+        const SVG_STATUS  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" class="pub-trans-conn-remark-icon"><circle cx="12" cy="12" r="11" fill="#0066b3" style="fill: var(--pt-icon-status-bg, #0066b3)"/><text x="12" y="17" text-anchor="middle" fill="white" style="fill: var(--pt-icon-status-fg, #ffffff)" font-size="14" font-style="italic" font-weight="bold" font-family="Arial,sans-serif">i</text></svg>';
 
         function groupRemarksByType(remarks) {
             const hints = [];

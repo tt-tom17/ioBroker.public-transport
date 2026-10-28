@@ -1,0 +1,148 @@
+/*
+    ioBroker.vis public-transport Widget-Set - gemeinsame CSS-Variablen
+
+    Copyright 2026 tt-tom17 tgb@kabelmail.de
+
+    Hier stehen die Standardwerte fuer Schriftgroessen und Farben beider Widgets
+    (Abfahrtstafel und Verbindungstabelle). Alle Regeln in style-deptt.css und
+    style-connections.css lesen diese Variablen mit einem Fallback auf den alten
+    Festwert, damit nichts bricht, falls diese Datei nicht geladen wird.
+
+    Es gibt drei Wege, die Werte zu aendern - von grob nach fein:
+
+    1. Fuer alle Widgets im Projekt (vis-user.css oder View-CSS):
+
+           .pub-trans-deptt-container,
+           .pub-trans-conn-container { --pt-time-color: #00ccff; }
+
+    2. Fuer eine einzelne Widget-Instanz (wid im vis-Editor ablesen):
+
+           #w00042 .pub-trans-deptt-container { --pt-header-size: 1.8em; }
+
+    3. Ohne CSS: ueber die Attribute der Gruppe "Darstellung" im vis-Editor.
+       Die setzen die Variablen inline am Container und gewinnen damit gegen
+       1. und 2.
+
+    Groessen sind absichtlich in "em" angegeben: sie wachsen mit der
+    Basisschriftgroesse --pt-base-size mit, die das Widget-JS per
+    ResizeObserver aus der Widget-Breite berechnet (Automatik), solange im
+    Editor keine feste Groesse eingestellt ist.
+*/
+
+.pub-trans-deptt-container,
+.pub-trans-conn-container {
+    /* ---------- Grundgeruest ---------- */
+    --pt-font-family: 'Courier New', 'Lucida Console', monospace;
+    /* Basisschriftgroesse: Automatik (ResizeObserver) oder Attribut "Schriftgroesse" */
+    --pt-base-size: 14px;
+    --pt-bg: #1a1a1a;
+    --pt-border-color: #333;
+    --pt-list-bg: #000000;
+
+    /* ---------- Kopfzeile und Uhr ---------- */
+    --pt-header-bg: linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%);
+    --pt-header-color: #ffffff;
+    --pt-header-size: 1.3em;
+    --pt-header-accent: #ffcc00;
+    --pt-clock-color: #00ff00;
+    --pt-clock-size: 1.15em;
+
+    /* ---------- Spaltenkopf ---------- */
+    --pt-colhead-bg: #2c2c2c;
+    --pt-colhead-color: #ffcc00;
+    --pt-colhead-size: 0.93em;
+    --pt-colhead-border-color: #444;
+
+    /* ---------- Datenzeilen ---------- */
+    --pt-row-color: #ffcc00;
+    --pt-row-size: 1em;
+    --pt-row-hover-bg: #1a1a1a;
+    --pt-row-alt-bg: #0a0a0a;
+    --pt-row-border-color: #333;
+
+    /* ---------- Spalten ---------- */
+    --pt-time-color: #00ff00;
+    --pt-time-size: 1.15em;
+    /* Linienspalte: nur Verbindungstabelle */
+    --pt-line-color: #00ff00;
+    --pt-line-size: 1.15em;
+    /* Zieltext: nur Abfahrtstafel */
+    --pt-dest-color: #ffffff;
+    --pt-dest-size: 1em;
+    --pt-delay-ontime-color: #00ff00;
+    --pt-delay-delayed-color: #ff0000;
+    --pt-delay-cancelled-color: #ff0000;
+    --pt-platform-color: #ffcc00;
+    --pt-platform-size: 1em;
+    --pt-platform-changed-color: #ff0000;
+    /* Umstiege: nur Verbindungstabelle */
+    --pt-transfers-color: #ffffff;
+    --pt-transfers-size: 1em;
+
+    /* ---------- Linien-Badge je Verkehrsmittel ---------- */
+    /* Badge in der Tabelle (Abfahrtstafel) */
+    --pt-badge-size: 0.85em;
+    /* Badge im Verbindungs-Popup */
+    --pt-leg-badge-size: 1em;
+    --pt-badge-bg: #ffcc00;
+    --pt-badge-fg: #000000;
+    --pt-badge-bus-bg: #9d1b4c;
+    --pt-badge-bus-fg: #ffffff;
+    --pt-badge-tram-bg: #d4000b;
+    --pt-badge-tram-fg: #ffffff;
+    --pt-badge-subway-bg: #0066b3;
+    --pt-badge-subway-fg: #ffffff;
+    --pt-badge-train-bg: #ffffff;
+    --pt-badge-train-fg: #d4000b;
+    --pt-badge-train-border-color: #d4000b;
+    --pt-badge-sbahn-bg: #006e34;
+    --pt-badge-sbahn-fg: #ffffff;
+    --pt-badge-walk-bg: #888888;
+    --pt-badge-walk-fg: #ffffff;
+
+    /* ---------- Popup / Modal ---------- */
+    --pt-overlay-bg: rgba(0, 0, 0, 0.8);
+    --pt-modal-bg: #1a1a1a;
+    --pt-modal-header-size: 1.3em;
+    --pt-modal-close-size: 2em;
+
+    /* ---------- Hinweise (Remarks) ---------- */
+    --pt-remark-color: #dddddd;
+    --pt-remark-size: 0.93em;
+    --pt-warning-bg: rgba(204, 0, 0, 0.2);
+    --pt-warning-accent: #cc0000;
+    --pt-hint-bg: rgba(255, 204, 0, 0.1);
+    --pt-hint-accent: #ffcc00;
+    --pt-status-bg: rgba(0, 102, 179, 0.15);
+    --pt-status-accent: #0066b3;
+    /* Farben der SVG-Symbole in der Info-Spalte */
+    --pt-icon-warning-bg: #cc0000;
+    --pt-icon-warning-fg: #ffffff;
+    --pt-icon-hint-bg: #ffcc00;
+    --pt-icon-hint-fg: #000000;
+    --pt-icon-status-bg: #0066b3;
+    --pt-icon-status-fg: #ffffff;
+
+    /* ---------- Teilstrecken im Verbindungs-Popup ---------- */
+    --pt-leg-bg: #0a0a0a;
+    --pt-leg-border-color: #333;
+    --pt-leg-direction-color: #ffcc00;
+    --pt-leg-direction-size: 1.15em;
+    --pt-leg-detail-color: #ffffff;
+    --pt-leg-detail-size: 1em;
+    --pt-leg-label-color: #ffcc00;
+    --pt-leg-walking-bg: #151515;
+    --pt-walking-color: #888888;
+
+    /* ---------- Sonstiges ---------- */
+    --pt-nodata-color: #888;
+    --pt-nodata-size: 1.15em;
+    --pt-loading-color: #ffcc00;
+    --pt-loading-size: 1em;
+    --pt-scrollbar-track: #1a1a1a;
+    --pt-scrollbar-thumb: #444;
+    --pt-scrollbar-thumb-hover: #a2a2a2;
+    --pt-link-color: #00ccff;
+    --pt-link-hover-color: #ffcc00;
+    --pt-link-visited-color: #0099cc;
+}

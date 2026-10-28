@@ -2,11 +2,11 @@
 
 /* Container für die gesamte Abfahrtstafel */
 .pub-trans-deptt-container {
-    background-color: #1a1a1a;
-    border: 2px solid #333;
+    background-color: var(--pt-bg, #1a1a1a);
+    border: 2px solid var(--pt-border-color, #333);
     border-radius: 4px;
     overflow: hidden;
-    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-family: var(--pt-font-family, 'Courier New', 'Lucida Console', monospace);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     /* Höhe folgt der vom vis vorgegebenen Widget-Größe; Inhalt scrollt */
     height: 100%;
@@ -15,18 +15,18 @@
     flex-direction: column;
     /* Basis-Schriftgröße (Fallback); die tatsächliche Skalierung mit der Widget-Breite
        setzt deptt.js per ResizeObserver, da CSS Container Queries in vis 1.x nicht greifen. */
-    font-size: 14px;
+    font-size: var(--pt-base-size, 14px);
 }
 
 /* Header der Abfahrtstafel */
 .pub-trans-deptt-header {
-    background: linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%);
-    color: #ffffff;
+    background: var(--pt-header-bg, linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%));
+    color: var(--pt-header-color, #ffffff);
     padding: 10px 15px;
     text-align: center;
-    font-size: 18px;
+    font-size: var(--pt-header-size, 1.3em);
     font-weight: bold;
-    border-bottom: 3px solid #ffcc00;
+    border-bottom: 3px solid var(--pt-header-accent, #ffcc00);
     text-transform: uppercase;
     letter-spacing: 2px;
     flex-shrink: 0;
@@ -37,20 +37,20 @@
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
-    background-color: #000000;
+    background-color: var(--pt-list-bg, #000000);
 }
 
 /* Zeile mit Spaltenüberschriften */
 .pub-trans-deptt-column-header.no-remarks {
-    background-color: #2c2c2c;
-    color: #ffcc00;
+    background-color: var(--pt-colhead-bg, #2c2c2c);
+    color: var(--pt-colhead-color, #ffcc00);
     padding: 0.6em 0.7em;
     display: grid;
     grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em;
     gap: 0.7em;
-    font-size: 0.93em;
+    font-size: var(--pt-colhead-size, 0.93em);
     font-weight: bold;
-    border-bottom: 2px solid #444;
+    border-bottom: 2px solid var(--pt-colhead-border-color, #444);
     /* Spaltenkopf bleibt beim vertikalen Scrollen oben stehen, läuft horizontal mit den Zeilen mit */
     position: sticky;
     top: 0;
@@ -58,15 +58,15 @@
 }
 
 .pub-trans-deptt-column-header.remarks {
-    background-color: #2c2c2c;
-    color: #ffcc00;
+    background-color: var(--pt-colhead-bg, #2c2c2c);
+    color: var(--pt-colhead-color, #ffcc00);
     padding: 0.6em 0.7em;
     display: grid;
     grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em 9em;
     gap: 0.7em;
-    font-size: 0.93em;
+    font-size: var(--pt-colhead-size, 0.93em);
     font-weight: bold;
-    border-bottom: 2px solid #444;
+    border-bottom: 2px solid var(--pt-colhead-border-color, #444);
     position: sticky;
     top: 0;
     z-index: 2;
@@ -90,7 +90,7 @@
 
 /* Container für die Abfahrtszeilen (Scroll übernimmt der .pub-trans-deptt-scroll-Wrapper) */
 .pub-trans-deptt-content {
-    background-color: #000000;
+    background-color: var(--pt-list-bg, #000000);
 }
 
 /* Einzelne Abfahrtszeile */
@@ -99,9 +99,9 @@
     grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em;
     gap: 0.7em;
     padding: 0.7em;
-    border-bottom: 1px solid #333;
-    color: #ffcc00;
-    font-size: 1em;
+    border-bottom: 1px solid var(--pt-row-border-color, #333);
+    color: var(--pt-row-color, #ffcc00);
+    font-size: var(--pt-row-size, 1em);
     transition: background-color 0.2s;
 }
 
@@ -110,29 +110,29 @@
     grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em 9em;
     gap: 0.7em;
     padding: 0.7em;
-    border-bottom: 1px solid #333;
-    color: #ffcc00;
-    font-size: 1em;
+    border-bottom: 1px solid var(--pt-row-border-color, #333);
+    color: var(--pt-row-color, #ffcc00);
+    font-size: var(--pt-row-size, 1em);
     transition: background-color 0.2s;
 }
 
 
 /* Hover-Effekt für Abfahrtszeilen */
 .pub-trans-deptt-row:hover {
-    background-color: #1a1a1a;
+    background-color: var(--pt-row-hover-bg, #1a1a1a);
 }
 
 /* Alternative Zeilenfarbe für bessere Lesbarkeit */
 .pub-trans-deptt-row:nth-child(even) {
-    background-color: #0a0a0a;
+    background-color: var(--pt-row-alt-bg, #0a0a0a);
 }
 
 /* Spalten in der Abfahrtszeile */
 .pub-trans-deptt-time {
     text-align: center;
     font-weight: bold;
-    font-size: 1.15em;
-    color: #00ff00;
+    font-size: var(--pt-time-size, 1.15em);
+    color: var(--pt-time-color, #00ff00);
 }
 
 /* Linien-Container (Icon + Richtung) */
@@ -148,44 +148,44 @@
     padding: 4px 8px;
     border-radius: 3px;
     font-weight: bold;
-    font-size: 0.85em;
+    font-size: var(--pt-badge-size, 0.85em);
     text-align: center;
     min-width: 2.8em;
-    background-color: #ffcc00;
-    color: #000000;
+    background-color: var(--pt-badge-bg, #ffcc00);
+    color: var(--pt-badge-fg, #000000);
 }
 
 /* Verschiedene Verkehrsmittel-Farben */
 .pub-trans-deptt-line-icon.bus {
-    background-color: #9d1b4c;
-    color: #ffffff;
+    background-color: var(--pt-badge-bus-bg, #9d1b4c);
+    color: var(--pt-badge-bus-fg, #ffffff);
 }
 
 .pub-trans-deptt-line-icon.tram {
-    background-color: #d4000b;
-    color: #ffffff;
+    background-color: var(--pt-badge-tram-bg, #d4000b);
+    color: var(--pt-badge-tram-fg, #ffffff);
 }
 
 .pub-trans-deptt-line-icon.subway {
-    background-color: #0066b3;
-    color: #ffffff;
+    background-color: var(--pt-badge-subway-bg, #0066b3);
+    color: var(--pt-badge-subway-fg, #ffffff);
 }
 
 .pub-trans-deptt-line-icon.train {
-    background-color: #ffffff;
-    color: #d4000b;
-    border: 2px solid #d4000b;
+    background-color: var(--pt-badge-train-bg, #ffffff);
+    color: var(--pt-badge-train-fg, #d4000b);
+    border: 2px solid var(--pt-badge-train-border-color, #d4000b);
 }
 
 .pub-trans-deptt-line-icon.sbahn {
-    background-color: #006e34;
-    color: #ffffff;
+    background-color: var(--pt-badge-sbahn-bg, #006e34);
+    color: var(--pt-badge-sbahn-fg, #ffffff);
 }
 
 /* Richtungstext */
 .pub-trans-deptt-direction {
-    color: #ffffff;
-    font-size: 1em;
+    color: var(--pt-dest-color, #ffffff);
+    font-size: var(--pt-dest-size, 1em);
 }
 
 /* Verspätungsanzeige */
@@ -195,28 +195,28 @@
 }
 
 .pub-trans-deptt-delay.ontime {
-    color: #00ff00;
+    color: var(--pt-delay-ontime-color, #00ff00);
 }
 
 .pub-trans-deptt-delay.delayed {
-    color: #ff0000;
+    color: var(--pt-delay-delayed-color, #ff0000);
 }
 
 .pub-trans-deptt-delay.cancelled {
-    color: #ff0000;
+    color: var(--pt-delay-cancelled-color, #ff0000);
     text-decoration: line-through;
 }
 
 /* Gleis-Anzeige */
 .pub-trans-deptt-platform {
     text-align: left;
-    font-size: 1em;
+    font-size: var(--pt-platform-size, 1em);
     font-weight: bold;
-    color: #ffcc00;
+    color: var(--pt-platform-color, #ffcc00);
 }
 
 .pub-trans-deptt-platform.changed {
-    color: #ff0000;
+    color: var(--pt-platform-changed-color, #ff0000);
     animation: blink 1s infinite;
 }
 
@@ -255,7 +255,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: var(--pt-overlay-bg, rgba(0, 0, 0, 0.8));
 }
 
 /* Modal aktiv (sichtbar) */
@@ -265,8 +265,8 @@
 
 /* Modal-Inhalt */
 .pub-trans-deptt-modal-content {
-    background-color: #1a1a1a;
-    border: 2px solid #333;
+    background-color: var(--pt-modal-bg, #1a1a1a);
+    border: 2px solid var(--pt-border-color, #333);
     border-radius: 4px;
     margin: 5% auto;
     padding: 20px;
@@ -279,22 +279,22 @@
 
 /* Modal-Kopfzeile */
 .pub-trans-deptt-modal-header {
-    background: linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%);
-    color: #ffffff;
+    background: var(--pt-header-bg, linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%));
+    color: var(--pt-header-color, #ffffff);
     padding: 15px;
     margin: -20px -20px 20px -20px;
     border-radius: 4px 4px 0 0;
-    font-size: 18px;
+    font-size: var(--pt-modal-header-size, 1.3em);
     font-weight: bold;
     text-align: center;
-    border-bottom: 3px solid #ffcc00;
+    border-bottom: 3px solid var(--pt-header-accent, #ffcc00);
 }
 
 /* Schließen-Button */
 .pub-trans-deptt-modal-close {
-    color: #ffffff;
+    color: var(--pt-header-color, #ffffff);
     float: right;
-    font-size: 28px;
+    font-size: var(--pt-modal-close-size, 2em);
     font-weight: bold;
     cursor: pointer;
     line-height: 20px;
@@ -302,7 +302,7 @@
 
 .pub-trans-deptt-modal-close:hover,
 .pub-trans-deptt-modal-close:focus {
-    color: #ffcc00;
+    color: var(--pt-link-hover-color, #ffcc00);
 }
 
 /* Abschnitte im Modal (je Remark-Typ) */
@@ -320,25 +320,25 @@
 }
 
 .pub-trans-deptt-modal-section.warning {
-    background-color: rgba(204, 0, 0, 0.2);
-    border-left: 3px solid #cc0000;
+    background-color: var(--pt-warning-bg, rgba(204, 0, 0, 0.2));
+    border-left: 3px solid var(--pt-warning-accent, #cc0000);
 }
 
 .pub-trans-deptt-modal-section.hint {
-    background-color: rgba(255, 204, 0, 0.1);
-    border-left: 3px solid #ffcc00;
+    background-color: var(--pt-hint-bg, rgba(255, 204, 0, 0.1));
+    border-left: 3px solid var(--pt-hint-accent, #ffcc00);
 }
 
 .pub-trans-deptt-modal-section.status {
-    background-color: rgba(0, 102, 179, 0.15);
-    border-left: 3px solid #0066b3;
+    background-color: var(--pt-status-bg, rgba(0, 102, 179, 0.15));
+    border-left: 3px solid var(--pt-status-accent, #0066b3);
 }
 
 /* Remark-Text im Modal */
 .pub-trans-deptt-modal-text {
-    font-size: 13px;
+    font-size: var(--pt-remark-size, 0.93em);
     line-height: 1.5;
-    color: #dddddd;
+    color: var(--pt-remark-color, #dddddd);
     flex: 1;
 }
 
@@ -346,8 +346,8 @@
 .pub-trans-deptt-no-data {
     padding: 30px;
     text-align: center;
-    color: #888;
-    font-size: 16px;
+    color: var(--pt-nodata-color, #888);
+    font-size: var(--pt-nodata-size, 1.15em);
 }
 
 /* Uhrzeit-Anzeige */
@@ -355,8 +355,8 @@
     position: absolute;
     top: 12px;
     right: 15px;
-    color: #00ff00;
-    font-size: 16px;
+    color: var(--pt-clock-color, #00ff00);
+    font-size: var(--pt-clock-size, 1.15em);
     font-weight: bold;
 }
 
@@ -364,8 +364,8 @@
 .pub-trans-deptt-loading {
     padding: 20px;
     text-align: center;
-    color: #ffcc00;
-    font-size: 14px;
+    color: var(--pt-loading-color, #ffcc00);
+    font-size: var(--pt-loading-size, 1em);
 }
 
 .pub-trans-deptt-loading::after {
@@ -392,44 +392,44 @@
 }
 
 .pub-trans-deptt-scroll::-webkit-scrollbar-track {
-    background: #1a1a1a;
+    background: var(--pt-scrollbar-track, #1a1a1a);
 }
 
 .pub-trans-deptt-scroll::-webkit-scrollbar-thumb {
-    background: #444;
+    background: var(--pt-scrollbar-thumb, #444);
     border-radius: 4px;
 }
 
 .pub-trans-deptt-scroll::-webkit-scrollbar-thumb:hover {
-    background: #a2a2a2;
+    background: var(--pt-scrollbar-thumb-hover, #a2a2a2);
 }
 
 /* Link-Styling in den Remarks */
 .pub-trans-deptt-row a {
-    color: #00ccff; /* Hellblau für bessere Sichtbarkeit */
+    color: var(--pt-link-color, #00ccff); /* Hellblau für bessere Sichtbarkeit */
     text-decoration: underline;
 }
 
 .pub-trans-deptt-row a:hover {
-    color: #ffcc00; /* Gelb beim Hover */
+    color: var(--pt-link-hover-color, #ffcc00); /* Gelb beim Hover */
     text-decoration: none;
 }
 
 .pub-trans-deptt-row a:visited {
-    color: #0099cc; /* Dunkleres Blau für besuchte Links */
+    color: var(--pt-link-visited-color, #0099cc); /* Dunkleres Blau für besuchte Links */
 }
 
 /* Link-Styling im Modal */
 .pub-trans-deptt-modal-text a {
-    color: #00ccff;
+    color: var(--pt-link-color, #00ccff);
     text-decoration: underline;
 }
 
 .pub-trans-deptt-modal-text a:hover {
-    color: #ffcc00;
+    color: var(--pt-link-hover-color, #ffcc00);
     text-decoration: none;
 }
 
 .pub-trans-deptt-modal-text a:visited {
-    color: #0099cc;
+    color: var(--pt-link-visited-color, #0099cc);
 }

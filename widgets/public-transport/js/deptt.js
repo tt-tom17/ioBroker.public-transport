@@ -42,6 +42,45 @@ function ptKebabToCamel(str) {
     });
 }
 
+/**
+ * Setzt die Attribute der Editor-Gruppe "Darstellung" als CSS-Variablen inline am
+ * Widget-Container. Leere Felder (bzw. 0 bei Größen) entfernen die Variable wieder,
+ * damit der Standardwert aus css/style-vars.css bzw. die Automatik greift.
+ *
+ * Muss identisch zu ptApplyStyleVars() in connections.js bleiben.
+ *
+ * @param    container - Das DOM-Element mit der Container-Klasse
+ * @param    data - Die Konfigurationsdaten des Widgets
+ * @param    map - Liste aus [Attributname, CSS-Variable, Einheit ('px' oder leer)]
+ */
+function ptApplyStyleVars(container, data, map) {
+    if (!container) {
+        return;
+    }
+    for (let i = 0; i < map.length; i++) {
+        const attr = map[i][0];
+        const cssVar = map[i][1];
+        const unit = map[i][2] || '';
+        const raw = data[attr];
+
+        if (unit === 'px') {
+            const num = parseFloat(raw);
+            if (!num || isNaN(num) || num <= 0) {
+                container.style.removeProperty(cssVar);
+            } else {
+                container.style.setProperty(cssVar, num + 'px');
+            }
+            continue;
+        }
+
+        if (raw === undefined || raw === null || raw === '') {
+            container.style.removeProperty(cssVar);
+        } else {
+            container.style.setProperty(cssVar, String(raw));
+        }
+    }
+}
+
 // Übersetzungen für den Edit-Modus
 $.extend(true, systemDictionary, {
     headerText: { en: 'Headline', de: 'Überschrift' },
@@ -52,11 +91,25 @@ $.extend(true, systemDictionary, {
     remarkWarning: { en: 'Show warnings', de: 'Warnungen anzeigen' },
     remarkStatus: { en: 'Show status messages', de: 'Statusmeldungen anzeigen' },
     useFilter: { en: 'Use filter from config', de: 'Filter aus Config verwenden' },
+    // Titel der Attributgruppe "Darstellung": vis sucht ihn als group_<name>
+    // (visEditInspect.js: groupName = _('group_' + group))
+    group_ptDisplay: { en: 'Appearance', de: 'Darstellung' },
+    fontSizeBase: { en: 'Font size in px (0 = automatic)', de: 'Schriftgröße in px (0 = automatisch)' },
+    headerFontSize: { en: 'Headline font size in px (0 = automatic)', de: 'Schriftgröße Überschrift in px (0 = automatisch)' },
+    ptBgColor: { en: 'Background colour', de: 'Hintergrundfarbe' },
+    ptListBgColor: { en: 'Table background colour', de: 'Hintergrundfarbe Tabelle' },
+    ptHeaderColor: { en: 'Headline text colour', de: 'Textfarbe Überschrift' },
+    ptColHeadColor: { en: 'Column header colour', de: 'Textfarbe Spaltenkopf' },
+    ptTimeColor: { en: 'Time colour', de: 'Textfarbe Zeit' },
+    ptDestColor: { en: 'Destination colour', de: 'Textfarbe Ziel' },
+    ptPlatformColor: { en: 'Platform colour', de: 'Textfarbe Gleis' },
+    ptOntimeColor: { en: 'Colour when on time', de: 'Textfarbe pünktlich' },
+    ptDelayedColor: { en: 'Colour when delayed', de: 'Textfarbe verspätet' },
 });
 
 // Widget Binding
 vis.binds['public-transportDepTt'] = {
-    version: '0.0.7',
+    version: '0.0.8',
 
     showVersion: function () {
         if (vis.binds['public-transportDepTt'].version) {
@@ -95,9 +148,9 @@ vis.binds['public-transportDepTt'] = {
         const hasRemarks = showRemarkHint || showRemarkWarning || showRemarkStatus;
 
         // SVG-Icons für Remark-Typen
-        const SVG_WARNING = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" class="pub-trans-deptt-remark-icon"><circle cx="12" cy="12" r="11" fill="#cc0000"/><text x="12" y="17" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="Arial,sans-serif">!</text></svg>';
-        const SVG_HINT    = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 26" width="22" height="20" class="pub-trans-deptt-remark-icon"><polygon points="14,1 27,25 1,25" fill="#ffcc00"/><text x="14" y="22" text-anchor="middle" fill="#000000" font-size="13" font-weight="bold" font-family="Arial,sans-serif">!</text></svg>';
-        const SVG_STATUS  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" class="pub-trans-deptt-remark-icon"><circle cx="12" cy="12" r="11" fill="#0066b3"/><text x="12" y="17" text-anchor="middle" fill="white" font-size="14" font-style="italic" font-weight="bold" font-family="Arial,sans-serif">i</text></svg>';
+        const SVG_WARNING = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" class="pub-trans-deptt-remark-icon"><circle cx="12" cy="12" r="11" fill="#cc0000" style="fill: var(--pt-icon-warning-bg, #cc0000)"/><text x="12" y="17" text-anchor="middle" fill="white" style="fill: var(--pt-icon-warning-fg, #ffffff)" font-size="16" font-weight="bold" font-family="Arial,sans-serif">!</text></svg>';
+        const SVG_HINT    = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 26" width="22" height="20" class="pub-trans-deptt-remark-icon"><polygon points="14,1 27,25 1,25" fill="#ffcc00" style="fill: var(--pt-icon-hint-bg, #ffcc00)"/><text x="14" y="22" text-anchor="middle" fill="#000000" style="fill: var(--pt-icon-hint-fg, #000000)" font-size="13" font-weight="bold" font-family="Arial,sans-serif">!</text></svg>';
+        const SVG_STATUS  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" class="pub-trans-deptt-remark-icon"><circle cx="12" cy="12" r="11" fill="#0066b3" style="fill: var(--pt-icon-status-bg, #0066b3)"/><text x="12" y="17" text-anchor="middle" fill="white" style="fill: var(--pt-icon-status-fg, #ffffff)" font-size="14" font-style="italic" font-weight="bold" font-family="Arial,sans-serif">i</text></svg>';
 
         // HTML-Struktur erstellen
         let html = '';
@@ -157,19 +210,40 @@ vis.binds['public-transportDepTt'] = {
 
         $div.html(html);
 
+        // Darstellung aus den Editor-Attributen (Gruppe "Darstellung") als CSS-Variablen
+        // inline am Container setzen. Alles, was hier leer bleibt, behält den Standardwert
+        // aus css/style-vars.css - der sich zusätzlich per View-CSS überschreiben lässt.
+        const scaleContainer = $div.find('.pub-trans-deptt-container').get(0);
+        ptApplyStyleVars(scaleContainer, data, [
+            ['fontSizeBase', '--pt-base-size', 'px'],
+            ['headerFontSize', '--pt-header-size', 'px'],
+            ['ptBgColor', '--pt-bg'],
+            ['ptListBgColor', '--pt-list-bg'],
+            ['ptHeaderColor', '--pt-header-color'],
+            ['ptColHeadColor', '--pt-colhead-color'],
+            ['ptTimeColor', '--pt-time-color'],
+            ['ptDestColor', '--pt-dest-color'],
+            ['ptPlatformColor', '--pt-platform-color'],
+            ['ptOntimeColor', '--pt-delay-ontime-color'],
+            ['ptDelayedColor', '--pt-delay-delayed-color'],
+        ]);
+
         // Schrift skaliert mit der Widget-Breite (Variante 4): 2% der Breite, gedeckelt auf 10–14px.
         // Umsetzung per ResizeObserver statt CSS Container Queries, da letztere in vis 1.x nicht greifen.
-        const scaleContainer = $div.find('.pub-trans-deptt-container').get(0);
-        if (scaleContainer && typeof ResizeObserver !== 'undefined') {
-            const prevObserver = $div.data('ptResizeObserver');
-            if (prevObserver) {
-                prevObserver.disconnect();
-            }
+        // Ist im Editor eine feste Schriftgröße eingestellt (fontSizeBase > 0), bleibt die
+        // Automatik aus - sonst würde der Observer den eingestellten Wert sofort überschreiben.
+        const fixedFontSize = parseFloat(data.fontSizeBase) > 0;
+        const prevObserver = $div.data('ptResizeObserver');
+        if (prevObserver) {
+            prevObserver.disconnect();
+            $div.removeData('ptResizeObserver');
+        }
+        if (scaleContainer && !fixedFontSize && typeof ResizeObserver !== 'undefined') {
             const applyFontScale = function () {
                 const width = scaleContainer.clientWidth;
                 if (!width) return;
                 const size = Math.max(10, Math.min(14, width * 0.02));
-                scaleContainer.style.fontSize = size + 'px';
+                scaleContainer.style.setProperty('--pt-base-size', size + 'px');
             };
             const observer = new ResizeObserver(applyFontScale);
             observer.observe(scaleContainer);

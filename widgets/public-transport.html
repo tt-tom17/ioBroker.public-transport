@@ -1,12 +1,14 @@
 <!--
     ioBroker.vis public-transport Widget-Set
 
-    version: "0.0.9"
+    version: "0.0.10"
 
     Copyright 2026 tt-tom17 tgb@kabelmail.de
 -->
 <!-- here you can include so many css as you want -->
  <!-- <link rel="stylesheet" href="widgets/public-transport/css/index.css" /> -->
+<!-- style-vars.css MUSS zuerst kommen: dort stehen die Standardwerte der CSS-Variablen -->
+<link rel="stylesheet" href="widgets/public-transport/css/style-vars.css" />
 <link rel="stylesheet" href="widgets/public-transport/css/style-deptt.css" />
 <link rel="stylesheet" href="widgets/public-transport/css/style-connections.css" />
 
@@ -105,6 +107,7 @@ x
         class="vis-tpl"
         data-vis-prev='<img src="widgets/public-transport/img/deptt.svg"></img>'
         data-vis-attrs="headerText[Abfahrten];oidDepartures/id;maxDepartures[10]/number,1,50,1;showClock/checkbox;remarkHint/checkbox;remarkWarning/checkbox;remarkStatus/checkbox;useFilter/checkbox"
+        data-vis-attrs0=";group.ptDisplay;fontSizeBase[0]/number,0,40,1;headerFontSize[0]/number,0,60,1;ptBgColor/color;ptListBgColor/color;ptHeaderColor/color;ptColHeadColor/color;ptTimeColor/color;ptDestColor/color;ptPlatformColor/color;ptOntimeColor/color;ptDelayedColor/color"
         data-vis-set="public-transport"
         data-vis-type="val"
         data-vis-name="Departure Table">
@@ -119,6 +122,7 @@ x
         class="vis-tpl"
         data-vis-prev='<img src="widgets/public-transport/img/connections.svg"></img>'
         data-vis-attrs="headerTextConn[Verbindungen];oidConnections/id;maxConnections[10]/number,1,50,1;showClockConn/checkbox"
+        data-vis-attrs0=";group.ptDisplay;fontSizeBaseConn[0]/number,0,40,1;headerFontSizeConn[0]/number,0,60,1;ptBgColorConn/color;ptListBgColorConn/color;ptHeaderColorConn/color;ptColHeadColorConn/color;ptTimeColorConn/color;ptLineColorConn/color;ptTransfersColorConn/color;ptPlatformColorConn/color;ptOntimeColorConn/color;ptDelayedColorConn/color"
         data-vis-set="public-transport"
         data-vis-type="val"
         data-vis-name="Connections Table">

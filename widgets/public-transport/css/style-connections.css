@@ -2,11 +2,11 @@
 
 /* Container für die gesamte Verbindungstabelle */
 .pub-trans-conn-container {
-    background-color: #1a1a1a;
-    border: 2px solid #333;
+    background-color: var(--pt-bg, #1a1a1a);
+    border: 2px solid var(--pt-border-color, #333);
     border-radius: 4px;
     overflow: hidden;
-    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-family: var(--pt-font-family, 'Courier New', 'Lucida Console', monospace);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     /* Höhe folgt der vom vis vorgegebenen Widget-Größe; Inhalt scrollt */
     height: 100%;
@@ -15,18 +15,18 @@
     flex-direction: column;
     /* Basis-Schriftgröße (Fallback); die tatsächliche Skalierung mit der Widget-Breite
        setzt connections.js per ResizeObserver, da CSS Container Queries in vis 1.x nicht greifen. */
-    font-size: 14px;
+    font-size: var(--pt-base-size, 14px);
 }
 
 /* Header der Verbindungstabelle */
 .pub-trans-conn-header {
-    background: linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%);
-    color: #ffffff;
+    background: var(--pt-header-bg, linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%));
+    color: var(--pt-header-color, #ffffff);
     padding: 10px 15px;
     text-align: center;
-    font-size: 18px;
+    font-size: var(--pt-header-size, 1.3em);
     font-weight: bold;
-    border-bottom: 3px solid #ffcc00;
+    border-bottom: 3px solid var(--pt-header-accent, #ffcc00);
     text-transform: uppercase;
     letter-spacing: 2px;
     flex-shrink: 0;
@@ -37,20 +37,20 @@
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
-    background-color: #000000;
+    background-color: var(--pt-list-bg, #000000);
 }
 
 /* Zeile mit Spaltenüberschriften */
 .pub-trans-conn-column-header {
-    background-color: #2c2c2c;
-    color: #ffcc00;
+    background-color: var(--pt-colhead-bg, #2c2c2c);
+    color: var(--pt-colhead-color, #ffcc00);
     padding: 0.6em 0.7em;
     display: grid;
     grid-template-columns: 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 3.5em;
     gap: 0.7em;
-    font-size: 0.93em;
+    font-size: var(--pt-colhead-size, 0.93em);
     font-weight: bold;
-    border-bottom: 2px solid #444;
+    border-bottom: 2px solid var(--pt-colhead-border-color, #444);
     /* Spaltenkopf bleibt beim vertikalen Scrollen oben stehen, läuft horizontal mit den Zeilen mit */
     position: sticky;
     top: 0;
@@ -63,7 +63,7 @@
 
 /* Container für die Verbindungszeilen (Scroll übernimmt der .pub-trans-conn-scroll-Wrapper) */
 .pub-trans-conn-content {
-    background-color: #000000;
+    background-color: var(--pt-list-bg, #000000);
 }
 
 /* Einzelne Verbindungszeile */
@@ -72,35 +72,35 @@
     grid-template-columns: 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 3.5em;
     gap: 0.7em;
     padding: 0.7em;
-    border-bottom: 1px solid #333;
-    color: #ffcc00;
-    font-size: 1em;
+    border-bottom: 1px solid var(--pt-row-border-color, #333);
+    color: var(--pt-row-color, #ffcc00);
+    font-size: var(--pt-row-size, 1em);
     transition: background-color 0.2s;
     cursor: pointer;
 }
 
 .pub-trans-conn-row:hover {
-    background-color: #1a1a1a;
+    background-color: var(--pt-row-hover-bg, #1a1a1a);
 }
 
 /* Alternative Zeilenfarbe für bessere Lesbarkeit */
 .pub-trans-conn-row:nth-child(even) {
-    background-color: #0a0a0a;
+    background-color: var(--pt-row-alt-bg, #0a0a0a);
 }
 
 /* Spalten in der Verbindungszeile */
 .pub-trans-conn-time {
     text-align: center;
     font-weight: bold;
-    font-size: 1.15em;
-    color: #00ff00;
+    font-size: var(--pt-time-size, 1.15em);
+    color: var(--pt-time-color, #00ff00);
 }
 
 .pub-trans-conn-line {
     text-align: center;
     font-weight: bold;
-    font-size: 1.15em;
-    color: #00ff00;
+    font-size: var(--pt-line-size, 1.15em);
+    color: var(--pt-line-color, #00ff00);
 }
 
 .pub-trans-conn-delay {
@@ -109,29 +109,29 @@
 }
 
 .pub-trans-conn-delay.ontime {
-    color: #00ff00;
+    color: var(--pt-delay-ontime-color, #00ff00);
 }
 
 .pub-trans-conn-delay.delayed {
-    color: #ff0000;
+    color: var(--pt-delay-delayed-color, #ff0000);
 }
 
 .pub-trans-conn-platform {
     text-align: center;
-    font-size: 1em;
+    font-size: var(--pt-platform-size, 1em);
     font-weight: bold;
-    color: #ffcc00;
+    color: var(--pt-platform-color, #ffcc00);
 }
 
 .pub-trans-conn-platform.changed {
-    color: #ff0000;
+    color: var(--pt-platform-changed-color, #ff0000);
     animation: blink 1s infinite;
 }
 
 .pub-trans-conn-transfers {
     text-align: center;
-    font-size: 1em;
-    color: #ffffff;
+    font-size: var(--pt-transfers-size, 1em);
+    color: var(--pt-transfers-color, #ffffff);
 }
 
 /* Blinken für geänderte Bahnsteige */
@@ -148,8 +148,8 @@
 .pub-trans-conn-no-data {
     padding: 30px;
     text-align: center;
-    color: #888;
-    font-size: 16px;
+    color: var(--pt-nodata-color, #888);
+    font-size: var(--pt-nodata-size, 1.15em);
 }
 
 /* Uhrzeit-Anzeige */
@@ -157,8 +157,8 @@
     position: absolute;
     top: 12px;
     right: 15px;
-    color: #00ff00;
-    font-size: 16px;
+    color: var(--pt-clock-color, #00ff00);
+    font-size: var(--pt-clock-size, 1.15em);
     font-weight: bold;
 }
 
@@ -166,8 +166,8 @@
 .pub-trans-conn-loading {
     padding: 20px;
     text-align: center;
-    color: #ffcc00;
-    font-size: 14px;
+    color: var(--pt-loading-color, #ffcc00);
+    font-size: var(--pt-loading-size, 1em);
 }
 
 .pub-trans-conn-loading::after {
@@ -193,16 +193,16 @@
 }
 
 .pub-trans-conn-scroll::-webkit-scrollbar-track {
-    background: #1a1a1a;
+    background: var(--pt-scrollbar-track, #1a1a1a);
 }
 
 .pub-trans-conn-scroll::-webkit-scrollbar-thumb {
-    background: #444;
+    background: var(--pt-scrollbar-thumb, #444);
     border-radius: 4px;
 }
 
 .pub-trans-conn-scroll::-webkit-scrollbar-thumb:hover {
-    background: #a2a2a2;
+    background: var(--pt-scrollbar-thumb-hover, #a2a2a2);
 }
 
 /* Popup/Modal für den Verbindungsverlauf */
@@ -214,7 +214,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: var(--pt-overlay-bg, rgba(0, 0, 0, 0.8));
 }
 
 .pub-trans-conn-modal.active {
@@ -222,8 +222,8 @@
 }
 
 .pub-trans-conn-modal-content {
-    background-color: #1a1a1a;
-    border: 2px solid #333;
+    background-color: var(--pt-modal-bg, #1a1a1a);
+    border: 2px solid var(--pt-border-color, #333);
     border-radius: 4px;
     margin: 5% auto;
     padding: 0;
@@ -238,15 +238,15 @@
 
 /* Überschrift bleibt oben fix stehen, nur der Body scrollt */
 .pub-trans-conn-modal-header {
-    background: linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%);
-    color: #ffffff;
+    background: var(--pt-header-bg, linear-gradient(180deg, #2c5aa0 0%, #1e3a6e 100%));
+    color: var(--pt-header-color, #ffffff);
     padding: 15px;
     margin: 0;
     border-radius: 4px 4px 0 0;
-    font-size: 18px;
+    font-size: var(--pt-modal-header-size, 1.3em);
     font-weight: bold;
     text-align: center;
-    border-bottom: 3px solid #ffcc00;
+    border-bottom: 3px solid var(--pt-header-accent, #ffcc00);
     flex-shrink: 0;
 }
 
@@ -258,9 +258,9 @@
 }
 
 .pub-trans-conn-modal-close {
-    color: #ffffff;
+    color: var(--pt-header-color, #ffffff);
     float: right;
-    font-size: 28px;
+    font-size: var(--pt-modal-close-size, 2em);
     font-weight: bold;
     cursor: pointer;
     line-height: 20px;
@@ -268,15 +268,15 @@
 
 .pub-trans-conn-modal-close:hover,
 .pub-trans-conn-modal-close:focus {
-    color: #ffcc00;
+    color: var(--pt-link-hover-color, #ffcc00);
 }
 
 /* Leg-Details im Popup */
 .pub-trans-conn-leg {
     margin-bottom: 20px;
     padding: 15px;
-    background-color: #0a0a0a;
-    border: 1px solid #333;
+    background-color: var(--pt-leg-bg, #0a0a0a);
+    border: 1px solid var(--pt-leg-border-color, #333);
     border-radius: 4px;
 }
 
@@ -286,7 +286,7 @@
     gap: 10px;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid var(--pt-colhead-border-color, #444);
 }
 
 .pub-trans-conn-leg-icon {
@@ -294,48 +294,48 @@
     padding: 6px 12px;
     border-radius: 3px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: var(--pt-leg-badge-size, 1em);
     text-align: center;
     min-width: 50px;
-    background-color: #ffcc00;
-    color: #000000;
+    background-color: var(--pt-badge-bg, #ffcc00);
+    color: var(--pt-badge-fg, #000000);
 }
 
 /* Verschiedene Verkehrsmittel-Farben */
 .pub-trans-conn-leg-icon.bus {
-    background-color: #9d1b4c;
-    color: #ffffff;
+    background-color: var(--pt-badge-bus-bg, #9d1b4c);
+    color: var(--pt-badge-bus-fg, #ffffff);
 }
 
 .pub-trans-conn-leg-icon.tram {
-    background-color: #d4000b;
-    color: #ffffff;
+    background-color: var(--pt-badge-tram-bg, #d4000b);
+    color: var(--pt-badge-tram-fg, #ffffff);
 }
 
 .pub-trans-conn-leg-icon.subway {
-    background-color: #0066b3;
-    color: #ffffff;
+    background-color: var(--pt-badge-subway-bg, #0066b3);
+    color: var(--pt-badge-subway-fg, #ffffff);
 }
 
 .pub-trans-conn-leg-icon.train {
-    background-color: #ffffff;
-    color: #d4000b;
-    border: 2px solid #d4000b;
+    background-color: var(--pt-badge-train-bg, #ffffff);
+    color: var(--pt-badge-train-fg, #d4000b);
+    border: 2px solid var(--pt-badge-train-border-color, #d4000b);
 }
 
 .pub-trans-conn-leg-icon.sbahn {
-    background-color: #006e34;
-    color: #ffffff;
+    background-color: var(--pt-badge-sbahn-bg, #006e34);
+    color: var(--pt-badge-sbahn-fg, #ffffff);
 }
 
 .pub-trans-conn-leg-icon.walking {
-    background-color: #888888;
-    color: #ffffff;
+    background-color: var(--pt-badge-walk-bg, #888888);
+    color: var(--pt-badge-walk-fg, #ffffff);
 }
 
 .pub-trans-conn-leg-direction {
-    color: #ffcc00;
-    font-size: 16px;
+    color: var(--pt-leg-direction-color, #ffcc00);
+    font-size: var(--pt-leg-direction-size, 1.15em);
     font-weight: bold;
     flex: 1;
 }
@@ -344,8 +344,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    color: #ffffff;
-    font-size: 14px;
+    color: var(--pt-leg-detail-color, #ffffff);
+    font-size: var(--pt-leg-detail-size, 1em);
 }
 
 .pub-trans-conn-leg-detail-item {
@@ -353,35 +353,35 @@
 }
 
 .pub-trans-conn-leg-detail-label {
-    color: #ffcc00;
+    color: var(--pt-leg-label-color, #ffcc00);
     font-weight: bold;
     margin-right: 5px;
 }
 
 .pub-trans-conn-leg-detail-value {
-    color: #ffffff;
+    color: var(--pt-leg-detail-color, #ffffff);
 }
 
 .pub-trans-conn-leg-detail-value.delayed {
-    color: #ff0000;
+    color: var(--pt-delay-delayed-color, #ff0000);
 }
 
 .pub-trans-conn-leg-detail-value.ontime {
-    color: #00ff00;
+    color: var(--pt-delay-ontime-color, #00ff00);
 }
 
 .pub-trans-conn-leg-detail-value.changed {
-    color: #ff0000;
+    color: var(--pt-platform-changed-color, #ff0000);
 }
 
 /* Fußweg-Styling */
 .pub-trans-conn-leg.walking {
-    background-color: #151515;
-    border-left: 4px solid #888888;
+    background-color: var(--pt-leg-walking-bg, #151515);
+    border-left: 4px solid var(--pt-walking-color, #888888);
 }
 
 .pub-trans-conn-leg.walking .pub-trans-conn-leg-direction {
-    color: #888888;
+    color: var(--pt-walking-color, #888888);
     font-style: italic;
 }
 
@@ -391,21 +391,21 @@
 }
 
 .pub-trans-conn-modal [id^='modal-body-']::-webkit-scrollbar-track {
-    background: #1a1a1a;
+    background: var(--pt-scrollbar-track, #1a1a1a);
 }
 
 .pub-trans-conn-modal [id^='modal-body-']::-webkit-scrollbar-thumb {
-    background: #444;
+    background: var(--pt-scrollbar-thumb, #444);
     border-radius: 4px;
 }
 
 .pub-trans-conn-modal [id^='modal-body-']::-webkit-scrollbar-thumb:hover {
-    background: #a2a2a2;
+    background: var(--pt-scrollbar-thumb-hover, #a2a2a2);
 }
 
 /* Delay-Indikator in der Haupttabelle */
 .pub-trans-conn-row.delayed {
-    border-left: 3px solid #ff0000;
+    border-left: 3px solid var(--pt-delay-delayed-color, #ff0000);
 }
 
 /* Info-Zelle mit Remark-Icons in der Haupttabelle */
@@ -424,14 +424,14 @@
 
 /* Delay-Indikator am Leg-Container im Popup */
 .pub-trans-conn-leg.delayed {
-    border-left: 4px solid #ff0000;
+    border-left: 4px solid var(--pt-delay-delayed-color, #ff0000);
 }
 
 /* Remarks-Block im Leg-Detail */
 .pub-trans-conn-leg-remarks {
     margin-top: 12px;
     padding-top: 10px;
-    border-top: 1px solid #444;
+    border-top: 1px solid var(--pt-colhead-border-color, #444);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -447,37 +447,37 @@
 }
 
 .pub-trans-conn-leg-remark-section.warning {
-    border-left-color: #cc0000;
-    background-color: rgba(204, 0, 0, 0.12);
+    border-left-color: var(--pt-warning-accent, #cc0000);
+    background-color: var(--pt-warning-bg, rgba(204, 0, 0, 0.12));
 }
 
 .pub-trans-conn-leg-remark-section.hint {
-    border-left-color: #ffcc00;
-    background-color: rgba(255, 204, 0, 0.10);
+    border-left-color: var(--pt-hint-accent, #ffcc00);
+    background-color: var(--pt-hint-bg, rgba(255, 204, 0, 0.10));
 }
 
 .pub-trans-conn-leg-remark-section.status {
-    border-left-color: #0066b3;
-    background-color: rgba(0, 102, 179, 0.12);
+    border-left-color: var(--pt-status-accent, #0066b3);
+    background-color: var(--pt-status-bg, rgba(0, 102, 179, 0.12));
 }
 
 .pub-trans-conn-leg-remark-text {
-    color: #dddddd;
-    font-size: 13px;
+    color: var(--pt-remark-color, #dddddd);
+    font-size: var(--pt-remark-size, 0.93em);
     line-height: 1.4;
 }
 
 /* Link-Styling im Modal */
 .pub-trans-conn-leg-remark-text a {
-    color: #00ccff;
+    color: var(--pt-link-color, #00ccff);
     text-decoration: underline;
 }
 
 .pub-trans-conn-leg-remark-text a:hover {
-    color: #ffcc00;
+    color: var(--pt-link-hover-color, #ffcc00);
     text-decoration: none;
 }
 
 .pub-trans-conn-leg-remark-text a:visited {
-    color: #0099cc;
+    color: var(--pt-link-visited-color, #0099cc);
 }
