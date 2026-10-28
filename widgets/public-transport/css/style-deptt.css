@@ -140,6 +140,8 @@
     display: flex;
     align-items: flex-start;
     gap: 8px;
+    /* Groesse der Spalte Linie/Ziel; Liniensymbol und Zieltext rechnen in em davon */
+    font-size: var(--pt-line-size, 1em);
 }
 
 /* Linien-Icon (Standard) */
@@ -192,6 +194,7 @@
 .pub-trans-deptt-delay {
     text-align: left;
     font-weight: bold;
+    font-size: var(--pt-delay-size, 1em);
 }
 
 .pub-trans-deptt-delay.ontime {

@@ -96,6 +96,9 @@ $.extend(true, systemDictionary, {
     group_ptDisplay: { en: 'Appearance', de: 'Darstellung' },
     fontSizeBase: { en: 'Font size in px (0 = automatic)', de: 'Schriftgröße in px (0 = automatisch)' },
     headerFontSize: { en: 'Headline font size in px (0 = automatic)', de: 'Schriftgröße Überschrift in px (0 = automatisch)' },
+    timeFontSize: { en: 'Time font size in px (0 = standard)', de: 'Schriftgröße Zeit in px (0 = Standard)' },
+    lineFontSize: { en: 'Line font size in px (0 = standard)', de: 'Schriftgröße Linie in px (0 = Standard)' },
+    delayFontSize: { en: 'Delay font size in px (0 = standard)', de: 'Schriftgröße Verspätung in px (0 = Standard)' },
     ptBgColor: { en: 'Background colour', de: 'Hintergrundfarbe' },
     ptListBgColor: { en: 'Table background colour', de: 'Hintergrundfarbe Tabelle' },
     ptHeaderColor: { en: 'Headline text colour', de: 'Textfarbe Überschrift' },
@@ -109,7 +112,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportDepTt'] = {
-    version: '0.0.8',
+    version: '0.0.9',
 
     showVersion: function () {
         if (vis.binds['public-transportDepTt'].version) {
@@ -217,6 +220,9 @@ vis.binds['public-transportDepTt'] = {
         ptApplyStyleVars(scaleContainer, data, [
             ['fontSizeBase', '--pt-base-size', 'px'],
             ['headerFontSize', '--pt-header-size', 'px'],
+            ['timeFontSize', '--pt-time-size', 'px'],
+            ['lineFontSize', '--pt-line-size', 'px'],
+            ['delayFontSize', '--pt-delay-size', 'px'],
             ['ptBgColor', '--pt-bg'],
             ['ptListBgColor', '--pt-list-bg'],
             ['ptHeaderColor', '--pt-header-color'],

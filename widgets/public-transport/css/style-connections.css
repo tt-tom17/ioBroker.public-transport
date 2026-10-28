@@ -106,6 +106,7 @@
 .pub-trans-conn-delay {
     text-align: center;
     font-weight: bold;
+    font-size: var(--pt-delay-size, 1em);
 }
 
 .pub-trans-conn-delay.ontime {

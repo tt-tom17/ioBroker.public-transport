@@ -63,12 +63,14 @@
     /* ---------- Spalten ---------- */
     --pt-time-color: #00ff00;
     --pt-time-size: 1.15em;
-    /* Linienspalte: nur Verbindungstabelle */
+    /* Linienspalte: die Groesse gilt in beiden Widgets (in der Abfahrtstafel
+       fuer Liniensymbol und Ziel zusammen), die Farbe nur in der Verbindungstabelle */
     --pt-line-color: #00ff00;
     --pt-line-size: 1.15em;
-    /* Zieltext: nur Abfahrtstafel */
+    /* Zieltext: nur Abfahrtstafel, skaliert mit --pt-line-size */
     --pt-dest-color: #ffffff;
     --pt-dest-size: 1em;
+    --pt-delay-size: 1em;
     --pt-delay-ontime-color: #00ff00;
     --pt-delay-delayed-color: #ff0000;
     --pt-delay-cancelled-color: #ff0000;
@@ -145,4 +147,15 @@
     --pt-link-color: #00ccff;
     --pt-link-hover-color: #ffcc00;
     --pt-link-visited-color: #0099cc;
+}
+
+/*
+    Abweichende Standardwerte der Abfahrtstafel. In der Verbindungstabelle ist die
+    Linienspalte eine eigene, hervorgehobene Spalte (1.15em); in der Abfahrtstafel
+    steckt im selben Feld das Liniensymbol samt Zieltext und liegt darum auf der
+    Groesse der uebrigen Zeile. Eigene Angaben im View-CSS stehen weiter unten in
+    der Reihenfolge und gewinnen deshalb gegen diesen Block.
+*/
+.pub-trans-deptt-container {
+    --pt-line-size: 1em;
 }
