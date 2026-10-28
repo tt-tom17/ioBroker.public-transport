@@ -97,7 +97,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportConnections'] = {
-    version: '0.0.13',
+    version: '0.0.14',
 
     showVersion: function () {
         if (vis.binds['public-transportConnections'].version) {
@@ -147,7 +147,7 @@ vis.binds['public-transportConnections'] = {
         // Spaltenüberschriften
         html += '<div class="pub-trans-conn-column-header">';
         html += '<div class="col-dep-time">Abfahrt</div>';
-        html += '<div class="col-dep-line">Line</div>';
+        html += '<div class="col-dep-line">Linie</div>';
         html += '<div class="col-dep-delay">Verspätung</div>';
         html += '<div class="col-dep-platform">Gleis Ab</div>';
         html += '<div class="col-arr-time">Ankunft</div>';
