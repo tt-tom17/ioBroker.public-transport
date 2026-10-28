@@ -97,7 +97,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportConnections'] = {
-    version: '0.0.12',
+    version: '0.0.13',
 
     showVersion: function () {
         if (vis.binds['public-transportConnections'].version) {

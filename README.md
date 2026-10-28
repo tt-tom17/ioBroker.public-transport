@@ -42,6 +42,7 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 ### **WORK IN PROGRESS**
 * (tt-tom17) vis widgets: new "Appearance" attributes - font size and colours can now be set per widget in the vis editor
 * (tt-tom17) vis widgets: all colours and font sizes are CSS variables (--pt-*) now and can be overridden in the project or view CSS
+* (tt-tom17) vis widgets: fixed the column headers standing offset from the table columns - the grid was defined twice and in em, so the smaller header font made its columns 7 % narrower
 
 ### 1.4.2 (2026-10-24)
 * (tt-tom17) dependencies updated

@@ -47,6 +47,17 @@
     --pt-clock-color: #00ff00;
     --pt-clock-size: 1.15em;
 
+    /* ---------- Raster: Spaltenabstaende und Innenabstand ----------
+       Alle Rastermasse werden aus --pt-base-size gerechnet und sind damit
+       absolute px-Werte. Das ist Absicht: in "em" wuerden sie von der
+       Schriftgroesse des jeweiligen Elements abhaengen, und weil der
+       Spaltenkopf eine andere Schriftgroesse hat als die Datenzeilen, lagen
+       die Spalten von Kopf und Zeilen dann nicht uebereinander. */
+    --pt-grid-gap: calc(var(--pt-base-size) * 0.7);
+    --pt-grid-pad-x: calc(var(--pt-base-size) * 0.7);
+    --pt-grid-pad-y: calc(var(--pt-base-size) * 0.7);
+    --pt-colhead-pad-y: calc(var(--pt-base-size) * 0.6);
+
     /* ---------- Spaltenkopf ---------- */
     --pt-colhead-bg: #2c2c2c;
     --pt-colhead-color: #ffcc00;
@@ -150,12 +161,36 @@
 }
 
 /*
-    Abweichende Standardwerte der Abfahrtstafel. In der Verbindungstabelle ist die
-    Linienspalte eine eigene, hervorgehobene Spalte (1.15em); in der Abfahrtstafel
-    steckt im selben Feld das Liniensymbol samt Zieltext und liegt darum auf der
-    Groesse der uebrigen Zeile. Eigene Angaben im View-CSS stehen weiter unten in
-    der Reihenfolge und gewinnen deshalb gegen diesen Block.
+    Nur Abfahrtstafel: Spaltenbreiten und ein abweichender Standardwert.
+
+    Zur Linienspalte: in der Verbindungstabelle ist sie eine eigene, hervorgehobene
+    Spalte (1.15em); in der Abfahrtstafel steckt im selben Feld das Liniensymbol
+    samt Zieltext und liegt darum auf der Groesse der uebrigen Zeile. Eigene
+    Angaben im View-CSS stehen weiter unten in der Reihenfolge und gewinnen
+    deshalb gegen diesen Block.
 */
 .pub-trans-deptt-container {
     --pt-line-size: 1em;
+
+    /* Spalten: Zeit, Linie/Ziel (mitwachsend), Verspaetung, Gleis, Info */
+    --pt-deptt-col-time: calc(var(--pt-base-size) * 5.5);
+    --pt-deptt-col-line-min: calc(var(--pt-base-size) * 10);
+    --pt-deptt-col-delay: calc(var(--pt-base-size) * 7);
+    --pt-deptt-col-platform: calc(var(--pt-base-size) * 5.5);
+    --pt-deptt-col-info: calc(var(--pt-base-size) * 9);
+}
+
+/*
+    Nur Verbindungstabelle: die neun Spalten in der Reihenfolge der Tabelle.
+*/
+.pub-trans-conn-container {
+    --pt-conn-col-dep-time: calc(var(--pt-base-size) * 5.5);
+    --pt-conn-col-line: calc(var(--pt-base-size) * 5.5);
+    --pt-conn-col-dep-delay: calc(var(--pt-base-size) * 5.5);
+    --pt-conn-col-dep-platform: calc(var(--pt-base-size) * 5.5);
+    --pt-conn-col-arr-time: calc(var(--pt-base-size) * 5.5);
+    --pt-conn-col-arr-delay: calc(var(--pt-base-size) * 5.5);
+    --pt-conn-col-arr-platform: calc(var(--pt-base-size) * 5.5);
+    --pt-conn-col-transfers: calc(var(--pt-base-size) * 5.5);
+    --pt-conn-col-info: calc(var(--pt-base-size) * 3.5);
 }

@@ -40,15 +40,16 @@
     background-color: var(--pt-list-bg, #000000);
 }
 
-/* Zeile mit Spaltenüberschriften */
+/* Zeile mit Spaltenüberschriften.
+
+   Das Raster (Spaltenbreiten, Abstände, waagerechter Innenabstand) steht weiter
+   unten in EINER Regel gemeinsam mit den Datenzeilen — nur so können
+   Überschriften und Spalten nicht auseinanderlaufen. */
 .pub-trans-conn-column-header {
     background-color: var(--pt-colhead-bg, #2c2c2c);
     color: var(--pt-colhead-color, #ffcc00);
-    padding: 0.6em 0.7em;
-    display: grid;
-    grid-template-columns: 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 3.5em;
-    gap: 0.7em;
-    font-size: var(--pt-colhead-size, 0.93em);
+    padding-top: var(--pt-colhead-pad-y, 0.6em);
+    padding-bottom: var(--pt-colhead-pad-y, 0.6em);
     font-weight: bold;
     border-bottom: 2px solid var(--pt-colhead-border-color, #444);
     /* Spaltenkopf bleibt beim vertikalen Scrollen oben stehen, läuft horizontal mit den Zeilen mit */
@@ -57,8 +58,11 @@
     z-index: 2;
 }
 
+/* Die Schriftgröße des Spaltenkopfs sitzt auf den Zellen, nicht auf der Zeile:
+   läge sie auf der Zeile, würden alle em-Maße des Rasters mit ihr schrumpfen. */
 .pub-trans-conn-column-header > div {
     text-align: center;
+    font-size: var(--pt-colhead-size, 0.93em);
 }
 
 /* Container für die Verbindungszeilen (Scroll übernimmt der .pub-trans-conn-scroll-Wrapper) */
@@ -66,17 +70,39 @@
     background-color: var(--pt-list-bg, #000000);
 }
 
-/* Einzelne Verbindungszeile */
+/* Einzelne Verbindungszeile: Farben, Rahmen, Schrift. Das Raster steht darunter. */
 .pub-trans-conn-row {
-    display: grid;
-    grid-template-columns: 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 5.5em 3.5em;
-    gap: 0.7em;
-    padding: 0.7em;
+    padding-top: var(--pt-grid-pad-y, 0.7em);
+    padding-bottom: var(--pt-grid-pad-y, 0.7em);
     border-bottom: 1px solid var(--pt-row-border-color, #333);
     color: var(--pt-row-color, #ffcc00);
     font-size: var(--pt-row-size, 1em);
     transition: background-color 0.2s;
     cursor: pointer;
+}
+
+/* Gemeinsames Raster für Spaltenkopf UND Datenzeilen.
+
+   Nur diese eine Stelle: Standen Breiten und Abstände zweimal da, liefen sie
+   auseinander — zumal in "em", das sich auf die jeweilige Schriftgröße bezieht.
+   Die Variablen liefern px-Werte aus --pt-base-size und gelten daher für Kopf
+   und Zeile gleich. Reihenfolge der Spalten wie in der Tabelle. */
+.pub-trans-conn-column-header,
+.pub-trans-conn-row {
+    display: grid;
+    grid-template-columns:
+        var(--pt-conn-col-dep-time, 5.5em)
+        var(--pt-conn-col-line, 5.5em)
+        var(--pt-conn-col-dep-delay, 5.5em)
+        var(--pt-conn-col-dep-platform, 5.5em)
+        var(--pt-conn-col-arr-time, 5.5em)
+        var(--pt-conn-col-arr-delay, 5.5em)
+        var(--pt-conn-col-arr-platform, 5.5em)
+        var(--pt-conn-col-transfers, 5.5em)
+        var(--pt-conn-col-info, 3.5em);
+    gap: var(--pt-grid-gap, 0.7em);
+    padding-left: var(--pt-grid-pad-x, 0.7em);
+    padding-right: var(--pt-grid-pad-x, 0.7em);
 }
 
 .pub-trans-conn-row:hover {

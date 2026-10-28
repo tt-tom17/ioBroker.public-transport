@@ -40,15 +40,18 @@
     background-color: var(--pt-list-bg, #000000);
 }
 
-/* Zeile mit Spaltenüberschriften */
-.pub-trans-deptt-column-header.no-remarks {
+/* Zeile mit Spaltenüberschriften.
+
+   Das Raster selbst (Spaltenbreiten, Abstände, waagerechter Innenabstand) steht
+   weiter unten in EINER Regel gemeinsam mit den Datenzeilen — nur so können
+   Überschriften und Spalten nicht auseinanderlaufen. Hier bleiben Farben,
+   Rahmen und das Verhalten beim Scrollen. */
+.pub-trans-deptt-column-header.no-remarks,
+.pub-trans-deptt-column-header.remarks {
     background-color: var(--pt-colhead-bg, #2c2c2c);
     color: var(--pt-colhead-color, #ffcc00);
-    padding: 0.6em 0.7em;
-    display: grid;
-    grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em;
-    gap: 0.7em;
-    font-size: var(--pt-colhead-size, 0.93em);
+    padding-top: var(--pt-colhead-pad-y, 0.6em);
+    padding-bottom: var(--pt-colhead-pad-y, 0.6em);
     font-weight: bold;
     border-bottom: 2px solid var(--pt-colhead-border-color, #444);
     /* Spaltenkopf bleibt beim vertikalen Scrollen oben stehen, läuft horizontal mit den Zeilen mit */
@@ -57,23 +60,11 @@
     z-index: 2;
 }
 
-.pub-trans-deptt-column-header.remarks {
-    background-color: var(--pt-colhead-bg, #2c2c2c);
-    color: var(--pt-colhead-color, #ffcc00);
-    padding: 0.6em 0.7em;
-    display: grid;
-    grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em 9em;
-    gap: 0.7em;
-    font-size: var(--pt-colhead-size, 0.93em);
-    font-weight: bold;
-    border-bottom: 2px solid var(--pt-colhead-border-color, #444);
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
-
+/* Die Schriftgröße des Spaltenkopfs sitzt auf den Zellen, nicht auf der Zeile:
+   läge sie auf der Zeile, würden alle em-Maße des Rasters mit ihr schrumpfen. */
 .pub-trans-deptt-column-header > div {
     text-align: left;
+    font-size: var(--pt-colhead-size, 0.93em);
 }
 
 .pub-trans-deptt-column-header .col-time {
@@ -93,29 +84,51 @@
     background-color: var(--pt-list-bg, #000000);
 }
 
-/* Einzelne Abfahrtszeile */
+/* Einzelne Abfahrtszeile: Farben, Rahmen, Schrift. Das Raster steht darunter. */
+.pub-trans-deptt-row.no-remarks,
+.pub-trans-deptt-row.remarks {
+    padding-top: var(--pt-grid-pad-y, 0.7em);
+    padding-bottom: var(--pt-grid-pad-y, 0.7em);
+    border-bottom: 1px solid var(--pt-row-border-color, #333);
+    color: var(--pt-row-color, #ffcc00);
+    font-size: var(--pt-row-size, 1em);
+    transition: background-color 0.2s;
+}
+
+/* Gemeinsames Raster für Spaltenkopf UND Datenzeilen.
+
+   Es gibt bewusst nur diese eine Stelle je Variante: Standen Breiten und
+   Abstände zweimal da (einmal für den Kopf, einmal für die Zeile), liefen sie
+   auseinander — zumal in "em", das sich auf die jeweilige Schriftgröße bezieht.
+   Die Variablen liefern px-Werte aus --pt-base-size, sind also in Kopf und
+   Zeile identisch. Wer eine Spalte verbreitert, ändert eine Variable und
+   erwischt damit automatisch Überschrift und Inhalt. */
+.pub-trans-deptt-column-header.no-remarks,
 .pub-trans-deptt-row.no-remarks {
     display: grid;
-    grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em;
-    gap: 0.7em;
-    padding: 0.7em;
-    border-bottom: 1px solid var(--pt-row-border-color, #333);
-    color: var(--pt-row-color, #ffcc00);
-    font-size: var(--pt-row-size, 1em);
-    transition: background-color 0.2s;
+    grid-template-columns:
+        var(--pt-deptt-col-time, 5.5em)
+        minmax(var(--pt-deptt-col-line-min, 10em), 1fr)
+        var(--pt-deptt-col-delay, 7em)
+        var(--pt-deptt-col-platform, 5.5em);
+    gap: var(--pt-grid-gap, 0.7em);
+    padding-left: var(--pt-grid-pad-x, 0.7em);
+    padding-right: var(--pt-grid-pad-x, 0.7em);
 }
 
+.pub-trans-deptt-column-header.remarks,
 .pub-trans-deptt-row.remarks {
     display: grid;
-    grid-template-columns: 5.5em minmax(10em, 1fr) 7em 5.5em 9em;
-    gap: 0.7em;
-    padding: 0.7em;
-    border-bottom: 1px solid var(--pt-row-border-color, #333);
-    color: var(--pt-row-color, #ffcc00);
-    font-size: var(--pt-row-size, 1em);
-    transition: background-color 0.2s;
+    grid-template-columns:
+        var(--pt-deptt-col-time, 5.5em)
+        minmax(var(--pt-deptt-col-line-min, 10em), 1fr)
+        var(--pt-deptt-col-delay, 7em)
+        var(--pt-deptt-col-platform, 5.5em)
+        var(--pt-deptt-col-info, 9em);
+    gap: var(--pt-grid-gap, 0.7em);
+    padding-left: var(--pt-grid-pad-x, 0.7em);
+    padding-right: var(--pt-grid-pad-x, 0.7em);
 }
-
 
 /* Hover-Effekt für Abfahrtszeilen */
 .pub-trans-deptt-row:hover {
