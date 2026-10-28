@@ -39,6 +39,10 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) vis widgets: new "Appearance" attributes - font size and colours can now be set per widget in the vis editor
+* (tt-tom17) vis widgets: all colours and font sizes are CSS variables (--pt-*) now and can be overridden in the project or view CSS
+
 ### 1.4.2 (2026-10-24)
 * (tt-tom17) dependencies updated
 
