@@ -1,4 +1,9 @@
 # Older changes
+## 1.1.0 (2026-08-21)
+* (tt-tom17) added a "Create detail data points" switch per station and journey. The switch is off by default
+* (tt-tom17) fixed the departure widget hiding all multi-word products (S-Bahn, U-Bahn, RE, ICE, ...) whenever the product filter was enabled
+* (tt-tom17) the widgets no longer log continuously; set `publicTransportDebug = true` in the browser console to get the diagnostics back
+
 ## 1.0.0 (2026-08-08)
 * (tt-tom17) migrated the admin configuration GUI to @iobroker/gui-components 10 (React 19, MUI 9); requires admin >= 8.0.1
 
