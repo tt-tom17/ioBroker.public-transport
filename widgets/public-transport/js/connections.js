@@ -83,8 +83,6 @@ $.extend(true, systemDictionary, {
     timeFontSizeConn: { en: 'Time font size in px (0 = standard)', de: 'Schriftgröße Zeit in px (0 = Standard)' },
     lineFontSizeConn: { en: 'Line font size in px (0 = standard)', de: 'Schriftgröße Linie in px (0 = Standard)' },
     delayFontSizeConn: { en: 'Delay font size in px (0 = standard)', de: 'Schriftgröße Verspätung in px (0 = Standard)' },
-    ptBgColorConn: { en: 'Background colour', de: 'Hintergrundfarbe' },
-    ptListBgColorConn: { en: 'Table background colour', de: 'Hintergrundfarbe Tabelle' },
     ptHeaderColorConn: { en: 'Headline text colour', de: 'Textfarbe Überschrift' },
     ptColHeadColorConn: { en: 'Column header colour', de: 'Textfarbe Spaltenkopf' },
     ptTimeColorConn: { en: 'Time colour', de: 'Textfarbe Zeit' },
@@ -97,7 +95,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportConnections'] = {
-    version: '0.0.14',
+    version: '0.0.15',
 
     showVersion: function () {
         if (vis.binds['public-transportConnections'].version) {
@@ -189,8 +187,6 @@ vis.binds['public-transportConnections'] = {
             ['timeFontSizeConn', '--pt-time-size', 'px'],
             ['lineFontSizeConn', '--pt-line-size', 'px'],
             ['delayFontSizeConn', '--pt-delay-size', 'px'],
-            ['ptBgColorConn', '--pt-bg'],
-            ['ptListBgColorConn', '--pt-list-bg'],
             ['ptHeaderColorConn', '--pt-header-color'],
             ['ptColHeadColorConn', '--pt-colhead-color'],
             ['ptTimeColorConn', '--pt-time-color'],
