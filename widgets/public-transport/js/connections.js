@@ -95,7 +95,7 @@ $.extend(true, systemDictionary, {
 
 // Widget Binding
 vis.binds['public-transportConnections'] = {
-    version: '0.0.15',
+    version: '0.0.16',
 
     showVersion: function () {
         if (vis.binds['public-transportConnections'].version) {
@@ -162,9 +162,11 @@ vis.binds['public-transportConnections'] = {
 
         html += '</div>'; // Ende .pub-trans-conn-scroll
 
-        html += '</div>';
-
-        // Modal für Details
+        // Modal für Details.
+        // MUSS innerhalb des Containers stehen - genau wie in deptt.js: style-vars.css und
+        // ptApplyStyleVars() definieren die CSS-Variablen am Container, ein Geschwister-Element
+        // sieht davon keine einzige. position: fixed wird vom overflow: hidden des Containers
+        // nicht beschnitten, die Abfahrtstafel macht es seit Beginn so.
         html += '<div class="pub-trans-conn-modal" id="modal-conn-' + widgetID + '">';
         html += '<div class="pub-trans-conn-modal-content">';
         html += '<div class="pub-trans-conn-modal-header">';
@@ -174,6 +176,8 @@ vis.binds['public-transportConnections'] = {
         html += '<div id="modal-body-' + widgetID + '"></div>';
         html += '</div>';
         html += '</div>';
+
+        html += '</div>'; // Ende .pub-trans-conn-container
 
         $div.html(html);
 
