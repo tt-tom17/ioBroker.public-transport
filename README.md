@@ -39,7 +39,7 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.5.1 (2026-11-14)
 * (tt-tom17) Fix: TRIAS no longer logs an error when no departure lies within the time window (quiet stops at night) - the server answers "-100" for an empty window
 * (tt-tom17) dependencies updated
 
@@ -64,9 +64,6 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 
 ### 1.3.0 (2026-09-02)
 * (tt-tom17) added TRIAS as a new backend with MobiData BW (Baden-Württemberg) as the first network
-
-### 1.2.0 (2026-08-25)
-* (tt-tom17) added EFA as a new backend with VRR (Rhein-Ruhr) as the first network
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

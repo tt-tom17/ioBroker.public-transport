@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "public-transport",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "news": {
       "1.5.1": {
         "en": "Fix: TRIAS no longer logs an error when no departure lies within the time window (quiet stops at night)\ndependencies updated",
@@ -93,19 +93,6 @@
         "pl": "Nowość: TRIAS jako dodatkowy backend, z MobiData BW (Badenia-Wirtembergia) jako pierwszą siecią transportową",
         "uk": "Нове: TRIAS як додатковий бекенд, із MobiData BW (Баден-Вюртемберг) як першою транспортною мережею",
         "zh-cn": "新增：TRIAS 作为额外的后端，首个交通网络为 MobiData BW（巴登-符腾堡州）"
-      },
-      "1.2.0": {
-        "en": "New: EFA as an additional backend, with the VRR (Rhine-Ruhr) as the first network",
-        "de": "Neu: EFA als weiteres Backend, mit dem VRR (Rhein-Ruhr) als erstem Verkehrsverbund",
-        "ru": "Новинка: EFA как дополнительный бэкенд, с VRR (Рейн-Рур) в качестве первой транспортной сети",
-        "pt": "Novo: EFA como backend adicional, com a VRR (Reno-Ruhr) como primeira rede de transportes",
-        "nl": "Nieuw: EFA als extra backend, met de VRR (Rijn-Roergebied) als eerste vervoersnetwerk",
-        "fr": "Nouveau : EFA comme backend supplémentaire, avec le VRR (Rhin-Ruhr) comme premier réseau de transport",
-        "it": "Novità: EFA come backend aggiuntivo, con il VRR (Reno-Ruhr) come prima rete di trasporto",
-        "es": "Novedad: EFA como backend adicional, con el VRR (Rin-Ruhr) como primera red de transporte",
-        "pl": "Nowość: EFA jako dodatkowy backend, z VRR (Ren-Zagłębie Ruhry) jako pierwszą siecią transportową",
-        "uk": "Нове: EFA як додатковий бекенд, із VRR (Рейн-Рур) як першою транспортною мережею",
-        "zh-cn": "新增：EFA 作为额外的后端，首个交通联盟为 VRR（莱茵-鲁尔）"
       }
     },
     "messages": [
