@@ -3,6 +3,19 @@
     "name": "public-transport",
     "version": "1.5.0",
     "news": {
+      "1.5.1": {
+        "en": "Fix: TRIAS no longer logs an error when no departure lies within the time window (quiet stops at night)\ndependencies updated",
+        "de": "Fix: TRIAS meldet keinen Fehler mehr, wenn im Zeitfenster keine Abfahrt liegt (ruhige Stationen nachts)\nAbhängigkeiten aktualisiert",
+        "ru": "Fix: TRIAS больше не записывает ошибку, если в интервале времени нет отправлений (тихие остановки ночью)\nзависимости обновлены",
+        "pt": "Fix: o TRIAS já não regista um erro quando não há partidas dentro da janela de tempo (paragens calmas à noite)\ndependências atualizadas",
+        "nl": "Fix: TRIAS logt geen fout meer wanneer er geen vertrek binnen het tijdvenster ligt (rustige haltes 's nachts)\nafhankelijkheden bijgewerkt",
+        "fr": "Fix : TRIAS n'enregistre plus d'erreur lorsqu'aucun départ ne se trouve dans la fenêtre de temps (arrêts calmes la nuit)\ndépendances mises à jour",
+        "it": "Fix: TRIAS non registra più un errore quando nessuna partenza rientra nella finestra temporale (fermate tranquille di notte)\ndipendenze aggiornate",
+        "es": "Fix: TRIAS ya no registra un error cuando no hay salidas dentro de la ventana de tiempo (paradas tranquilas por la noche)\ndependencias actualizadas",
+        "pl": "Fix: TRIAS nie zapisuje już błędu, gdy w oknie czasowym nie ma żadnego odjazdu (spokojne przystanki w nocy)\naktualizacja zależności",
+        "uk": "Fix: TRIAS більше не записує помилку, якщо у часовому вікні немає відправлень (тихі зупинки вночі)\nзалежності оновлені",
+        "zh-cn": "Fix: 当时间窗口内没有发车时，TRIAS 不再记录错误（夜间冷清的车站）\n依赖关系已更新"
+      },
       "1.5.0": {
         "en": "(Widget) New: the \"Appearance\" group in the vis editor sets font sizes and colours per widget\n(Widget) all colours and font sizes are CSS variables now and can be overridden in the project or view CSS\n(Widget) Fix: the column headers stood offset from the table columns\n(Widget) Fix: the journey table had its \"Line\" column heading in English",
         "de": "(Widget) Neu: die Gruppe „Darstellung“ im VIS-Editor stellt Schriftgrößen und Farben je Widget ein\n(Widget) alle Farben und Schriftgrößen sind jetzt CSS-Variablen und lassen sich im Projekt- oder View-CSS überschreiben\n(Widget) Fix: die Spaltenüberschriften standen versetzt über ihren Spalten\n(Widget) Fix: die Spaltenüberschrift „Line“ in der Verbindungstabelle war englisch",
