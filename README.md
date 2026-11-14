@@ -39,6 +39,9 @@ The queries themselves are built with open-source clients: [hafas-client](https:
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (tt-tom17) TRIAS: an empty time window is no longer logged as an error - the EFA-BW now answers "-100 STOPEVENT_INTERNAL_ERROR" instead of "-4030" when no departure lies within the window (every night at quiet stations); the adapter treats it as an empty result like HAFAS and EFA do
+
 ### 1.5.0 (2026-11-03)
 * (tt-tom17) vis widgets: new "Appearance" attributes - font size and colours can now be set per widget in the vis editor
 * (tt-tom17) vis widgets: all colours and font sizes are CSS variables (--pt-*) now and can be overridden in the project or view CSS

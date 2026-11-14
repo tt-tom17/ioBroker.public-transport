@@ -132,6 +132,9 @@ describe('triasMapper => Fehler und Attribute', () => {
         expect(isEmptyResult([{ Code: '-8014', Text: { Text: 'LOCATION_NORESULTS' } }])).to.equal(true);
         expect(isEmptyResult([{ Code: '-8020', Text: { Text: 'LOCATION_NORESULTS' } }])).to.equal(true);
         expect(isEmptyResult([{ Code: '-4000', Text: { Text: 'TRIP_NOTRIPFOUND' } }])).to.equal(true);
+        // Gemessen 13./14.11.2026 (Illertissen Bahnhof, 60-min-Fenster ohne Abfahrt): die EFA-BW meldet
+        // inzwischen -100 statt -4030, wenn das Zeitfenster leer ist.
+        expect(isEmptyResult([{ Code: '-100', Text: { Text: 'STOPEVENT_INTERNAL_ERROR' } }])).to.equal(true);
     });
 
     it('lässt unbekannte Codes weiterhin Fehler sein', () => {

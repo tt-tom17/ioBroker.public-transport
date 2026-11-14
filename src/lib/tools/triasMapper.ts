@@ -515,8 +515,17 @@ export function readError(messages?: TriasErrorMessage[]): string | undefined {
  * Nachtstunde als Störung — HAFAS und EFA geben in derselben Lage eine leere Liste zurück.
  *
  * `-8014` und `-8020` kommen aus der Ortssuche, solange die Eingabe zu keinem Treffer führt.
+ *
+ * ⚠️ `-100 STOPEVENT_INTERNAL_ERROR` ist seit Herbst 2026 die Antwort der EFA-BW auf ein **leeres
+ * `TimeWindow`** – gemessen in der Nacht 13./14.11.2026 an Illertissen Bahnhof (`de:09775:4301`):
+ * 12 von 30 Abfragen `-100`, exakt in den Stunden ohne Abfahrt im 60-Minuten-Fenster, davor und
+ * danach reguläre Ergebnisse; Gegenprobe mit künstlich leeren Fenstern an Ulm Hbf, Freiburg und
+ * Augsburg ebenfalls `-100`, dieselbe Station ohne `TimeWindow` liefert Abfahrten. Der Code ist
+ * mehrdeutig (derselbe Wert kommt bei kurzen Serverstörungen und bei fehlerhaften Parametern),
+ * der Server unterscheidet das nicht. Da der Adapter immer ein Zeitfenster sendet (Standard
+ * 60 min), wäre jede ruhige Station sonst jede Nacht bei jedem Poll ein Fehler im Log.
  */
-const EMPTY_RESULT_CODES = new Set(['-4000', '-4030', '-8014', '-8020']);
+const EMPTY_RESULT_CODES = new Set(['-100', '-4000', '-4030', '-8014', '-8020']);
 
 /**
  * Prüft, ob eine Fehlermeldung nur „nichts gefunden" bedeutet.
