@@ -325,7 +325,7 @@ function readError(messages) {
     return `${(_a = message.Code) != null ? _a : "?"}: ${(_b = textOf(message.Text)) != null ? _b : "unknown error"}`;
   }).join(" | ");
 }
-const EMPTY_RESULT_CODES = /* @__PURE__ */ new Set(["-4000", "-4030", "-8014", "-8020"]);
+const EMPTY_RESULT_CODES = /* @__PURE__ */ new Set(["-100", "-4000", "-4030", "-8014", "-8020"]);
 function isEmptyResult(messages) {
   const relevant = (messages != null ? messages : []).filter((message) => message.Code !== void 0 || textOf(message.Text));
   return relevant.length > 0 && relevant.every((message) => EMPTY_RESULT_CODES.has(String(message.Code)));
